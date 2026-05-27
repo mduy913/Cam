@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hệ Thống Nhận Thông Tin & Nhật Ký Thao Tác</title>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <style>
+        body { font-family: sans-serif; background: #0b0b12; color: #fff; padding: 20px; margin: 0; }
+        .container { max-width: 1000px; margin: 0 auto; background: #1a1a2e; padding: 20px; border-radius: 12px; border: 1px solid #2a2a40; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
+        h2 { text-align: center; color: #00f2ff; margin-top: 0; letter-spacing: 1px; text-transform: uppercase; }
+        .status-bar { text-align: center; font-size: 12px; color: #34c759; margin-bottom: 20px; background: rgba(52, 199, 89, 0.1); padding: 6px; border-radius: 6px; display: inline-block; left: 50%; transform: translateX(-50%); position: relative; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 13px; }
+        th, td { padding: 12px; border-bottom: 1px solid #2a2a40; text-align: left; }
+        th { background: #111; color: #00f2ff; text-transform: uppercase; font-size: 12px; }
+        tr:hover { background: rgba(250,250,250,0.03); }
+        .time { color: #ffcc00; font-family: monospace; }
+        .admin { color: #ff4444; font-weight: bold; }
+        .action { color: #00f2ff; font-weight: bold; }
+        .details { color: #ccc; max-width: 350px; overflow-wrap: break-word; }
+        .loading { text-align: center; padding: 30px; color: #888; font-style: italic; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>🖥️ TRUNG TÂM NHẬN THÔNG TIN LƯU TRỮ</h2>
+    <div class="status-bar">🟢 Đang kết nối trực tiếp đến máy chủ Firebase (Realtime)</div>
+    
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 20%;">Thời Gian</th>
+                <th style="width: 15%;">Tài Khoản</th>
+                <th style="width: 25%;">Hành Động</th>
+                <th style="width: 40%;">Chi Tiết Biến Động</th>
+            </tr>
+        </thead>
+        <tbody id="log-table-body">
+            <tr><td colspan="4" class="loading">Đang chờ nhận dữ liệu thao tác từ Web chính...</td></tr>
+        </tbody>
+    </table>
+</div>
+
+<script>
+    const firebaseConfig = { databaseURL: "https://shopmduy-default-rtdb.asia-southeast1.firebasedatabase.app" };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    db.ref('logs_he_thong').on('value', (snapshot) => {
+        const tbody = document.getElementById('log-table-body');
+        tbody.innerHTML = "";
+        
+        if (snapshot.exists()) {
+            const data = snapshot.val();
+            Object.keys(data).reverse().forEach(key => {
+                const log = data[key];
+                tbody.innerHTML += `
+                    <tr>
+                        <td class="time">${log.time || '---'}</td>
+                        <td class="admin">${log.admin || 'Ẩn danh'}</td>
+                        <td class="action">${log.action || '---'}</td>
+                        <td class="details">${log.details || '---'}</td>
+                    </tr>
+                `;
+            });
+        } else {
+            tbody.innerHTML = `<tr><td colspan="4" class="loading">Chưa nhận được lịch sử thao tác nào. Hoạt động của Admin trên Web chính sẽ xuất hiện tại đây!</td></tr>`;
+        }
+    });
+</script>
+
+</body>
+</html>
