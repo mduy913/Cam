@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SHOPMDUY - AI TELEGRAM CONTROLLER</title>
+    <title>SHOPMDUY - AI TELEGRAM CONTROLLER ULTRA</title>
     <style>
         :root {
             --bg-color: #05070f;
@@ -15,33 +15,53 @@
             --success: #34d399;
             --warning: #fbbf24;
             --danger: #f87171;
+            --admin-color: #ec4899;
         }
         body { font-family: 'Segoe UI', system-ui, sans-serif; background-color: var(--bg-color); color: var(--text-main); margin: 0; padding: 20px; }
         .container { max-width: 1100px; margin: 0 auto; }
-        header { border-bottom: 1px solid var(--card-border); padding-bottom: 15px; margin-bottom: 25px; display: flex; justify-content: space-between; align-items: center; }
-        h1 { margin: 0; font-size: 24px; color: var(--primary); font-weight: 700; }
         
-        .status-bar { display: flex; gap: 15px; align-items: center; }
-        .status-dot { width: 10px; height: 10px; background: var(--danger); border-radius: 50%; display: inline-block; }
+        header { 
+            border-bottom: 1px solid var(--card-border); 
+            padding-bottom: 15px; 
+            margin-bottom: 25px; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+        }
+        h1 { margin: 0; font-size: 24px; color: var(--primary); font-weight: 700; letter-spacing: 0.5px; }
+        
+        .status-bar { display: flex; gap: 10px; align-items: center; background: rgba(255,255,255,0.02); padding: 8px 15px; border-radius: 20px; border: 1px solid var(--card-border); }
+        .status-dot { width: 10px; height: 10px; background: var(--danger); border-radius: 50%; display: inline-block; transition: all 0.3s ease; }
         .status-dot.online { background: var(--success); box-shadow: 0 0 10px var(--success); }
-        .status-text { font-size: 13px; font-weight: bold; }
+        .status-text { font-size: 12.5px; font-weight: bold; font-family: monospace; }
 
         .grid-layout { display: grid; grid-template-columns: 1fr 2fr; gap: 20px; }
-        .box { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 20px; }
-        h2 { font-size: 14px; color: var(--primary); margin-top: 0; margin-bottom: 15px; text-transform: uppercase; }
-        .search-input { width: 100%; background: #13192e; border: 1px solid var(--card-border); padding: 10px; border-radius: 6px; color: #fff; box-sizing: border-box; margin-bottom: 15px; }
-        .user-list { max-height: 400px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; }
-        .user-card { background: rgba(255,255,255,0.01); padding: 10px 12px; border-radius: 6px; display: flex; justify-content: space-between; align-items: center; font-size: 13.5px; border-left: 3px solid var(--text-sub); }
-        .user-card.active-user { border-left-color: var(--primary); }
+        .box { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.2); }
+        h2 { font-size: 14px; color: var(--primary); margin-top: 0; margin-bottom: 15px; text-transform: uppercase; letter-spacing: 0.5px; }
+        
+        .search-input { width: 100%; background: #13192e; border: 1px solid var(--card-border); padding: 10px; border-radius: 6px; color: #fff; box-sizing: border-box; margin-bottom: 15px; font-size: 13px; }
+        .search-input:focus { border-color: var(--primary); outline: none; }
+        
+        .user-list { max-height: 450px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; }
+        .user-card { background: rgba(255,255,255,0.01); padding: 11px 14px; border-radius: 6px; display: flex; justify-content: space-between; align-items: center; font-size: 13.5px; border-left: 3px solid var(--text-sub); transition: all 0.2s ease; }
+        .user-card.active-user { border-left-color: var(--primary); background: rgba(56, 189, 248, 0.01); }
+        .user-name { font-weight: 600; color: #e2e8f0; }
         .user-balance { font-family: monospace; color: var(--success); font-weight: bold; }
-        .log-container { max-height: 450px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
+        
+        .log-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .log-header h2 { margin: 0; }
+        .log-container { max-height: 480px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
+        
         .log-card { background: rgba(255, 255, 255, 0.01); border-left: 4px solid var(--text-sub); padding: 12px 15px; border-radius: 6px; font-size: 13.5px; line-height: 1.5; }
         .log-card.tele-cmd { border-left-color: var(--warning); background: rgba(251, 191, 36, 0.02); }
-        .log-meta { display: flex; justify-content: space-between; font-size: 11px; color: var(--text-sub); margin-bottom: 4px; }
+        .log-meta { display: flex; justify-content: space-between; font-size: 11px; color: var(--text-sub); margin-bottom: 5px; font-family: monospace; }
+        
         .hl-user-name { color: var(--primary); font-weight: bold; }
         .hl-money-up { color: var(--success); font-weight: bold; }
-        .hl-money-down { color: var(--danger); font-weight: bold; }
-        .empty { text-align: center; color: var(--text-sub); padding: 30px; font-style: italic; }
+        
+        .btn-clear { background: rgba(248, 113, 113, 0.1); color: var(--danger); border: 1px solid var(--danger); padding: 5px 12px; border-radius: 4px; cursor: pointer; font-size: 11.5px; transition: all 0.2s ease; }
+        .btn-clear:hover { background: var(--danger); color: #fff; }
+        .empty { text-align: center; color: var(--text-sub); padding: 40px; font-style: italic; font-size: 13px; }
     </style>
 </head>
 <body>
@@ -50,25 +70,30 @@
     <header>
         <div>
             <h1>SHOPMDUY AI TELEGRAM CONNECTOR</h1>
-            <div style="font-size: 12px; color: var(--text-sub); margin-top: 4px;">Trạm phát sóng điều khiển @Mduy_bot realtime</div>
+            <div style="font-size: 12px; color: var(--text-sub); margin-top: 4px;">Hệ thống Hybrid: Đồng bộ Realtime nhánh <code>users</code> & Quản lý <code>balance</code> bằng AI qua Tele</div>
         </div>
         <div class="status-bar">
             <span id="status-dot" class="status-dot"></span>
-            <span id="status-text" class="status-text">BOT TELEGRAM ĐANG TẮT</span>
+            <span id="status-text" class="status-text">ĐANG KẾT NỐI...</span>
         </div>
     </header>
 
     <div class="grid-layout">
         <div class="box">
-            <h2>👥 Ví Khách Hàng</h2>
-            <input type="text" id="search-bar" class="search-input" placeholder="Tìm tên tài khoản...">
-            <div id="user-list-target" class="user-list"><div class="empty">Đang tải...</div></div>
+            <h2>👥 Số dư tài khoản thực tế</h2>
+            <input type="text" id="search-bar" class="search-input" placeholder="Tìm nhanh tên tài khoản...">
+            <div id="user-list-target" class="user-list">
+                <div class="empty">Đang tải danh sách ví...</div>
+            </div>
         </div>
 
         <div class="box" style="display: flex; flex-direction: column;">
-            <h2>🤖 Nhật Ký Chat Lệnh Telegram</h2>
+            <div class="log-header">
+                <h2>🤖 Nhật ký xử lý lệnh Telegram</h2>
+                <button class="btn-clear" id="clear-log-btn">Xóa màn hình</button>
+            </div>
             <div id="log-list-target" class="log-container">
-                <div class="empty">Đang kích hoạt hệ thống lắng nghe tin nhắn...</div>
+                <div class="empty">Hệ thống đang mở cổng quét tin nhắn...</div>
             </div>
         </div>
     </div>
@@ -76,9 +101,9 @@
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getDatabase, ref, onValue, update, get, child } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+    import { getDatabase, ref, onValue, update, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-    // 1. Ráp nối Database của Duy
+    // 1. Cấu hình Database chính chủ ShopMduy
     const firebaseConfig = {
         databaseURL: "https://shopmduy-default-rtdb.asia-southeast1.firebasedatabase.app/"
     };
@@ -86,7 +111,7 @@
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
-    // 2. Ráp nối Token Bot Telegram Duy vừa tạo
+    // 2. Cấu hình Token Telegram của sếp Duy
     const TELEGRAM_TOKEN = "8314558446:AAECq0SeBmH_cDmYTpwS9pX0MgvaRlcgs9A";
     let lastUpdateId = 0;
 
@@ -97,8 +122,11 @@
     const statusText = document.getElementById('status-text');
 
     const adminKeywords = ['admin', 'mduy', 'shopmduy', 'root', 'quanly'];
+    let savedLogs = JSON.parse(localStorage.getItem('shopmduy_tele_logs_v7')) || [];
 
-    // Lắng nghe nhánh users hiển thị lên Web như cũ
+    renderLogs();
+
+    // ĐỒNG BỘ DỮ LIỆU VÍ LÊN GIAO DIỆN WEB
     onValue(ref(db, 'users'), (snapshot) => {
         const currentUsers = snapshot.val() || {};
         renderUserBalances(currentUsers);
@@ -110,66 +138,73 @@
             let u = users[id];
             let name = u.username || u.name || id;
             let isAdmin = adminKeywords.some(kw => name.toLowerCase().includes(kw) || id.toLowerCase().includes(kw));
-            let bal = Number(u.balance || 0);
+            let bal = Number(u.balance || 0); // Ép kiểu số tránh lỗi chuỗi của Firebase Console
+            
             html += `
                 <div class="${isAdmin ? 'user-card' : 'user-card active-user'}" data-search="${name.toLowerCase()}">
-                    <span class="user-name">👤 ${name} ${isAdmin ? '<span style="color:#ec4899">[Admin]</span>':''}</span>
+                    <span class="user-name">👤 ${name} ${isAdmin ? '<span style="color:#ec4899; font-size:11px;">[Admin]</span>':''}</span>
                     <span class="user-balance">${bal.toLocaleString('vi-VN')}đ</span>
                 </div>
             `;
         }
-        userListTarget.innerHTML = html;
+        userListTarget.innerHTML = html || '<div class="empty">Trống</div>';
     }
 
-    // 🌐 VÒNG LẶP AI: TỰ ĐỘNG QUÉT TIN NHẮN TỪ TELEGRAM GỬI VỀ WEB
+    // 🌐 VÒNG LẶP AI: VƯỢT TƯỜNG LỬA TRÌNH DUYỆT ĐỂ LẮNG NGHE TIN NHẮN REALTIME
     async function checkTelegramMessages() {
         try {
-            const url = `https://api.telegram.org/bot${TELEGRAM_TOKEN}/getUpdates?offset=${lastUpdateId + 1}&timeout=5`;
-            const response = await fetch(url);
-            const data = await response.json();
+            // Nhúng Proxy Allorigins xử lý triệt để lỗi CORS giải quyết tình trạng bị tắt
+            const targetUrl = `https://api.telegram.org/bot${TELEGRAM_TOKEN}/getUpdates?offset=${lastUpdateId + 1}&timeout=5`;
+            const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(targetUrl)}&_=` + new Date().getTime();
+            
+            const response = await fetch(proxyUrl);
+            const rawData = await response.json();
+            const data = JSON.parse(rawData.contents);
 
-            if (data.ok && data.result.length > 0) {
+            if (data.ok) {
+                // Sáng đèn Xanh Neon khi kết nối mượt mà
                 statusDot.className = "status-dot online";
-                statusText.innerText = "MDUY_BOT: ĐANG TÚC TRỰC CHAT";
+                statusText.innerText = "MDUY_BOT: ONLINE VÀ TIẾP NHẬN CHAT";
 
-                for (let updateObj of data.result) {
-                    lastUpdateId = updateObj.update_id;
-                    
-                    if (updateObj.message && updateObj.message.text) {
-                        const chatId = updateObj.message.chat.id;
-                        const text = updateObj.message.text.trim();
+                if (data.result.length > 0) {
+                    for (let updateObj of data.result) {
+                        lastUpdateId = updateObj.update_id;
                         
-                        // Kích hoạt bộ não AI xử lý tin nhắn Duy chat
-                        await handleAdminCommand(chatId, text);
+                        if (updateObj.message && updateObj.message.text) {
+                            const chatId = updateObj.message.chat.id;
+                            const text = updateObj.message.text.trim();
+                            
+                            // Đẩy dữ liệu tin nhắn vào bộ não AI phân tích
+                            await handleAdminCommand(chatId, text);
+                        }
                     }
                 }
-            } else {
-                statusDot.className = "status-dot online";
-                statusText.innerText = "MDUY_BOT: ĐANG TÚC TRỰC CHAT";
             }
         } catch (err) {
-            console.error("Lỗi kết nối Tele:", err);
+            console.error("Lỗi đồng bộ API Telegram:", err);
             statusDot.className = "status-dot";
             statusText.innerText = "MẤT KẾT NỐI TELEGRAM";
         }
-        // Tiếp tục quét tin nhắn liên tục
-        setTimeout(checkTelegramMessages, 2000);
+        // Tiếp tục quét luồng sau mỗi 2.5 giây
+        setTimeout(checkTelegramMessages, 2500);
     }
 
-    // 🧠 BỘ NÃO XỬ LÝ LỆNH TIN NHẮN CỦA DUY
+    // 🧠 BỘ NÃO AI PHÂN TÍCH TIN NHẮN VÀ THAY ĐỔI SỐ DƯ REALTIME
     async function handleAdminCommand(chatId, text) {
-        // Cú pháp 1: Cộng tiền [username] [số tiền] (Ví dụ: Cong tien mduy99 50k hoặc Cong tien mduy99 50000)
-        if (text.toLowerCase().startsWith("cong tien") || text.toLowerCase().startsWith("cộng tiền")) {
-            let parts = text.split(" ");
+        const textLower = text.toLowerCase();
+
+        // 🟢 CÚ PHÁP 1: Cộng tiền hoặc Cong tien
+        if (textLower.startsWith("cong tien") || textLower.startsWith("cộng tiền")) {
+            let parts = text.split(/\s+/); // Cắt theo khoảng trắng
             if (parts.length < 4) {
-                sendTelegramMessage(chatId, "❌ Sai cú pháp sếp ơi! Cú pháp chuẩn: `Cộng tiền [tên_tk] [số_tiền]` (Ví dụ: Cộng tiền mduy99 50k)");
+                sendTelegramMessage(chatId, "❌ <b>Sai cú pháp sếp ơi!</b>\nCú pháp chuẩn: <code>Cộng tiền [tên_tài_khoản] [số_tiền]</code>\nVí dụ: <code>Cộng tiền mduy99 50k</code> hoặc <code>Cộng tiền mduy99 50000</code>");
                 return;
             }
 
             let targetUser = parts[2];
             let moneyStr = parts[3].toLowerCase();
             
-            // Xử lý chữ "k" (ví dụ 50k -> 50000)
+            // Xử lý thông minh chữ "k" đầu ra (ví dụ 100k -> 100000)
             let amount = 0;
             if (moneyStr.includes('k')) {
                 amount = Number(moneyStr.replace('k', '')) * 1000;
@@ -178,11 +213,11 @@
             }
 
             if (isNaN(amount) || amount <= 0) {
-                sendTelegramMessage(chatId, "❌ Số tiền nhập vào không hợp lệ sếp ơi!");
+                sendTelegramMessage(chatId, "❌ Số tiền nhập vào không hợp lệ sếp ơi! Vui lòng nhập số.");
                 return;
             }
 
-            // Tiến hành vào Firebase tìm và sửa tiền
+            // Gửi lệnh lên Firebase kiểm tra tài khoản khách
             const userRef = ref(db, `users/${targetUser}`);
             const snapshot = await get(userRef);
 
@@ -191,21 +226,23 @@
                 let currentBal = Number(userData.balance || 0);
                 let newBal = currentBal + amount;
 
-                // Lưu trực tiếp lên Firebase
-                await update(ref(db), { [`users/${targetUser}/balance`]: newBal });
+                // Cập nhật trường balance trực tiếp lên database của bạn
+                const updates = {};
+                updates[`users/${targetUser}/balance`] = newBal;
+                await update(ref(db), updates);
                 
-                pushLog(`💬 <b>Lệnh từ Tele:</b> Bạn vừa chat cộng tiền cho <span class="hl-user-name">${targetUser}</span> <span class="hl-money-up">+${amount.toLocaleString()}đ</span> thành công.`);
-                sendTelegramMessage(chatId, `✅ Dạ sếp! Đã cộng thành công +${amount.toLocaleString()}đ vào ví balance của [${targetUser}].\n💰 Số dư cũ: ${currentBal.toLocaleString()}đ ➔ Số dư mới: ${newBal.toLocaleString()}đ.`);
+                pushLog(`💬 <b>Lệnh Tele:</b> Bạn đã duyệt cộng cho tài khoản <span class="hl-user-name">${targetUser}</span> <span class="hl-money-up">+${amount.toLocaleString()}đ</span>.`);
+                sendTelegramMessage(chatId, `✅ <b>Duyệt tiền thành công sếp ơi!</b>\n\n👤 Tài khoản: <b>${targetUser}</b>\n💰 Số dư cũ: ${currentBal.toLocaleString()}đ\n💵 Được cộng thêm: +${amount.toLocaleString()}đ\n➔ Số dư ví balance mới: <b>${newBal.toLocaleString()}đ</b>`);
             } else {
-                sendTelegramMessage(chatId, `❌ Thất bại: Không tìm thấy tài khoản nào tên là [${targetUser}] trên Firebase của sếp.`);
+                sendTelegramMessage(chatId, `❌ <b>Không thành công:</b> Trên hệ thống của sếp hiện không có ai tên tài khoản là [<b>${targetUser}</b>]. Sếp check lại chính xác từng chữ viết hoa/thường nhé.`);
             }
         }
         
-        // Cú pháp 2: Check tài khoản (Ví dụ: Check mduy99)
-        else if (text.toLowerCase().startsWith("check")) {
-            let parts = text.split(" ");
+        // 🔍 CÚ PHÁP 2: Check tài khoản khách
+        else if (textLower.startsWith("check")) {
+            let parts = text.split(/\s+/);
             if (parts.length < 2) {
-                sendTelegramMessage(chatId, "❌ Vui lòng nhập tên tài khoản cần kiểm tra. (Ví dụ: check mduy99)");
+                sendTelegramMessage(chatId, "❌ Sếp gõ thiếu tên tài khoản rồi. Cú pháp: <code>Check [tên_tk]</code>");
                 return;
             }
             let targetUser = parts[1];
@@ -215,26 +252,33 @@
             if (snapshot.exists()) {
                 let userData = snapshot.val();
                 let bal = Number(userData.balance || 0);
-                sendTelegramMessage(chatId, `🔍 <b>BÁO CÁO TÀI KHOẢN [${targetUser}]:</b>\n▪️ Số dư hiện tại: <b>${bal.toLocaleString()}đ</b>\n▪️ Trạng thái: Đang hoạt động bình thường.`);
+                sendTelegramMessage(chatId, `🔍 <b>THÔNG TIN HỆ THỐNG:</b>\n\n👤 Tài khoản: <b>${targetUser}</b>\n💰 Ví balance hiện tại: <b>${bal.toLocaleString()}đ</b>\n✨ Trạng thái: Sẵn sàng mua dịch vụ.`);
             } else {
-                sendTelegramMessage(chatId, `❌ Tài khoản [${targetUser}] không tồn tại trên hệ thống sếp ơi.`);
+                sendTelegramMessage(chatId, `❌ Tài khoản [<b>${targetUser}</b>] không tồn tại trên cơ sở dữ liệu.`);
             }
         }
         
-        // Chat linh tinh -> Trả lời tự động thông minh
+        // 🤖 CHAT LINH TINH (Gemini AI phản hồi tự động hướng dẫn sếp)
         else {
-            sendTelegramMessage(chatId, "🤖 Trợ lý ShopMduy xin nghe! Hiện tại em đang hỗ trợ sếp 2 lệnh tối cao trực tiếp qua tin nhắn:\n\n1️⃣ <code>Cộng tiền [tên_user] [số_tiền]</code> (Ví dụ: Cộng tiền mduy99 100k)\n2️⃣ <code>Check [tên_user]</code> để kiểm tra ví nhanh.");
+            if (textLower === "/start") {
+                sendTelegramMessage(chatId, "👋 <b>Chào mừng sếp Duy!</b> Em là trợ lý AI quản lý hệ thống ShopMduy đây.\n\nEm đã kết nối thành công vào Database của sếp. Sếp có thể nhắn lệnh trực tiếp để em làm việc ngay nhé!");
+            } else {
+                sendTelegramMessage(chatId, "🤖 <b>Em chưa hiểu lệnh này lắm sếp ơi!</b>\nHiện tại sếp Duy có thể ra lệnh cho em quản lý ví bằng 2 cú pháp tối cao:\n\n1️⃣ <code>Cộng tiền [tên_khách] [số_tiền]</code>\n👉 <i>Ví dụ: Cộng tiền tuananh 50k</i>\n\n2️⃣ <code>Check [tên_khách]</code> để soi số dư\n👉 <i>Ví dụ: Check tuananh</i>");
+            }
         }
     }
 
-    // Hàm gửi tin nhắn ngược lại Telegram cho Duy xem
+    // GỬI TIN NHẮN NGƯỢC LẠI TELEGRAM QUA BỘ LỌC PROXY CHỐNG CHẶN CORS
     async function sendTelegramMessage(chatId, text) {
-        const url = `https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`;
-        await fetch(url, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ chat_id: chatId, text: text, parse_mode: 'HTML' })
-        });
+        try {
+            const targetUrl = `https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`;
+            const payload = { chat_id: chatId, text: text, parse_mode: 'HTML' };
+            
+            // Ép Proxy đầu ra cho hàm sendMessage để trình duyệt không chặn khi gửi tin nhắn ngược về điện thoại
+            await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(targetUrl + '?chat_id=' + payload.chat_id + '&text=' + encodeURIComponent(payload.text) + '&parse_mode=HTML')}`);
+        } catch(e) {
+            console.error("Lỗi gửi tin nhắn Tele:", e);
+        }
     }
 
     function pushLog(text) {
@@ -242,19 +286,36 @@
         if (empty) empty.remove();
         const div = document.createElement('div');
         div.className = 'log-card tele-cmd';
-        div.innerHTML = `<div class="log-meta"><span>📥 TELEGRAM COMMAND</span><span>${new Date().toLocaleTimeString()}</span></div><div>${text}</div>`;
+        div.innerHTML = `<div class="log-meta"><span>📥 TELEGRAM ACTION</span><span>${new Date().toLocaleTimeString()}</span></div><div>${text}</div>`;
         logListTarget.insertBefore(div, logListTarget.firstChild);
     }
 
-    // Kích hoạt trạm phát sóng
+    function renderLogs() {
+        if (savedLogs.length > 0) {
+            logListTarget.innerHTML = '';
+            savedLogs.forEach(log => {
+                const div = document.createElement('div');
+                div.className = 'log-card tele-cmd';
+                div.innerHTML = `<div class="log-meta"><span>📥 TELEGRAM ACTION</span><span>${log.time}</span></div><div>${log.text}</div>`;
+                logListTarget.appendChild(div);
+            });
+        }
+    }
+
+    // Kích hoạt trạm phát sóng khi mở web
     checkTelegramMessages();
 
+    // Tìm kiếm nhanh trên giao diện web
     searchBar.addEventListener('input', (e) => {
         let kw = e.target.value.toLowerCase();
         let cards = userListTarget.getElementsByClassName('user-card');
         for (let i = 0; i < cards.length; i++) {
             cards[i].style.display = cards[i].getAttribute('data-search').includes(kw) ? 'flex' : 'none';
         }
+    });
+
+    document.getElementById('clear-log-btn').addEventListener('click', () => {
+        logListTarget.innerHTML = '<div class="empty">Nhật ký trống. Đang chờ lệnh...</div>';
     });
 </script>
 </body>
