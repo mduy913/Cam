@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SHOPMDUY - AI TELEGRAM CONTROLLER ULTRA FIX</title>
+    <title>SHOPMDUY - TELEGRAM DIRECT CONTROLLER</title>
     <style>
         :root {
             --bg-color: #05070f;
@@ -15,54 +15,35 @@
             --success: #34d399;
             --warning: #fbbf24;
             --danger: #f87171;
-            --admin-color: #ec4899;
         }
         body { font-family: 'Segoe UI', system-ui, sans-serif; background-color: var(--bg-color); color: var(--text-main); margin: 0; padding: 20px; }
         .container { max-width: 1100px; margin: 0 auto; }
-        
-        header { 
-            border-bottom: 1px solid var(--card-border); 
-            padding-bottom: 15px; 
-            margin-bottom: 25px; 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-        }
-        h1 { margin: 0; font-size: 24px; color: var(--primary); font-weight: 700; letter-spacing: 0.5px; }
+        header { border-bottom: 1px solid var(--card-border); padding-bottom: 15px; margin-bottom: 25px; display: flex; justify-content: space-between; align-items: center; }
+        h1 { margin: 0; font-size: 24px; color: var(--primary); font-weight: 700; }
         
         .status-bar { display: flex; gap: 10px; align-items: center; background: rgba(255,255,255,0.02); padding: 8px 15px; border-radius: 20px; border: 1px solid var(--card-border); }
         .status-dot { width: 10px; height: 10px; background: var(--danger); border-radius: 50%; display: inline-block; transition: all 0.3s ease; }
         .status-dot.online { background: var(--success); box-shadow: 0 0 10px var(--success); }
-        .status-dot.connecting { background: var(--warning); box-shadow: 0 0 10px var(--warning); }
         .status-text { font-size: 12.5px; font-weight: bold; font-family: monospace; }
 
         .grid-layout { display: grid; grid-template-columns: 1fr 2fr; gap: 20px; }
-        .box { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.2); }
-        h2 { font-size: 14px; color: var(--primary); margin-top: 0; margin-bottom: 15px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .box { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 20px; }
+        h2 { font-size: 14px; color: var(--primary); margin-top: 0; margin-bottom: 15px; text-transform: uppercase; }
         
-        .search-input { width: 100%; background: #13192e; border: 1px solid var(--card-border); padding: 10px; border-radius: 6px; color: #fff; box-sizing: border-box; margin-bottom: 15px; font-size: 13px; }
-        .search-input:focus { border-color: var(--primary); outline: none; }
-        
+        .search-input { width: 100%; background: #13192e; border: 1px solid var(--card-border); padding: 10px; border-radius: 6px; color: #fff; box-sizing: border-box; margin-bottom: 15px; }
         .user-list { max-height: 450px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; }
-        .user-card { background: rgba(255,255,255,0.01); padding: 11px 14px; border-radius: 6px; display: flex; justify-content: space-between; align-items: center; font-size: 13.5px; border-left: 3px solid var(--text-sub); transition: all 0.2s ease; }
-        .user-card.active-user { border-left-color: var(--primary); background: rgba(56, 189, 248, 0.01); }
-        .user-name { font-weight: 600; color: #e2e8f0; }
+        .user-card { background: rgba(255,255,255,0.01); padding: 11px 14px; border-radius: 6px; display: flex; justify-content: space-between; align-items: center; font-size: 13.5px; border-left: 3px solid var(--text-sub); }
+        .user-card.active-user { border-left-color: var(--primary); }
         .user-balance { font-family: monospace; color: var(--success); font-weight: bold; }
         
-        .log-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-        .log-header h2 { margin: 0; }
         .log-container { max-height: 480px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
-        
         .log-card { background: rgba(255, 255, 255, 0.01); border-left: 4px solid var(--text-sub); padding: 12px 15px; border-radius: 6px; font-size: 13.5px; line-height: 1.5; }
         .log-card.tele-cmd { border-left-color: var(--warning); background: rgba(251, 191, 36, 0.02); }
-        .log-meta { display: flex; justify-content: space-between; font-size: 11px; color: var(--text-sub); margin-bottom: 5px; font-family: monospace; }
+        .log-meta { display: flex; justify-content: space-between; font-size: 11px; color: var(--text-sub); margin-bottom: 5px; }
         
         .hl-user-name { color: var(--primary); font-weight: bold; }
         .hl-money-up { color: var(--success); font-weight: bold; }
-        
-        .btn-clear { background: rgba(248, 113, 113, 0.1); color: var(--danger); border: 1px solid var(--danger); padding: 5px 12px; border-radius: 4px; cursor: pointer; font-size: 11.5px; transition: all 0.2s ease; }
-        .btn-clear:hover { background: var(--danger); color: #fff; }
-        .empty { text-align: center; color: var(--text-sub); padding: 40px; font-style: italic; font-size: 13px; }
+        .empty { text-align: center; color: var(--text-sub); padding: 40px; font-style: italic; }
     </style>
 </head>
 <body>
@@ -70,32 +51,25 @@
 <div class="container">
     <header>
         <div>
-            <h1>SHOPMDUY AI TELEGRAM CONNECTOR</h1>
-            <div style="font-size: 12px; color: var(--text-sub); margin-top: 4px;">Bản sửa lỗi kết nối nâng cao & Phản hồi tin nhắn siêu tốc</div>
+            <h1>SHOPMDUY AI TELEGRAM CONNECTOR (DIRECT)</h1>
+            <div style="font-size: 12px; color: var(--text-sub); margin-top: 4px;">Chế độ: Kết nối trực tiếp siêu tốc (Yêu cầu bật Extension CORS Unblock)</div>
         </div>
         <div class="status-bar">
             <span id="status-dot" class="status-dot"></span>
-            <span id="status-text" class="status-text">ĐANG KHỞI ĐỘNG...</span>
+            <span id="status-text" class="status-text">ĐANG KẾT NỐI TRỰC TIẾP...</span>
         </div>
     </header>
 
     <div class="grid-layout">
         <div class="box">
-            <h2>👥 Số dư tài khoản thực tế</h2>
+            <h2>👥 Số dư ví khách thực tế</h2>
             <input type="text" id="search-bar" class="search-input" placeholder="Tìm nhanh tên tài khoản...">
-            <div id="user-list-target" class="user-list">
-                <div class="empty">Đang tải danh sách ví...</div>
-            </div>
+            <div id="user-list-target" class="user-list"><div class="empty">Đang tải danh sách ví...</div></div>
         </div>
 
         <div class="box" style="display: flex; flex-direction: column;">
-            <div class="log-header">
-                <h2>🤖 Nhật ký xử lý lệnh Telegram</h2>
-                <button class="btn-clear" id="clear-log-btn">Xóa màn hình</button>
-            </div>
-            <div id="log-list-target" class="log-container">
-                <div class="empty">Đang kết nối luồng quét tin nhắn...</div>
-            </div>
+            <h2>🤖 Nhật ký xử lý lệnh Telegram</h2>
+            <div id="log-list-target" class="log-container"><div class="empty">Đang kết nối luồng quét tin nhắn siêu tốc...</div></div>
         </div>
     </div>
 </div>
@@ -104,10 +78,7 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getDatabase, ref, onValue, update, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-    const firebaseConfig = {
-        databaseURL: "https://shopmduy-default-rtdb.asia-southeast1.firebasedatabase.app/"
-    };
-
+    const firebaseConfig = { databaseURL: "https://shopmduy-default-rtdb.asia-southeast1.firebasedatabase.app/" };
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
@@ -120,99 +91,58 @@
     const statusDot = document.getElementById('status-dot');
     const statusText = document.getElementById('status-text');
 
-    const adminKeywords = ['admin', 'mduy', 'shopmduy', 'root', 'quanly'];
-    let savedLogs = JSON.parse(localStorage.getItem('shopmduy_tele_logs_v7')) || [];
-
-    renderLogs();
-
     onValue(ref(db, 'users'), (snapshot) => {
-        const currentUsers = snapshot.val() || {};
-        renderUserBalances(currentUsers);
-    });
-
-    function renderUserBalances(users) {
+        const users = snapshot.val() || {};
         let html = '';
         for (let id in users) {
             let u = users[id];
             let name = u.username || u.name || id;
-            let isAdmin = adminKeywords.some(kw => name.toLowerCase().includes(kw) || id.toLowerCase().includes(kw));
             let bal = Number(u.balance || 0);
-            
             html += `
-                <div class="${isAdmin ? 'user-card' : 'user-card active-user'}" data-search="${name.toLowerCase()}">
-                    <span class="user-name">👤 ${name} ${isAdmin ? '<span style="color:#ec4899; font-size:11px;">[Admin]</span>':''}</span>
+                <div class="user-card active-user" data-search="${name.toLowerCase()}">
+                    <span class="user-name">👤 ${name}</span>
                     <span class="user-balance">${bal.toLocaleString('vi-VN')}đ</span>
                 </div>
             `;
         }
-        userListTarget.innerHTML = html || '<div class="empty">Trống</div>';
-    }
+        userListTarget.innerHTML = html;
+    });
 
-    // 🌐 LUỒNG QUÉT TIN NHẮN THÔNG MINH - TỰ ĐỘNG CHUYỂN CỔNG KHI NGHẼN
+    // 🌐 KẾT NỐI THẲNG SIÊU TỐC KHÔNG QUA PROXY TRUNG GIAN
     async function checkTelegramMessages() {
-        let success = false;
-        const targetUrl = `https://api.telegram.org/bot${TELEGRAM_TOKEN}/getUpdates?offset=${lastUpdateId + 1}&timeout=3`;
-        
-        // Thử kết nối trực tiếp hoặc qua 2 cổng proxy dự phòng khác nhau
-        const urlOptions = [
-            targetUrl, // Trực tiếp
-            `https://api.allorigins.win/get?url=${encodeURIComponent(targetUrl)}&_=${Date.now()}`, // Proxy 1
-            `https://corsproxy.io/?${encodeURIComponent(targetUrl)}` // Proxy 2
-        ];
+        try {
+            const url = `https://api.telegram.org/bot${TELEGRAM_TOKEN}/getUpdates?offset=${lastUpdateId + 1}&timeout=3`;
+            const response = await fetch(url);
+            
+            if (response.ok) {
+                const data = await response.json();
+                statusDot.className = "status-dot online";
+                statusText.innerText = "MDUY_BOT: ONLINE THẲNG - ỔN ĐỊNH 100%";
 
-        for (let url of urlOptions) {
-            try {
-                statusDot.className = "status-dot connecting";
-                statusText.innerText = "BOT TELEGRAM: ĐANG THỬ KẾT NỐI...";
-
-                const response = await fetch(url);
-                if (!response.ok) continue;
-
-                let data;
-                if (url === targetUrl) {
-                    data = await response.json();
-                } else {
-                    const rawData = await response.json();
-                    data = typeof rawData.contents === 'string' ? JSON.parse(rawData.contents) : (rawData.contents || rawData);
-                }
-
-                if (data && data.ok) {
-                    statusDot.className = "status-dot online";
-                    statusText.innerText = "MDUY_BOT: ONLINE VÀ TIẾP NHẬN CHAT";
-                    success = true;
-
-                    if (data.result && data.result.length > 0) {
-                        for (let updateObj of data.result) {
-                            lastUpdateId = updateObj.update_id;
-                            if (updateObj.message && updateObj.message.text) {
-                                await handleAdminCommand(updateObj.message.chat.id, updateObj.message.text.trim());
-                            }
+                if (data.ok && data.result && data.result.length > 0) {
+                    for (let updateObj of data.result) {
+                        lastUpdateId = updateObj.update_id;
+                        if (updateObj.message && updateObj.message.text) {
+                            await handleAdminCommand(updateObj.message.chat.id, updateObj.message.text.trim());
                         }
                     }
-                    break; // Nếu thành công thì dừng vòng lặp thử cổng
                 }
-            } catch (err) {
-                console.log("Thử cổng thất bại, chuyển cổng tiếp theo...");
             }
-        }
-
-        if (!success) {
+        } catch (err) {
+            console.error("Lỗi:", err);
             statusDot.className = "status-dot";
-            statusText.innerText = "MẤT KẾT NỐI - ĐANG THỬ LẠI...";
+            statusText.innerText = "LỖI: HÃY KIỂM TRA EXTENSION CORS UNBLOCK ĐÃ BẬT CHƯA?";
         }
-
-        // Tần suất quét: 2 giây một lần để đảm bảo thời gian thực
-        setTimeout(checkTelegramMessages, 2000);
+        setTimeout(checkTelegramMessages, 1500); // 1.5 giây quét 1 lần cực mượt
     }
 
-    // 🧠 BỘ NÃO XỬ LÝ LỆNH TIN NHẮN
     async function handleAdminCommand(chatId, text) {
         const textLower = text.toLowerCase();
 
         if (textLower.startsWith("cong tien") || textLower.startsWith("cộng tiền")) {
             let parts = text.split(/\s+/);
             if (parts.length < 4) {
-                sendTelegramMessage(chatId, "❌ <b>Sai cú pháp sếp ơi!</b>\nCú pháp chuẩn: <code>Cộng tiền [tên_tk] [số_tiền]</code>\nVí dụ: <code>Cộng tiền mduy99 50k</code>");
+                sendTelegramMessage(chatId, "❌ Cú pháp chuẩn sếp ơi: <code>Cộng tiền [tên_tk] [số_tiền]</code>\nVí dụ: <code>Cộng tiền mduy99 50k</code>");
                 return;
             }
 
@@ -221,7 +151,7 @@
             let amount = moneyStr.includes('k') ? Number(moneyStr.replace('k', '')) * 1000 : Number(moneyStr);
 
             if (isNaN(amount) || amount <= 0) {
-                sendTelegramMessage(chatId, "❌ Số tiền không hợp lệ sếp ơi!");
+                sendTelegramMessage(chatId, "❌ Số tiền không đúng sếp ơi!");
                 return;
             }
 
@@ -234,78 +164,50 @@
 
                 await update(ref(db), { [`users/${targetUser}/balance`]: newBal });
                 
-                pushLog(`💬 <b>Lệnh Tele:</b> Bạn đã cộng tiền cho tài khoản <span class="hl-user-name">${targetUser}</span> <span class="hl-money-up">+${amount.toLocaleString()}đ</span>.`);
-                sendTelegramMessage(chatId, `✅ <b>Duyệt tiền thành công sếp ơi!</b>\n\n👤 Tài khoản: <b>${targetUser}</b>\n💰 Số dư cũ: ${currentBal.toLocaleString()}đ\n💵 Được cộng thêm: +${amount.toLocaleString()}đ\n➔ Số dư mới: <b>${newBal.toLocaleString()}đ</b>`);
+                pushLog(`💬 Bạn đã cộng tiền cho tài khoản <span class="hl-user-name">${targetUser}</span> <span class="hl-money-up">+${amount.toLocaleString()}đ</span>.`);
+                sendTelegramMessage(chatId, `✅ <b>Cộng tiền thành công!</b>\n\n👤 Tài khoản: <b>${targetUser}</b>\n💵 Được cộng: +${amount.toLocaleString()}đ\n➔ Số dư mới: <b>${newBal.toLocaleString()}đ</b>`);
             } else {
-                sendTelegramMessage(chatId, `❌ 不 Không tìm thấy tài khoản [<b>${targetUser}</b>] trên hệ thống.`);
+                sendTelegramMessage(chatId, `❌ Không thấy tài khoản [<b>${targetUser}</b>] trên hệ thống.`);
             }
         }
         else if (textLower.startsWith("check")) {
             let parts = text.split(/\s+/);
-            if (parts.length < 2) {
-                sendTelegramMessage(chatId, "❌ Sếp gõ thiếu tên tài khoản rồi. Cú pháp: <code>Check [tên_tk]</code>");
-                return;
-            }
+            if (parts.length < 2) return;
             let targetUser = parts[1];
-            const userRef = ref(db, `users/${targetUser}`);
-            const snapshot = await get(userRef);
+            const snapshot = await get(ref(db, `users/${targetUser}`));
 
             if (snapshot.exists()) {
                 sendTelegramMessage(chatId, `🔍 <b>THÔNG TIN VÍ KHÁCH:</b>\n\n👤 Tài khoản: <b>${targetUser}</b>\n💰 Số dư balance: <b>${Number(snapshot.val().balance || 0).toLocaleString()}đ</b>`);
             } else {
-                sendTelegramMessage(chatId, `❌ Tài khoản [<b>${targetUser}</b>] không tồn tại.`);
+                sendTelegramMessage(chatId, `❌ Không tìm thấy tài khoản [<b>${targetUser}</b>].`);
             }
         }
         else {
             if (textLower === "/start") {
-                sendTelegramMessage(chatId, "👋 <b>Chào sếp Duy!</b> Em đã kết nối thành công vào hệ thống dữ liệu ShopMduy.\n\nSếp nhắn lệnh để em làm việc nhé:\n1️⃣ <code>Cộng tiền [tên_khách] [số_tiền]</code>\n2️⃣ <code>Check [tên_khách]</code>");
+                sendTelegramMessage(chatId, "👋 <b>Chào sếp Duy!</b> Em đã kết nối trực tiếp vào Database.\n\nSếp nhắn lệnh để em làm việc nhé:\n1️⃣ <code>Cộng tiền [tên_khách] [số_tiền]</code>\n2️⃣ <code>Check [tên_khách]</code>");
             } else {
                 sendTelegramMessage(chatId, "🤖 <b>Lệnh không hợp lệ sếp ơi!</b>\nSếp dùng 2 cú pháp này nhé:\n\n1️⃣ <code>Cộng tiền [tên_khách] [số_tiền]</code>\n2️⃣ <code>Check [tên_khách]</code>");
             }
         }
     }
 
-    // 📤 HÀM GỬI TIN NHẮN PHẢN HỒI LÊN TELEGRAM (ĐÃ BỌC PROXY CHỐNG KHÓA)
     async function sendTelegramMessage(chatId, text) {
-        const sendUrl = `https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(text)}&parse_mode=HTML`;
-        const proxies = [
-            sendUrl,
-            `https://api.allorigins.win/get?url=${encodeURIComponent(sendUrl)}`,
-            `https://corsproxy.io/?${encodeURIComponent(sendUrl)}`
-        ];
-
-        for (let p of proxies) {
-            try {
-                let res = await fetch(p);
-                if (res.ok) break;
-            } catch(e) {
-                console.log("Cổng gửi tin nhắn bị nghẽn, đang thử cổng phụ...");
-            }
-        }
+        try {
+            await fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ chat_id: chatId, text: text, parse_mode: 'HTML' })
+            });
+        } catch(e) { console.error("Lỗi rep:", e); }
     }
 
     function pushLog(text) {
-        const empty = logListTarget.querySelector('.empty');
-        if (empty) empty.remove();
-        const div = document.createElement('div');
-        div.className = 'log-card tele-cmd';
-        div.innerHTML = `<div class="log-meta"><span>📥 TELEGRAM ACTION</span><span>${new Date().toLocaleTimeString()}</span></div><div>${text}</div>`;
+        const empty = logListTarget.querySelector('.empty'); if (empty) empty.remove();
+        const div = document.createElement('div'); div.className = 'log-card tele-cmd';
+        div.innerHTML = `<div class="log-meta"><span>📥 ACTION</span><span>${new Date().toLocaleTimeString()}</span></div><div>${text}</div>`;
         logListTarget.insertBefore(div, logListTarget.firstChild);
     }
 
-    function renderLogs() {
-        if (savedLogs.length > 0) {
-            logListTarget.innerHTML = '';
-            savedLogs.forEach(log => {
-                const div = document.createElement('div');
-                div.className = 'log-card tele-cmd';
-                div.innerHTML = `<div class="log-meta"><span>📥 TELEGRAM ACTION</span><span>${log.time}</span></div><div>${log.text}</div>`;
-                logListTarget.appendChild(div);
-            });
-        }
-    }
-
-    // Khởi chạy hệ thống phát sóng
     checkTelegramMessages();
 
     searchBar.addEventListener('input', (e) => {
@@ -314,10 +216,6 @@
         for (let i = 0; i < cards.length; i++) {
             cards[i].style.display = cards[i].getAttribute('data-search').includes(kw) ? 'flex' : 'none';
         }
-    });
-
-    document.getElementById('clear-log-btn').addEventListener('click', () => {
-        logListTarget.innerHTML = '<div class="empty">Nhật ký trống.</div>';
     });
 </script>
 </body>
