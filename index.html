@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SHOPMDUY - TELEGRAM DIRECT CONTROLLER</title>
+    <title>SHOPMDUY - TELEGRAM MASTER CONTROLLER</title>
     <style>
         :root {
             --bg-color: #05070f;
@@ -52,7 +52,7 @@
     <header>
         <div>
             <h1>SHOPMDUY AI TELEGRAM CONNECTOR (DIRECT)</h1>
-            <div style="font-size: 12px; color: var(--text-sub); margin-top: 4px;">Chế độ: Kết nối trực tiếp siêu tốc (Yêu cầu bật Extension CORS Unblock)</div>
+            <div style="font-size: 12px; color: var(--text-sub); margin-top: 4px;">Chế độ: Kết nối trực tiếp siêu tốc (Bật Extension CORS Unblock)</div>
         </div>
         <div class="status-bar">
             <span id="status-dot" class="status-dot"></span>
@@ -108,7 +108,6 @@
         userListTarget.innerHTML = html;
     });
 
-    // 🌐 KẾT NỐI THẲNG SIÊU TỐC KHÔNG QUA PROXY TRUNG GIAN
     async function checkTelegramMessages() {
         try {
             const url = `https://api.telegram.org/bot${TELEGRAM_TOKEN}/getUpdates?offset=${lastUpdateId + 1}&timeout=3`;
@@ -133,12 +132,13 @@
             statusDot.className = "status-dot";
             statusText.innerText = "LỖI: HÃY KIỂM TRA EXTENSION CORS UNBLOCK ĐÃ BẬT CHƯA?";
         }
-        setTimeout(checkTelegramMessages, 1500); // 1.5 giây quét 1 lần cực mượt
+        setTimeout(checkTelegramMessages, 1500);
     }
 
     async function handleAdminCommand(chatId, text) {
         const textLower = text.toLowerCase();
 
+        // 🟢 CÚ PHÁP 1: Cộng tiền
         if (textLower.startsWith("cong tien") || textLower.startsWith("cộng tiền")) {
             let parts = text.split(/\s+/);
             if (parts.length < 4) {
@@ -170,6 +170,7 @@
                 sendTelegramMessage(chatId, `❌ Không thấy tài khoản [<b>${targetUser}</b>] trên hệ thống.`);
             }
         }
+        // 🔍 CÚ PHÁP 2: Check tài khoản đơn lẻ
         else if (textLower.startsWith("check")) {
             let parts = text.split(/\s+/);
             if (parts.length < 2) return;
@@ -182,11 +183,37 @@
                 sendTelegramMessage(chatId, `❌ Không tìm thấy tài khoản [<b>${targetUser}</b>].`);
             }
         }
+        // 📜 CÚ PHÁP 3: XEM TOÀN BỘ DANH SÁCH VÍ TIỀN KHÁCH HÀNG
+        else if (textLower === "xem" || textLower === "xem danh sach" || textLower === "xem danh sách") {
+            try {
+                const snapshot = await get(ref(db, 'users'));
+                if (snapshot.exists()) {
+                    const users = snapshot.val();
+                    let reportText = "📜 <b>DANH SÁCH VÍ TÀI KHOẢN:</b>\n\n";
+                    let count = 1;
+                    
+                    for (let id in users) {
+                        let u = users[id];
+                        let name = u.username || u.name || id;
+                        let bal = Number(u.balance || 0);
+                        reportText += `${count}. 👤 <b>${name}</b>: <code>${bal.toLocaleString()}đ</code>\n`;
+                        count++;
+                    }
+                    
+                    pushLog(`📜 Sếp vừa bấm gọi lệnh xem danh sách ví qua Telegram.`);
+                    sendTelegramMessage(chatId, reportText);
+                } else {
+                    sendTelegramMessage(chatId, "⚠️ Cơ sở dữ liệu nhánh <code>users</code> hiện đang trống sếp ơi!");
+                }
+            } catch (err) {
+                sendTelegramMessage(chatId, "❌ Lỗi đọc dữ liệu danh sách rồi sếp!");
+            }
+        }
         else {
             if (textLower === "/start") {
-                sendTelegramMessage(chatId, "👋 <b>Chào sếp Duy!</b> Em đã kết nối trực tiếp vào Database.\n\nSếp nhắn lệnh để em làm việc nhé:\n1️⃣ <code>Cộng tiền [tên_khách] [số_tiền]</code>\n2️⃣ <code>Check [tên_khách]</code>");
+                sendTelegramMessage(chatId, "👋 <b>Chào sếp Duy!</b> Em đã kết nối trực tiếp vào Database.\n\nSếp nhắn lệnh để em làm việc nhé:\n1️⃣ <code>Cộng tiền [tên_khách] [số_tiền]</code>\n2️⃣ <code>Check [tên_khách]</code>\n3️⃣ <code>Xem</code> để lấy toàn bộ danh sách ví");
             } else {
-                sendTelegramMessage(chatId, "🤖 <b>Lệnh không hợp lệ sếp ơi!</b>\nSếp dùng 2 cú pháp này nhé:\n\n1️⃣ <code>Cộng tiền [tên_khách] [số_tiền]</code>\n2️⃣ <code>Check [tên_khách]</code>");
+                sendTelegramMessage(chatId, "🤖 <b>Lệnh không hợp lệ sếp ơi!</b>\nSếp dùng các cú pháp này nhé:\n\n1️⃣ <code>Cộng tiền [tên_khách] [số_tiền]</code>\n2️⃣ <code>Check [tên_khách]</code>\n3️⃣ <code>Xem</code> để lấy danh sách ví");
             }
         }
     }
