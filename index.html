@@ -3,72 +3,120 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hệ Thống Theo Dõi Biến Động Firebase</title>
+    <title>AI Server Change Monitor</title>
     <style>
+        :root {
+            --bg-color: #0b0f19;
+            --card-bg: #151d30;
+            --text-color: #e2e8f0;
+            --primary: #00f2fe;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+        }
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f4f6f9;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
             margin: 0;
             padding: 20px;
-            color: #333;
         }
         .container {
-            max-width: 1000px;
+            max-width: 1100px;
             margin: 0 auto;
         }
         header {
-            background: linear-gradient(135deg, #007bff, #0056b3);
-            color: white;
-            padding: 20px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            text-align: center;
+            padding: 20px 0;
+            border-bottom: 1px solid #233554;
+            margin-bottom: 30px;
         }
-        h1 { margin: 0; font-size: 24px; }
-        .status { font-size: 14px; color: #e0e0e0; margin-top: 5px; }
-        
+        h1 {
+            margin: 0;
+            font-size: 28px;
+            background: linear-gradient(to right, #4facfe 0%, #00f2fe 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 20px rgba(0, 242, 254, 0.2);
+        }
+        .status-bar {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 5px 15px;
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid var(--success);
+            border-radius: 20px;
+            color: var(--success);
+            font-size: 13px;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 25px;
+        }
         .card {
-            background: white;
+            background: var(--card-bg);
+            border-radius: 12px;
             padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-            margin-bottom: 20px;
+            border: 1px solid #233554;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
         }
-        h2 { margin-top: 0; color: #0056b3; font-size: 18px; border-bottom: 2px solid #f4f6f9; padding-bottom: 10px; }
-        
-        pre {
-            background: #272822;
-            color: #f8f8f2;
-            padding: 15px;
-            border-radius: 5px;
-            overflow-x: auto;
-            font-family: 'Consolas', monospace;
-            max-height: 300px;
+        h2 {
+            margin-top: 0;
+            font-size: 18px;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
-
+        /* AI Log Style */
+        .log-container {
+            max-height: 600px;
+            overflow-y: auto;
+            padding-right: 5px;
+        }
         .log-item {
-            padding: 12px;
-            border-bottom: 1px solid #eee;
-            animation: fadeIn 0.5s ease;
+            background: rgba(255,255,255,0.02);
+            border-left: 4px solid var(--primary);
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 0 8px 8px 0;
+            animation: slideIn 0.3s ease;
         }
-        .log-item:last-child { border-bottom: none; }
-        .timestamp {
-            font-size: 12px;
-            color: #888;
-            font-weight: bold;
+        .log-header {
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+            color: #8892b0;
+            margin-bottom: 8px;
         }
-        .badge {
-            background-color: #28a745;
-            color: white;
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-size: 12px;
-            margin-left: 10px;
+        .ai-message {
+            font-size: 15px;
+            line-height: 1.5;
+            color: #fff;
         }
+        .ai-message strong {
+            color: var(--primary);
+        }
+        /* Phân loại màu cho AI */
+        .log-item.added { border-left-color: var(--success); }
+        .log-item.updated { border-left-color: var(--warning); }
+        .log-item.deleted { border-left-color: var(--danger); }
         
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
+        .change-detail {
+            margin-top: 8px;
+            padding: 8px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 13px;
+        }
+        .old-val { color: var(--danger); text-decoration: line-through; }
+        .new-val { color: var(--success); }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-15px); }
+            to { opacity: 1; transform: translateX(0); }
         }
     </style>
 </head>
@@ -76,19 +124,18 @@
 
 <div class="container">
     <header>
-        <h1>Firebase Monitor System</h1>
-        <div class="status">Đang kết nối tới: <strong id="db-url">Connecting...</strong></div>
+        <h1>AI SERVER MONITOR SYSTEM</h1>
+        <div class="status-bar">⚡ Trợ lý AI đang quét luồng dữ liệu liên tục...</div>
     </header>
 
-    <div class="card">
-        <h2>Dữ Liệu Hiện Tại Trên Máy Chủ (Realtime)</h2>
-        <pre id="current-data">Đang tải dữ liệu...</pre>
-    </div>
-
-    <div class="card">
-        <h2>Nhật Ký Biến Động (Đã lưu lại khi có thay đổi)</h2>
-        <div id="log-container">
-            <div style="color: #888; font-style: italic; padding: 10px;">Chưa có thay đổi nào được ghi nhận...</div>
+    <div class="grid">
+        <div class="card">
+            <h2>🧠 Nhật Ký Phân Tích Của AI (Realtime Logs)</h2>
+            <div id="log-container" class="log-container">
+                <div style="color: #8892b0; text-align: center; padding: 40px; font-style: italic;">
+                    Đang khởi tạo AI kết nối tới máy chủ...
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -97,61 +144,100 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-    // Cấu hình Firebase của bạn
     const firebaseConfig = {
         databaseURL: "https://shopmduy-default-rtdb.asia-southeast1.firebasedatabase.app/"
     };
 
-    // Khởi tạo Firebase
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
-
-    // Hiển thị URL đang theo dõi
-    document.getElementById('db-url').innerText = firebaseConfig.databaseURL;
-
-    const currentDataEl = document.getElementById('current-data');
     const logContainerEl = document.getElementById('log-container');
 
+    let oldData = null;
     let isFirstLoad = true;
 
-    // Lắng nghe sự thay đổi dữ liệu tại gốc (root) của Database
-    const dbRef = ref(db, '/');
-    onValue(dbRef, (snapshot) => {
-        const data = snapshot.val();
-        
-        // 1. Cập nhật hiển thị dữ liệu hiện tại
-        currentDataEl.innerText = JSON.stringify(data, null, 4);
+    // Lắng nghe dữ liệu
+    onValue(ref(db, '/'), (snapshot) => {
+        const newData = snapshot.val();
 
-        // 2. Lưu lại lịch sử nếu có thay đổi (bỏ qua lần tải đầu tiên nếu muốn, hoặc lưu luôn)
         if (isFirstLoad) {
-            logContainerEl.innerHTML = ""; // Xóa dòng trạng thái ban đầu
-            saveLog("Hệ thống bắt đầu theo dõi dữ liệu thành công.", data);
+            logContainerEl.innerHTML = ""; // Xóa chữ khởi tạo
+            createAiLog("init", "Chào Duy! Kết nối thành công. Hệ thống AI đã thiết lập xong lá chắn giám sát. Hiện tại dữ liệu đang ổn định.");
+            oldData = JSON.parse(JSON.stringify(newData)); // Sao chép sâu dữ liệu ban đầu
             isFirstLoad = false;
-        } else {
-            saveLog("Phát hiện máy chủ thay đổi dữ liệu!", data);
+            return;
         }
-    }, (error) => {
-        console.error("Lỗi kết nối:", error);
-        currentDataEl.innerText = "Lỗi kết nối hoặc không có quyền truy cập (Kiểm tra Rules của Firebase).";
+
+        // Chạy thuật toán so sánh dữ liệu cũ và mới
+        analyzeChanges(oldData, newData);
+        
+        // Cập nhật lại dữ liệu cũ để so sánh cho lần sau
+        oldData = JSON.parse(JSON.stringify(newData));
     });
 
-    // Hàm ghi và lưu lại lịch sử thay đổi trên giao diện web
-    function saveLog(message, currentSnapshot) {
+    // Hàm AI so sánh và phân tích
+    function analyzeChanges(oldObj, newObj) {
+        // Trường hợp toàn bộ DB bị xóa sạch
+        if (!newObj && oldObj) {
+            createAiLog("deleted", "🚨 <strong>CẢNH BÁO:</strong> Ai đó vừa xóa toàn bộ dữ liệu trên máy chủ!");
+            return;
+        }
+        // Trường hợp trước đó rỗng giờ có dữ liệu
+        if (!oldObj && newObj) {
+            createAiLog("added", "✨ <strong>THÔNG BÁO:</strong> Máy chủ vừa được nạp mới dữ liệu.");
+            return;
+        }
+
+        // Duyệt tìm sự thay đổi
+        let changesDetected = false;
+
+        // 1. Tìm phần tử bị sửa hoặc xóa
+        for (let key in oldObj) {
+            if (!(key in newObj)) {
+                createAiLog("deleted", `🗑️ <strong>Xóa dữ liệu:</strong> Mục <code>${key}</code> vừa bị xóa bỏ khỏi hệ thống.`);
+                changesDetected = true;
+            } else if (JSON.stringify(oldObj[key]) !== JSON.stringify(newObj[key])) {
+                // Có sự thay đổi bên trong
+                let detail = `🔄 <strong>Thay đổi:</strong> Mục <code>${key}</code> vừa cập nhật thông tin mới.`;
+                let subChanges = `<div class="change-detail">Giá trị cũ: <span class="old-val">${JSON.stringify(oldObj[key])}</span> <br> Giá trị mới: <span class="new-val">${JSON.stringify(newObj[key])}</span></div>`;
+                createAiLog("updated", detail, subChanges);
+                changesDetected = true;
+            }
+        }
+
+        // 2. Tìm phần tử mới được thêm vào
+        for (let key in newObj) {
+            if (!(key in oldObj)) {
+                let detail = `➕ <strong>Thêm mới:</strong> Máy chủ vừa ghi nhận thêm dữ liệu tại mục <code>${key}</code>.`;
+                let subChanges = `<div class="change-detail">Nội dung thêm: <span class="new-val">${JSON.stringify(newObj[key])}</span></div>`;
+                createAiLog("added", detail, subChanges);
+                changesDetected = true;
+            }
+        }
+
+        // Phòng trường hợp đổi cấu trúc quá sâu không quét hết bằng vòng lặp đơn
+        if (!changesDetected && JSON.stringify(oldObj) !== JSON.stringify(newObj)) {
+            createAiLog("updated", "⚡ <strong>Biến động ngầm:</strong> AI phát hiện có sự thay đổi cấu trúc dữ liệu tổng thể.");
+        }
+    }
+
+    // Hàm tạo giao diện thông báo kiểu AI chatbot báo cáo
+    function createAiLog(type, text, htmlDetails = "") {
         const now = new Date();
-        const timeString = now.toLocaleTimeString() + " " + now.toLocaleDateString();
+        const timeString = now.toLocaleTimeString();
 
         const logItem = document.createElement('div');
-        logItem.className = 'log-item';
-        
+        logItem.className = `log-item ${type}`;
+
         logItem.innerHTML = `
-            <div>
-                <span class="timestamp">[${timeString}]</span>
-                <span class="badge">${message}</span>
+            <div class="log-header">
+                <span>🤖 TRỢ LÝ AI BÁO CÁO</span>
+                <span>${timeString}</span>
             </div>
-            <pre style="margin-top: 8px; background: #333; max-height: 150px;">${JSON.stringify(currentSnapshot, null, 2)}</pre>
+            <div class="ai-message">${text}</div>
+            ${htmlDetails}
         `;
 
-        // Chèn log mới lên đầu danh sách
+        // Đẩy thông báo mới lên đầu
         logContainerEl.insertBefore(logItem, logContainerEl.firstChild);
     }
 </script>
