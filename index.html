@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Server Monitor - Toàn Bộ Giao Dịch</title>
+    <title>AI Server Monitor - Toàn Bộ Giao Dịch & Admin</title>
     <style>
         :root {
             --bg-color: #060814;
@@ -37,24 +37,22 @@
         }
         h1 { margin: 0; font-size: 24px; color: var(--primary); }
         
-        /* Khu vực thống kê số dư */
         .dashboard-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 15px;
+            grid-template-columns: 1fr;
             margin-bottom: 25px;
         }
         .stat-card {
             background: var(--card-bg);
             border: 1px solid var(--card-border);
-            padding: 15px;
+            padding: 20px;
             border-radius: 10px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+            text-align: center;
         }
-        .stat-title { font-size: 12px; color: var(--text-sub); text-transform: uppercase; letter-spacing: 0.5px; }
-        .stat-value { font-size: 24px; font-weight: bold; margin-top: 5px; font-family: monospace; }
+        .stat-title { font-size: 14px; color: var(--text-sub); text-transform: uppercase; letter-spacing: 0.5px; }
+        .stat-value { font-size: 32px; font-weight: bold; margin-top: 5px; font-family: monospace; }
         .stat-value.total { color: var(--success); }
-        .stat-value.admin { color: var(--danger); }
 
         .main-card {
             background: var(--card-bg);
@@ -81,7 +79,6 @@
         }
         .btn-clear:hover { background: var(--danger); color: #fff; }
 
-        /* Danh sách Log AI */
         .log-list {
             max-height: 550px;
             overflow-y: auto;
@@ -96,13 +93,13 @@
             border-radius: 4px;
         }
         .log-item.approved { border-left-color: var(--success); background: rgba(16, 185, 129, 0.03); }
+        .log-item.admin-action { border-left-color: var(--danger); background: rgba(239, 68, 68, 0.03); }
         .log-item.system { border-left-color: #a855f7; background: rgba(168, 85, 247, 0.03); }
         
         .log-meta { display: flex; justify-content: space-between; font-size: 11px; color: var(--text-sub); margin-bottom: 6px; }
         .log-text { font-size: 14px; line-height: 1.5; }
         
-        /* Highlight chữ */
-        .hl-admin { color: #f43f5e; font-weight: bold; }
+        .hl-admin { color: #ff4d4d; font-weight: bold; }
         .hl-user { color: #38bdf8; font-weight: bold; }
         .hl-money { color: #10b981; font-weight: bold; }
         .hl-info { color: #e2e8f0; font-weight: bold; }
@@ -115,29 +112,25 @@
 <div class="container">
     <header>
         <div>
-            <h1>M.DUY AI LIVE MONITOR</h1>
-            <div style="font-size: 12px; color: var(--text-sub);">Dữ liệu tổng hợp từ trước đến nay + Thời gian thực</div>
+            <h1>M.DUY AI LIVE MONITOR PRO</h1>
+            <div style="font-size: 12px; color: var(--text-sub);">Theo dõi không giới hạn - Quét toàn bộ hành vi Admin và Hệ thống</div>
         </div>
     </header>
 
     <div class="dashboard-grid">
         <div class="stat-card">
-            <div class="stat-title">💰 TỔNG TIỀN ĐÃ DUYỆT (TẤT CẢ TỪ TRƯỚC TỚI GIỜ)</div>
+            <div class="stat-title">💰 TỔNG TIỀN ĐÃ DUYỆT (TẤT CẢ TÀI KHOẢN TỪ TRƯỚC TỚI GIỜ)</div>
             <div id="total-approved" class="stat-value total">0đ</div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-title">👑 VÍ ADMIN TRỪ RA (KHÔNG TÍNH VÀO TỔNG)</div>
-            <div id="admin-balance" class="stat-value admin">0đ</div>
         </div>
     </div>
 
     <div class="main-card">
         <div class="card-header">
             <h2>🤖 NHẬT KÝ BIẾN ĐỘNG THỜI GIAN THỰC (LƯU VĨNH VIỄN)</h2>
-            <button class="btn-clear" id="clear-btn">Xóa nhật ký biến động</button>
+            <button class="btn-clear" id="clear-btn">Xóa nhật ký</button>
         </div>
         <div id="log-list" class="log-list">
-            <div class="empty">Đang kết nối cơ sở dữ liệu và quét lịch sử giao dịch...</div>
+            <div class="empty">Đang kết nối cơ sở dữ liệu và đồng bộ hóa lịch sử giao dịch...</div>
         </div>
     </div>
 </div>
@@ -155,81 +148,65 @@
 
     const logListEl = document.getElementById('log-list');
     const totalApprovedEl = document.getElementById('total-approved');
-    const adminBalanceEl = document.getElementById('admin-balance');
 
     let oldData = null;
     let isFirstLoad = true;
-    let savedLogs = JSON.parse(localStorage.getItem('duy_ai_total_logs')) || [];
+    let savedLogs = JSON.parse(localStorage.getItem('duy_ai_pro_logs')) || [];
 
-    // Hiển thị lại nhật ký cũ từ LocalStorage (nếu có)
+    // Hiển thị lại các log cũ đã được lưu trữ trong trình duyệt
     renderSavedLogs();
 
-    // Đồng bộ thời gian thực từ Firebase Gốc
+    // Lắng nghe dữ liệu thời gian thực từ Firebase
     onValue(ref(db, '/'), (snapshot) => {
         const newData = snapshot.val();
 
-        // 👉 HÀNH ĐỘNG 1: Quét TOÀN BỘ database từ quá khứ đến hiện tại để tính tổng tiền
+        // 1. Quét sâu để tính tổng tất cả giao dịch từ trước đến nay (Không bỏ sót ví nào)
         calculateAllFinancials(newData);
 
-        // Nếu là lần đầu load trang (hoặc F5), chỉ cập nhật số tiền tổng và gán mốc dữ liệu gốc, không ghi log báo cáo trùng
         if (isFirstLoad) {
             oldData = JSON.parse(JSON.stringify(newData));
             isFirstLoad = false;
             if(savedLogs.length === 0) {
-                pushAiLog('system', 'Hệ thống AI đã quét xong toàn bộ dữ liệu từ trước tới nay trên Firebase. Ô thống kê phía trên đã hiển thị chính xác tổng tiền giao dịch.');
+                pushAiLog('system', 'Hệ thống AI đã kết nối thành công và đang theo dõi toàn bộ tài khoản (bao gồm cả Admin).');
             }
             return;
         }
 
-        // 👉 HÀNH ĐỘNG 2: Nếu có biến động mới sau khi mở web, AI lập tức phân tích và báo cáo
+        // 2. Phân tích chi tiết hành vi thay đổi thời gian thực
         deepAnalyzeChanges(oldData, newData);
 
-        // Lưu dữ liệu để so sánh cho lần tiếp theo
+        // Lưu dữ liệu để đối chiếu cho lần kế tiếp
         oldData = JSON.parse(JSON.stringify(newData));
     });
 
-    // 🌟 THUẬT TOÁN QUÉT TỔNG TIỀN TỪ TRƯỚC ĐẾN NAY (ĐỆ QUY TOÀN BỘ NODE)
+    // 🌟 TÍNH TỔNG TIỀN TẤT CẢ GIAO DỊCH ĐÃ DUYỆT TỪ TRƯỚC TỚI NAY
     function calculateAllFinancials(data) {
         if (!data) return;
         
         let totalApproved = 0;
-        let adminMoney = 0;
 
-        // Các từ khóa nhận diện tài khoản Admin để trừ ra không cộng dồn vào tổng
-        const adminKeywords = ['admin', 'mduy', 'shopmduy', 'root', 'quanly'];
-
-        function scanDeep(obj, parentKey = '') {
+        function scanDeep(obj) {
             if (!obj || typeof obj !== 'object') return;
 
-            // Kiểm tra nếu node này chứa dữ liệu của 1 giao dịch và trạng thái là thành công/đã duyệt
+            // Kiểm tra trạng thái giao dịch thành công / đã duyệt
             const isApproved = obj.status === 'success' || obj.status === 'đã duyệt' || obj.status === 'approved' || obj.trangthai === 'thành công';
             if (isApproved) {
                 let money = obj.money || obj.sodu || obj.amount || obj.sotien || 0;
                 totalApproved += Number(money);
             }
 
-            // Quét các nhánh con
             for (let k in obj) {
                 if (typeof obj[k] === 'object' && obj[k] !== null) {
-                    // Nếu nhánh này là tài khoản Admin, lấy tiền của Admin bỏ riêng ra ô bên cạnh
-                    let isAdminNode = adminKeywords.some(keyword => k.toLowerCase().includes(keyword) || parentKey.toLowerCase().includes(keyword));
-                    if (isAdminNode) {
-                        let moneyAdmin = obj[k].money || obj[k].sodu || obj[k].balance || 0;
-                        adminMoney += Number(moneyAdmin);
-                    }
-                    scanDeep(obj[k], k);
+                    scanDeep(obj[k]);
                 }
             }
         }
 
         scanDeep(data);
-
-        // Cập nhật số liệu hiển thị lên giao diện (Định dạng tiền Việt Nam)
         totalApprovedEl.innerText = totalApproved.toLocaleString('vi-VN') + 'đ';
-        adminBalanceEl.innerText = adminMoney.toLocaleString('vi-VN') + 'đ';
     }
 
-    // 🧠 AI SO SÁNH VÀ BÁO CÁO CHI TIẾT KHI CÓ BIẾN ĐỘNG THỜI GIAN THỰC
+    // 🧠 AI PHÂN TÍCH CHI TIẾT - BAO GỒM CẢ THAO TÁC CỦA ADMIN
     function deepAnalyzeChanges(oldObj, newObj) {
         if (!newObj || !oldObj) return;
 
@@ -237,18 +214,24 @@
             if (typeof newNode !== 'object' || !newNode || !oldNode) return;
 
             for (let key in newNode) {
-                // 1. Trường hợp: Có giao dịch mới vừa được tạo và đã được duyệt ngay lập tức
+                // Định nghĩa xem node này có liên quan đến Admin hay không để gán nhãn cảnh báo đặc biệt
+                let isAdminRelated = key.toLowerCase().includes('admin') || key.toLowerCase().includes('mduy');
+
+                // Trường hợp 1: Có một giao dịch mới hoàn toàn vừa xuất hiện
                 if (!oldNode[key]) {
                     let item = newNode[key];
-                    if (item && (item.status === 'success' || item.status === 'đã duyệt')) {
-                        let target = item.username || item.name || item.user || 'Người dùng';
+                    if (item && (item.status === 'success' || item.status === 'đã duyệt' || item.status === 'approved')) {
+                        let target = item.username || item.name || item.user || key;
                         let amount = item.money || item.amount || item.sotien || 0;
                         let lyDo = item.note || item.reason || 'Nạp tiền';
                         
-                        pushAiLog('approved', `🎉 <strong>Giao dịch mới phát sinh:</strong> Hệ thống vừa ghi nhận một giao dịch mới từ trước tới giờ đã được duyệt thành công. Khách hàng: <span class="hl-user">${target}</span>. Số tiền: <span class="hl-money">${Number(amount).toLocaleString()}đ</span>. Nội dung: <span class="hl-info">${lyDo}</span>.`);
+                        let logType = isAdminRelated ? 'admin-action' : 'approved';
+                        let prefix = isAdminRelated ? `👑 <strong>[ADMIN THAO TÁC]:</strong> ` : `🎉 <strong>Giao dịch mới:</strong> `;
+
+                        pushAiLog(logType, `${prefix}Phát hiện tài khoản <span class="hl-admin">${target}</span> vừa hoàn thành giao dịch thành công. Số tiền: <span class="hl-money">${Number(amount).toLocaleString()}đ</span>. Nội dung: <span class="hl-info">${lyDo}</span>.`);
                     }
                 } else {
-                    // 2. Trường hợp: Giao dịch cũ đang từ "Chờ duyệt" chuyển sang "Đã duyệt thành công"
+                    // Trường hợp 2: Giao dịch có sẵn đổi trạng thái từ "Chờ" sang "Đã Duyệt"
                     let oldSub = oldNode[key];
                     let newSub = newNode[key];
 
@@ -256,15 +239,15 @@
                         let oldStatus = oldSub.status || oldSub.trangthai;
                         let newStatus = newSub.status || newSub.trangthai;
 
-                        if (oldStatus !== newStatus && (newStatus === 'success' || newStatus === 'đã duyệt')) {
+                        if (oldStatus !== newStatus && (newStatus === 'success' || newStatus === 'đã duyệt' || newStatus === 'approved')) {
                             let target = newSub.username || newSub.name || newSub.user || key;
                             let amount = newSub.money || newSub.amount || newSub.sotien || 0;
                             let adminName = newSub.handler || newSub.admin || 'Admin Hệ Thống';
                             
-                            pushAiLog('approved', `✅ <strong>Hành vi duyệt tiền:</strong> Quản trị viên <span class="hl-admin">${adminName}</span> vừa thực hiện thao tác duyệt tiền thành công cho tài khoản <span class="hl-user">${target}</span>. Số tiền thực nhận: <span class="hl-money">${Number(amount).toLocaleString()}đ</span>. Hệ thống đã đồng bộ hóa dữ liệu.`);
+                            pushAiLog('admin-action', `⚙️ <strong>[HÀNH VI ĐIỀU HÀNH]:</strong> Quản trị viên <span class="hl-admin">${adminName}</span> vừa trực tiếp duyệt thành công lệnh tiền cho tài khoản <span class="hl-user">${target}</span>. Số tiền thực nhận: <span class="hl-money">${Number(amount).toLocaleString()}đ</span>.`);
                         }
                     }
-                    // Tiếp tục quét sâu vào bên trong cấu trúc cây dữ liệu
+                    // Tiếp tục đào sâu xuống các tầng dữ liệu con
                     compareNodes(oldNode[key], newNode[key]);
                 }
             }
@@ -272,14 +255,14 @@
         compareNodes(oldObj, newObj);
     }
 
-    // Ghi Log, đẩy lên màn hình và lưu trực tiếp vào LocalStorage (Bảo lưu khi đóng tab)
+    // Hàm xuất Log, hiển thị ra màn hình và nạp vào LocalStorage vĩnh viễn
     function pushAiLog(type, text) {
         const now = new Date();
         const timeStr = now.toLocaleTimeString() + ' | ' + now.toLocaleDateString();
         
         const logData = { type, text, time: timeStr };
         savedLogs.unshift(logData);
-        localStorage.setItem('duy_ai_total_logs', JSON.stringify(savedLogs));
+        localStorage.setItem('duy_ai_pro_logs', JSON.stringify(savedLogs));
 
         renderSingleLog(logData, true);
     }
@@ -294,7 +277,7 @@
 
         item.innerHTML = `
             <div class="log-meta">
-                <span>🤖 TRỢ LÝ GIÁM SÁT AI</span>
+                <span>🤖 TRỢ LÝ GIÁM SÁT AI TOÀN DIỆN</span>
                 <span>${log.time}</span>
             </div>
             <div class="log-text">${log.text}</div>
@@ -314,10 +297,10 @@
         }
     }
 
-    // Nút xóa lịch sử biến động trên màn hình
+    // Nút dọn dẹp màn hình
     document.getElementById('clear-btn').addEventListener('click', () => {
-        if (confirm('Bạn muốn dọn dẹp các dòng thông báo biến động này không? (Tổng số tiền giao dịch trên bảng điều khiển vẫn giữ nguyên)')) {
-            localStorage.removeItem('duy_ai_total_logs');
+        if (confirm('Bạn muốn dọn dẹp giao diện báo cáo này không? (Số tiền tổng phía trên vẫn được bảo lưu chính xác)')) {
+            localStorage.removeItem('duy_ai_pro_logs');
             savedLogs = [];
             logListEl.innerHTML = '<div class="empty">Nhật ký trống. Đang chờ biến động thời gian thực...</div>';
         }
