@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SHOPMDUY AI MONITOR - TỔNG KẾT DOANH THU</title>
+    <title>SHOPMDUY AI MONITOR - ULTRA SPEED</title>
     <style>
         :root {
             --bg-color: #060814;
@@ -91,8 +91,8 @@
             border-radius: 4px;
         }
         .log-item.money-up { border-left-color: var(--success); background: rgba(16, 185, 129, 0.02); }
-        .log-item.money-down { border-left-color: var(--warning); background: rgba(245, 158, 11, 0.02); }
-        .log-item.key-action { border-left-color: #a855f7; background: rgba(168, 85, 247, 0.02); }
+        .log-item.money-down { border-left-color: var(--danger); background: rgba(239, 68, 68, 0.02); }
+        .log-item.key-action { border-left-color: var(--warning); background: rgba(245, 158, 11, 0.02); }
         
         .log-meta { display: flex; justify-content: space-between; font-size: 11px; color: var(--text-sub); margin-bottom: 6px; }
         .log-text { font-size: 14px; line-height: 1.5; }
@@ -100,6 +100,7 @@
         .hl-admin { color: #ff4d4d; font-weight: bold; }
         .hl-user { color: #38bdf8; font-weight: bold; }
         .hl-money { color: #10b981; font-weight: bold; }
+        .hl-key { color: #a855f7; font-weight: bold; }
 
         .empty { text-align: center; color: var(--text-sub); padding: 40px; font-style: italic; }
     </style>
@@ -108,28 +109,28 @@
 
 <div class="container">
     <header>
-        <h1>SHOPMDUY AI LIVE MONITOR</h1>
-        <div style="font-size: 12px; color: var(--text-sub); margin-top: 4px;">Hệ thống lưu giữ Tổng tiền nạp tích lũy - Đã loại trừ tài khoản Admin</div>
+        <h1>SHOPMDUY AI CONTROL PANEL</h1>
+        <div style="font-size: 12px; color: var(--text-sub); margin-top: 4px;">Công nghệ Multi-Stream: Độc lập nhánh `users` & `purchased_keys`</div>
     </header>
 
     <div class="dashboard-grid">
         <div class="stat-card">
-            <div class="stat-title">👥 TỔNG KHÁCH HÀNG (LOẠI TRỪ ADMIN)</div>
+            <div class="stat-title">👥 Tổng thành viên thường (Bỏ Admin)</div>
             <div id="total-users" class="stat-value users">0</div>
         </div>
         <div class="stat-card">
-            <div class="stat-title">📊 TỔNG TIỀN ĐÃ DUYỆT / NẠP (TÍCH LŨY MÃI MÃI)</div>
+            <div class="stat-title">📊 Tổng số dư tích lũy hiện tại (Trừ Admin)</div>
             <div id="total-revenue" class="stat-value total">0đ</div>
         </div>
     </div>
 
     <div class="main-card">
         <div class="card-header">
-            <h2>🤖 BÁO CÁO HÀNH VI BIẾN ĐỘNG (LƯU VĨNH VIỄN)</h2>
+            <h2>🤖 NHẬT KÝ ĐỌC HÀNH VI TỐC ĐỘ CAO (LƯU TRỮ VĨNH VIỄN)</h2>
             <button class="btn-clear" id="clear-btn">Xóa nhật ký AI</button>
         </div>
         <div id="log-list" class="log-list">
-            <div class="empty">Hệ thống AI đang đọc dữ liệu lịch sử trên Firebase...</div>
+            <div class="empty">Hệ thống AI đang kết nối trực tiếp vào luồng dữ liệu...</div>
         </div>
     </div>
 </div>
@@ -149,118 +150,142 @@
     const totalUsersEl = document.getElementById('total-users');
     const totalRevenueEl = document.getElementById('total-revenue');
 
-    // Khởi tạo biến lưu trữ tổng tiền nạp vĩnh viễn vào bộ nhớ trình duyệt để không bị mất khi F5/đóng tab
-    let accumulatedRevenue = Number(localStorage.getItem('shopmduy_total_revenue')) || 0;
-    let savedLogs = JSON.parse(localStorage.getItem('shopmduy_ai_v2_logs')) || [];
-
-    // Danh sách từ khóa nhận diện tài khoản Admin để trừ ra không tính tiền/không đếm thành viên thường
+    let savedLogs = JSON.parse(localStorage.getItem('shopmduy_ai_v4_logs')) || [];
     const adminKeywords = ['admin', 'mduy', 'shopmduy', 'root', 'quanly'];
 
-    let oldData = null;
-    let isFirstLoad = true;
+    let oldUsersData = null;
+    let isFirstLoadUsers = true;
 
-    // Hiển thị dữ liệu cũ đã lưu từ trước
-    totalRevenueEl.innerText = accumulatedRevenue.toLocaleString('vi-VN') + 'đ';
+    let oldKeysData = null;
+    let isFirstLoadKeys = true;
+
     renderSavedLogs();
 
-    // Lắng nghe Firebase
-    onValue(ref(db, '/'), (snapshot) => {
-        const newData = snapshot.val() || {};
+    // 🔴 LUỒNG TRUYỀN 1: Cắm thẳng vào nhánh 'users' (Duyệt tiền, đổi số dư)
+    onValue(ref(db, 'users'), (snapshot) => {
+        const usersData = snapshot.val() || {};
 
-        // 1. Quét số lượng khách hàng thực tế (Bỏ qua tài khoản Admin)
-        countRealUsers(newData.users);
+        // 1. Tính toán số tiền tổng và số lượng user ngay khi có thay đổi
+        controlFinancials(usersData);
 
-        if (isFirstLoad) {
-            oldData = JSON.parse(JSON.stringify(newData));
-            isFirstLoad = false;
-            if(savedLogs.length === 0) {
-                pushAiLog('system', 'Hệ thống AI khởi động thành công. Đang giữ mốc số liệu tổng kết và sẵn sàng báo cáo khi có dòng tiền mới.');
-            }
+        // Lần đầu tải trang, chỉ ghi nhận mốc dữ liệu cũ
+        if (isFirstLoadUsers) {
+            oldUsersData = JSON.parse(JSON.stringify(usersData));
+            isFirstLoadUsers = false;
+            checkInitialSystem();
             return;
         }
 
-        // 2. Phân tích biến động thời gian thực
-        detectShopChanges(oldData, newData);
+        // Kiểm tra biến động tiền tệ
+        detectUserChanges(oldUsersData, usersData);
 
-        oldData = JSON.parse(JSON.stringify(newData));
+        // Cập nhật lại mốc so sánh
+        oldUsersData = JSON.parse(JSON.stringify(usersData));
     });
 
-    // 👥 HÀM ĐẾM THÀNH VIÊN (LOẠI TRỪ ADMIN)
-    function countRealUsers(usersNode) {
-        if (!usersNode) return;
+
+    // 🟣 LUỒNG TRUYỀN 2: Cắm thẳng vào nhánh 'purchased_keys' (Khách mua key)
+    onValue(ref(db, 'purchased_keys'), (snapshot) => {
+        const keysData = snapshot.val() || {};
+
+        if (isFirstLoadKeys) {
+            oldKeysData = JSON.parse(JSON.stringify(keysData));
+            isFirstLoadKeys = false;
+            checkInitialSystem();
+            return;
+        }
+
+        // Kiểm tra xem số lượng key có tăng lên không (Có người mua key mới)
+        const oldLength = oldKeysData ? Object.keys(oldKeysData).length : 0;
+        const newLength = keysData ? Object.keys(keysData).length : 0;
+
+        if (newLength > oldLength) {
+            // Lấy ra phần tử cuối cùng vừa được thêm vào
+            const keysArray = Object.keys(keysData);
+            const newestKeyId = keysArray[keysArray.length - 1];
+            const newestKeyInfo = keysData[newestKeyId];
+
+            let buyer = newestKeyInfo.username || newestKeyInfo.user || newestKeyInfo.name || "Ẩn danh";
+            let keyName = newestKeyInfo.key_name || newestKeyInfo.product || newestKeyId;
+
+            pushAiLog('key-action', `🔑 <strong>Giao dịch Key thành công:</strong> Khách hàng <span class="hl-user">${buyer}</span> vừa thực hiện mua thành công mã key <span class="hl-key">${keyName}</span>. Hệ thống đã xuất kho dịch vụ.`);
+        }
+
+        oldKeysData = JSON.parse(JSON.stringify(keysData));
+    });
+
+
+    // --- HÀM TÍNH TOÁN VÀ SÀNG LỌC TIỀN TỪ NHÁNH USERS ---
+    function controlFinancials(usersNode) {
         let userCount = 0;
+        let totalMoney = 0;
 
         for (let userId in usersNode) {
             let u = usersNode[userId];
             let name = (u.username || u.name || userId).toLowerCase();
             
-            // Nếu không trùng từ khóa Admin thì mới đếm
-            let isAdmin = adminKeywords.some(keyword => name.includes(keyword));
+            let isAdmin = adminKeywords.some(keyword => name.includes(keyword) || userId.toLowerCase().includes(keyword));
+            
             if (!isAdmin) {
                 userCount++;
+                let money = Number(u.money || u.sodu || u.vnd || u.balance || 0);
+                totalMoney += money;
             }
         }
+
         totalUsersEl.innerText = userCount;
+        totalRevenueEl.innerText = totalMoney.toLocaleString('vi-VN') + 'đ';
     }
 
-    // 🧠 AI ĐỌC DÒNG TIỀN NẠP VÀ CỘNG DỒN VĨNH VIỄN
-    function detectShopChanges(oldObj, newObj) {
-        if (!newObj.users || !oldObj.users) return;
-
-        for (let userId in newObj.users) {
-            let oldUser = oldObj.users[userId];
-            let newUser = newObj.users[userId];
+    // --- AI PHÂN TÍCH BIẾN ĐỘNG NHÁNH USERS ---
+    function detectUserChanges(oldUsers, newUsers) {
+        for (let userId in newUsers) {
+            let oldUser = oldUsers[userId];
+            let newUser = newUsers[userId];
 
             if (!oldUser) {
-                let name = newUser.username || newUser.email || newUser.name || userId;
+                let name = newUser.username || newUser.name || userId;
                 let isAdmin = adminKeywords.some(keyword => name.toLowerCase().includes(keyword));
                 if(!isAdmin) {
-                    pushAiLog('system', `👥 <strong>Thành viên mới:</strong> Khách hàng <span class="hl-user">${name}</span> vừa đăng ký tài khoản thành công.`);
+                    pushAiLog('system', `👥 <strong>Thành viên mới:</strong> Tài khoản <span class="hl-user">${name}</span> vừa tham gia hệ thống.`);
                 }
                 continue;
             }
 
             let name = newUser.username || newUser.name || userId;
-            // Kiểm tra xem tài khoản xảy ra biến động này có phải Admin không
             let isAdmin = adminKeywords.some(keyword => name.toLowerCase().includes(keyword));
 
-            // Chỉ phân tích và xử lý nếu đây là tài khoản của KHÁCH HÀNG (Không phải Admin)
+            // Chỉ xử lý dòng tiền của Khách hàng, loại trừ Admin
             if (!isAdmin) {
                 let oldBal = Number(oldUser.money || oldUser.sodu || oldUser.vnd || oldUser.balance || 0);
                 let newBal = Number(newUser.money || newUser.sodu || newUser.vnd || newUser.balance || 0);
 
                 if (oldBal !== newBal) {
                     let diff = newBal - oldBal;
-                    
                     if (diff > 0) {
-                        // 👉 KHÁCH ĐƯỢC DUYỆT TIỀN: Cộng dồn thẳng vào Tổng Tiền Tích Lũy
-                        accumulatedRevenue += diff;
-                        localStorage.setItem('shopmduy_total_revenue', accumulatedRevenue);
-                        totalRevenueEl.innerText = accumulatedRevenue.toLocaleString('vi-VN') + 'đ';
-
-                        pushAiLog('money-up', `✅ <strong>Duyệt tiền thành công:</strong> Admin vừa duyệt cộng tiền cho tài khoản <span class="hl-user">${name}</span>. Số tiền nạp: <span class="hl-money">+${diff.toLocaleString()}đ</span>. Hệ thống đã cộng dồn vào doanh thu tổng.`);
+                        pushAiLog('money-up', `✅ <strong>Duyệt tiền thành công:</strong> Admin đã phê duyệt lệnh cộng tiền cho tài khoản <span class="hl-user">${name}</span>. Số dư tăng thêm: <span class="hl-money">+${diff.toLocaleString()}đ</span>.`);
                     } else {
-                        // 👉 KHÁCH MUA HÀNG BỊ TRỪ TIỀN: Chỉ ghi nhận báo cáo hành vi, KHÔNG TRỪ vào ô Số Tiền Tổng kết
-                        pushAiLog('money-down', `💸 <strong>Khách mua hàng:</strong> Tài khoản <span class="hl-user">${name}</span> vừa thanh toán đơn hàng, ví bị khấu trừ <span class="hl-admin">${Math.abs(diff).toLocaleString()}đ</span>. (Số dư hiện tại: ${newBal.toLocaleString()}đ).`);
+                        pushAiLog('money-down', `💸 <strong>Khách mua dịch vụ:</strong> Tài khoản khách hàng <span class="hl-user">${name}</span> vừa thanh toán đơn hàng thành công, ví tài khoản khấu trừ <span class="hl-admin">${Math.abs(diff).toLocaleString()}đ</span>.`);
                     }
                 }
             }
         }
+    }
 
-        // --- Kiểm tra kho Key và Hệ thống ---
-        if (newObj.purchased_keys && oldObj.purchased_keys && Object.keys(newObj.purchased_keys).length > Object.keys(oldObj.purchased_keys).length) {
-            pushAiLog('key-action', `🔑 <strong>Hệ thống kho:</strong> Đơn hàng đã hoàn tất giao dịch. Một Key bản quyền vừa được chuyển giao cho khách hàng.`);
+    function checkInitialSystem() {
+        if (!isFirstLoadUsers && !isFirstLoadKeys && savedLogs.length === 0) {
+            pushAiLog('system', 'Hệ thống luồng dữ liệu riêng biệt đã cấu hình xong. AI đang túc trực trực tiếp tại nhánh users và purchased_keys.');
         }
     }
 
-    // Hàm xuất và lưu trữ log vĩnh viễn
+    // Hàm xuất log và nạp vào LocalStorage vĩnh viễn không mất chữ
     function pushAiLog(type, text) {
         const now = new Date();
         const timeStr = now.toLocaleTimeString() + ' | ' + now.toLocaleDateString();
         
         const logData = { type, text, time: timeStr };
         savedLogs.unshift(logData);
-        localStorage.setItem('shopmduy_ai_v2_logs', JSON.stringify(savedLogs));
+        localStorage.setItem('shopmduy_ai_v4_logs', JSON.stringify(savedLogs));
 
         renderSingleLog(logData, true);
     }
@@ -275,7 +300,7 @@
 
         item.innerHTML = `
             <div class="log-meta">
-                <span>🤖 BÁO CÁO DÒNG TIỀN AI</span>
+                <span>🤖 TRỢ LÝ GIÁM SÁT REALTIME AI</span>
                 <span>${log.time}</span>
             </div>
             <div class="log-text">${log.text}</div>
@@ -296,10 +321,10 @@
     }
 
     document.getElementById('clear-btn').addEventListener('click', () => {
-        if (confirm('Bạn có muốn dọn dẹp danh sách thông báo của AI không? (Ô Tổng Tiền Nạp tích lũy vẫn sẽ được bảo lưu vĩnh viễn)')) {
-            localStorage.removeItem('shopmduy_ai_v2_logs');
+        if (confirm('Bạn muốn dọn sạch nhật ký AI hiển thị trên màn hình chứ?')) {
+            localStorage.removeItem('shopmduy_ai_v4_logs');
             savedLogs = [];
-            logListEl.innerHTML = '<div class="empty">Nhật ký trống. Đang chờ biến động tiếp theo...</div>';
+            logListEl.innerHTML = '<div class="empty">Nhật ký trống. Đang chờ biến động nạp/mua thực tế từ Firebase...</div>';
         }
     });
 </script>
