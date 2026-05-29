@@ -3,139 +3,133 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Server Change Monitor</title>
+    <title>Trợ Lý AI Giám Sát Máy Chủ</title>
     <style>
         :root {
-            --bg-color: #0b0f19;
-            --card-bg: #151d30;
-            --text-color: #e2e8f0;
-            --primary: #00f2fe;
-            --success: #10b981;
-            --warning: #f59e0b;
-            --danger: #ef4444;
+            --bg-color: #090d16;
+            --card-bg: #111827;
+            --text-color: #f3f4f6;
+            --primary: #38bdf8;
+            --success: #34d399;
+            --warning: #fbbf24;
+            --danger: #f87171;
         }
         body {
-            font-family: 'Segoe UI', system-ui, sans-serif;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
             background-color: var(--bg-color);
             color: var(--text-color);
             margin: 0;
             padding: 20px;
         }
         .container {
-            max-width: 1100px;
+            max-width: 850px;
             margin: 0 auto;
         }
         header {
-            text-align: center;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             padding: 20px 0;
-            border-bottom: 1px solid #233554;
-            margin-bottom: 30px;
+            border-bottom: 1px solid #1f2937;
+            margin-bottom: 25px;
         }
         h1 {
             margin: 0;
-            font-size: 28px;
-            background: linear-gradient(to right, #4facfe 0%, #00f2fe 100%);
+            font-size: 24px;
+            background: linear-gradient(to right, #38bdf8, #818cf8);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            text-shadow: 0 0 20px rgba(0, 242, 254, 0.2);
         }
-        .status-bar {
-            display: inline-block;
-            margin-top: 10px;
-            padding: 5px 15px;
-            background: rgba(16, 185, 129, 0.1);
-            border: 1px solid var(--success);
-            border-radius: 20px;
-            color: var(--success);
-            font-size: 13px;
+        .btn-clear {
+            background: rgba(248, 113, 113, 0.1);
+            color: var(--danger);
+            border: 1px solid var(--danger);
+            padding: 8px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.2s;
         }
-        .grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 25px;
+        .btn-clear:hover {
+            background: var(--danger);
+            color: white;
         }
         .card {
             background: var(--card-bg);
             border-radius: 12px;
             padding: 20px;
-            border: 1px solid #233554;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            border: 1px solid #1f2937;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
         }
         h2 {
             margin-top: 0;
-            font-size: 18px;
-            color: var(--primary);
+            font-size: 16px;
+            color: #9ca3af;
+            text-transform: uppercase;
+            letter-spacing: 1px;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
         }
-        /* AI Log Style */
         .log-container {
-            max-height: 600px;
+            max-height: 650px;
             overflow-y: auto;
-            padding-right: 5px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
         }
         .log-item {
-            background: rgba(255,255,255,0.02);
-            border-left: 4px solid var(--primary);
+            background: #1f2937;
+            border-radius: 8px;
             padding: 15px;
-            margin-bottom: 15px;
-            border-radius: 0 8px 8px 0;
-            animation: slideIn 0.3s ease;
+            border-left: 4px solid var(--primary);
+            position: relative;
         }
         .log-header {
             display: flex;
             justify-content: space-between;
-            font-size: 13px;
-            color: #8892b0;
-            margin-bottom: 8px;
+            font-size: 12px;
+            color: #9ca3af;
+            margin-bottom: 6px;
         }
-        .ai-message {
+        .ai-text {
             font-size: 15px;
-            line-height: 1.5;
+            line-height: 1.6;
+            color: #f3f4f6;
+        }
+        .ai-text strong {
             color: #fff;
         }
-        .ai-message strong {
-            color: var(--primary);
-        }
-        /* Phân loại màu cho AI */
-        .log-item.added { border-left-color: var(--success); }
-        .log-item.updated { border-left-color: var(--warning); }
-        .log-item.deleted { border-left-color: var(--danger); }
+        /* Chỉ định màu sắc theo loại hành động */
+        .log-item.money { border-left-color: var(--success); background: rgba(52, 211, 153, 0.03); }
+        .log-item.status { border-left-color: var(--warning); background: rgba(251, 191, 36, 0.03); }
+        .log-item.general { border-left-color: var(--primary); }
         
-        .change-detail {
-            margin-top: 8px;
-            padding: 8px;
-            background: rgba(0,0,0,0.2);
-            border-radius: 4px;
-            font-family: monospace;
-            font-size: 13px;
+        .empty-state {
+            text-align: center;
+            color: #6b7280;
+            padding: 40px;
+            font-style: italic;
         }
-        .old-val { color: var(--danger); text-decoration: line-through; }
-        .new-val { color: var(--success); }
-
-        @keyframes slideIn {
-            from { opacity: 0; transform: translateX(-15px); }
-            to { opacity: 1; transform: translateX(0); }
-        }
+        .highlight-name { color: #60a5fa !important; font-weight: bold; }
+        .highlight-money { color: #34d399 !important; font-weight: bold; }
     </style>
 </head>
 <body>
 
 <div class="container">
     <header>
-        <h1>AI SERVER MONITOR SYSTEM</h1>
-        <div class="status-bar">⚡ Trợ lý AI đang quét luồng dữ liệu liên tục...</div>
+        <div>
+            <h1>M.DUY AI MONITOR</h1>
+            <div style="font-size: 12px; color: #6b7280; margin-top: 4px;">Hệ thống lưu trữ vĩnh viễn đã kích hoạt ✔</div>
+        </div>
+        <button class="btn-clear" id="clear-btn">Xóa Lịch Sử</button>
     </header>
 
-    <div class="grid">
-        <div class="card">
-            <h2>🧠 Nhật Ký Phân Tích Của AI (Realtime Logs)</h2>
-            <div id="log-container" class="log-container">
-                <div style="color: #8892b0; text-align: center; padding: 40px; font-style: italic;">
-                    Đang khởi tạo AI kết nối tới máy chủ...
-                </div>
-            </div>
+    <div class="card">
+        <h2>🤖 Báo cáo từ Trợ lý ảo (AI Insights)</h2>
+        <div id="log-container" class="log-container">
+            <div class="empty-state">Đang đợi kết nối và phân tích luồng dữ liệu...</div>
         </div>
     </div>
 </div>
@@ -150,97 +144,151 @@
 
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
+    
     const logContainerEl = document.getElementById('log-container');
+    const clearBtn = document.getElementById('clear-btn');
 
     let oldData = null;
     let isFirstLoad = true;
 
-    // Lắng nghe dữ liệu
+    // Tải lại lịch sử cũ từ LocalStorage khi vừa mở web (Không lo mất khi đóng tab)
+    let savedLogs = JSON.parse(localStorage.getItem('ai_server_logs')) || [];
+    renderSavedLogs();
+
+    // Lắng nghe dữ liệu từ Firebase
     onValue(ref(db, '/'), (snapshot) => {
         const newData = snapshot.val();
 
         if (isFirstLoad) {
-            logContainerEl.innerHTML = ""; // Xóa chữ khởi tạo
-            createAiLog("init", "Chào Duy! Kết nối thành công. Hệ thống AI đã thiết lập xong lá chắn giám sát. Hiện tại dữ liệu đang ổn định.");
-            oldData = JSON.parse(JSON.stringify(newData)); // Sao chép sâu dữ liệu ban đầu
+            oldData = JSON.parse(JSON.stringify(newData));
             isFirstLoad = false;
+            if(savedLogs.length === 0) {
+                generateAiSpeech("general", "Hệ thống AI vừa khởi động thành công. Hiện tại đang giữ trạng thái giám sát tối cao, chưa phát hiện biến động mới nào.");
+            }
             return;
         }
 
-        // Chạy thuật toán so sánh dữ liệu cũ và mới
-        analyzeChanges(oldData, newData);
+        // Chạy bộ lọc thông minh dịch ngôn ngữ
+        translateDataToAiSpeech(oldData, newData);
         
-        // Cập nhật lại dữ liệu cũ để so sánh cho lần sau
+        // Lưu lại dữ liệu cũ để so sánh tiếp
         oldData = JSON.parse(JSON.stringify(newData));
     });
 
-    // Hàm AI so sánh và phân tích
-    function analyzeChanges(oldObj, newObj) {
-        // Trường hợp toàn bộ DB bị xóa sạch
-        if (!newObj && oldObj) {
-            createAiLog("deleted", "🚨 <strong>CẢNH BÁO:</strong> Ai đó vừa xóa toàn bộ dữ liệu trên máy chủ!");
-            return;
-        }
-        // Trường hợp trước đó rỗng giờ có dữ liệu
-        if (!oldObj && newObj) {
-            createAiLog("added", "✨ <strong>THÔNG BÁO:</strong> Máy chủ vừa được nạp mới dữ liệu.");
-            return;
-        }
+    // 🧠 BỘ NÃO AI: Đọc hiểu dữ liệu và dịch thành câu nói của con người
+    function translateDataToAiSpeech(oldObj, newObj) {
+        if (!newObj || !oldObj) return;
 
-        // Duyệt tìm sự thay đổi
-        let changesDetected = false;
-
-        // 1. Tìm phần tử bị sửa hoặc xóa
-        for (let key in oldObj) {
-            if (!(key in newObj)) {
-                createAiLog("deleted", `🗑️ <strong>Xóa dữ liệu:</strong> Mục <code>${key}</code> vừa bị xóa bỏ khỏi hệ thống.`);
-                changesDetected = true;
-            } else if (JSON.stringify(oldObj[key]) !== JSON.stringify(newObj[key])) {
-                // Có sự thay đổi bên trong
-                let detail = `🔄 <strong>Thay đổi:</strong> Mục <code>${key}</code> vừa cập nhật thông tin mới.`;
-                let subChanges = `<div class="change-detail">Giá trị cũ: <span class="old-val">${JSON.stringify(oldObj[key])}</span> <br> Giá trị mới: <span class="new-val">${JSON.stringify(newObj[key])}</span></div>`;
-                createAiLog("updated", detail, subChanges);
-                changesDetected = true;
-            }
-        }
-
-        // 2. Tìm phần tử mới được thêm vào
+        // Quét qua các key trong database của bạn (ví dụ: users, orders, nap_tien...)
         for (let key in newObj) {
-            if (!(key in oldObj)) {
-                let detail = `➕ <strong>Thêm mới:</strong> Máy chủ vừa ghi nhận thêm dữ liệu tại mục <code>${key}</code>.`;
-                let subChanges = `<div class="change-detail">Nội dung thêm: <span class="new-val">${JSON.stringify(newObj[key])}</span></div>`;
-                createAiLog("added", detail, subChanges);
-                changesDetected = true;
-            }
-        }
+            // So sánh nếu có sự thay đổi dữ liệu ở mục này
+            if (JSON.stringify(oldObj[key]) !== JSON.stringify(newObj[key])) {
+                
+                let currentItem = newObj[key];
+                let oldItem = oldObj[key];
 
-        // Phòng trường hợp đổi cấu trúc quá sâu không quét hết bằng vòng lặp đơn
-        if (!changesDetected && JSON.stringify(oldObj) !== JSON.stringify(newObj)) {
-            createAiLog("updated", "⚡ <strong>Biến động ngầm:</strong> AI phát hiện có sự thay đổi cấu trúc dữ liệu tổng thể.");
+                // 🌟 KỊCH BẢN 1: DUYỆT TIỀN / NẠP TIỀN / ĐỔI SỐ DƯ
+                // Nếu cấu trúc dạng vật phẩm/user có trường "money" hoặc "sodu" hoặc "status"
+                if (typeof currentItem === 'object') {
+                    // Thử tìm xem đây là hành động duyệt/nạp gì thông qua cấu trúc phổ biến
+                    for (let subKey in currentItem) {
+                        let modern = currentItem[subKey];
+                        let ancient = oldItem ? oldItem[subKey] : null;
+                        
+                        if (ancient && JSON.stringify(modern) !== JSON.stringify(ancient)) {
+                            // Trường hợp thay đổi số tiền / Số dư
+                            if (subKey === 'money' || subKey === 'sodu' || subKey === 'balance') {
+                                let tenUser = currentItem.username || currentItem.name || subKey;
+                                generateAiSpeech("money", `💰 <strong>Hệ thống vừa thực hiện giao dịch:</strong> Tài khoản của <span class="highlight-name">${tenUser}</span> vừa biến động từ <span class="highlight-money">${ancient[subKey]}đ</span> sang <span class="highlight-money">${modern[subKey]}đ</span>. Yêu cầu đã được xử lý thành công.`);
+                                return;
+                            }
+                            // Trường hợp thay đổi Trạng thái (Ví dụ: tu "đang chờ" sang "đã duyệt")
+                            if (subKey === 'status' || subKey === 'trangthai') {
+                                let tenUser = currentItem.username || currentItem.name || key;
+                                generateAiSpeech("status", `⚙️ <strong>Cập nhật trạng thái hành động:</strong> Admin đã thay đổi trạng thái mục <span class="highlight-name">${tenUser}</span> từ [${ancient[subKey]}] sang thành [${modern[subKey]}]. Các thông tin liên quan đã được đồng bộ hóa.`);
+                                return;
+                            }
+                        }
+                    }
+                }
+
+                // 🌟 KỊCH BẢN 2: Thêm một dòng/yêu cầu hoàn toàn mới
+                if (oldItem && Object.keys(currentItem).length > Object.keys(oldItem).length) {
+                    generateAiSpeech("general", `📥 <strong>Ghi nhận yêu cầu mới:</strong> Hệ thống máy chủ vừa tiếp nhận thêm một dữ liệu mới tại danh mục <strong>${key}</strong>. AI đã lưu trữ và bảo mật dữ liệu này.`);
+                    return;
+                }
+
+                // 🌟 KỊCH BẢN 3: Báo cáo chung chung nếu không rơi vào các trường hợp trên
+                generateAiSpeech("general", `⚡ <strong>Thông báo từ máy chủ:</strong> Danh mục <strong>${key}</strong> vừa có sự thay đổi nội dung. Admin hoặc hệ thống tự động đã cập nhật lại phần này.`);
+            }
         }
     }
 
-    // Hàm tạo giao diện thông báo kiểu AI chatbot báo cáo
-    function createAiLog(type, text, htmlDetails = "") {
+    // Hàm tạo câu nói AI, hiển thị lên màn hình và LƯU VÀO BỘ NHỚ MÁY
+    function generateAiSpeech(type, text) {
         const now = new Date();
-        const timeString = now.toLocaleTimeString();
+        const timeString = now.toLocaleTimeString() + " - " + now.toLocaleDateString();
+
+        const newLog = { type, text, time: timeString };
+        
+        // Thêm vào mảng tạm và lưu thẳng vào LocalStorage của trình duyệt
+        savedLogs.unshift(newLog); // Đưa lên đầu
+        localStorage.setItem('ai_server_logs', JSON.stringify(savedLogs));
+
+        // Render ra màn hình
+        renderLogItem(newLog, true);
+    }
+
+    // Hàm vẽ giao diện từ dữ liệu log
+    function renderLogItem(log, isNew = false) {
+        // Xóa chữ trống ban đầu nếu có
+        const emptyState = document.querySelector('.empty-state');
+        if (emptyState) emptyState.remove();
 
         const logItem = document.createElement('div');
-        logItem.className = `log-item ${type}`;
+        logItem.className = `log-item ${log.type}`;
+        if(isNew) logItem.style.animation = "slideIn 0.3s ease";
 
         logItem.innerHTML = `
             <div class="log-header">
-                <span>🤖 TRỢ LÝ AI BÁO CÁO</span>
-                <span>${timeString}</span>
+                <span>🤖 TRỢ LÝ AI PHÂN TÍCH</span>
+                <span>${log.time}</span>
             </div>
-            <div class="ai-message">${text}</div>
-            ${htmlDetails}
+            <div class="ai-text">${log.text}</div>
         `;
 
-        // Đẩy thông báo mới lên đầu
-        logContainerEl.insertBefore(logItem, logContainerEl.firstChild);
+        if (isNew) {
+            logContainerEl.insertBefore(logItem, logContainerEl.firstChild);
+        } else {
+            logContainerEl.appendChild(logItem);
+        }
     }
+
+    // Hàm tải lại toàn bộ Log cũ khi F5/Mở lại trang
+    function renderSavedLogs() {
+        if (savedLogs.length > 0) {
+            logContainerEl.innerHTML = "";
+            savedLogs.forEach(log => {
+                renderLogItem(log, false);
+            });
+        }
+    }
+
+    // Nút xóa toàn bộ lịch sử nếu muốn làm sạch trang
+    clearBtn.addEventListener('click', () => {
+        if(confirm("Bạn có chắc chắn muốn xóa toàn bộ lịch sử báo cáo của AI không?")) {
+            localStorage.removeItem('ai_server_logs');
+            savedLogs = [];
+            logContainerEl.innerHTML = '<div class="empty-state">Lịch sử đã được dọn sạch. Đang đợi biến động mới...</div>';
+        }
+    });
 </script>
 
+<style>
+    @keyframes slideIn {
+        from { opacity: 0; transform: translateY(-10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+</style>
 </body>
 </html>
