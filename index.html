@@ -3,142 +3,82 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SHOPMDUY AI MONITOR - ULTRA SPEED</title>
+    <title>SHOPMDUY - AI TELEGRAM CONTROLLER</title>
     <style>
         :root {
-            --bg-color: #060814;
-            --card-bg: #0b1120;
+            --bg-color: #05070f;
+            --card-bg: #0c101f;
             --card-border: #1e293b;
-            --text-main: #f8fafc;
-            --text-sub: #94a3b8;
+            --text-main: #f1f5f9;
+            --text-sub: #64748b;
             --primary: #38bdf8;
-            --success: #10b981;
-            --warning: #f59e0b;
-            --danger: #ef4444;
+            --success: #34d399;
+            --warning: #fbbf24;
+            --danger: #f87171;
         }
-        body {
-            font-family: 'Segoe UI', system-ui, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            margin: 0;
-            padding: 20px;
-        }
-        .container {
-            max-width: 1000px;
-            margin: 0 auto;
-        }
-        header {
-            border-bottom: 1px solid var(--card-border);
-            padding-bottom: 15px;
-            margin-bottom: 20px;
-        }
-        h1 { margin: 0; font-size: 24px; color: var(--primary); letter-spacing: 0.5px; }
+        body { font-family: 'Segoe UI', system-ui, sans-serif; background-color: var(--bg-color); color: var(--text-main); margin: 0; padding: 20px; }
+        .container { max-width: 1100px; margin: 0 auto; }
+        header { border-bottom: 1px solid var(--card-border); padding-bottom: 15px; margin-bottom: 25px; display: flex; justify-content: space-between; align-items: center; }
+        h1 { margin: 0; font-size: 24px; color: var(--primary); font-weight: 700; }
         
-        .dashboard-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-            gap: 15px;
-            margin-bottom: 25px;
-        }
-        .stat-card {
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-        }
-        .stat-title { font-size: 11px; color: var(--text-sub); text-transform: uppercase; letter-spacing: 1px; }
-        .stat-value { font-size: 28px; font-weight: bold; margin-top: 5px; font-family: monospace; }
-        .stat-value.total { color: var(--success); }
-        .stat-value.users { color: var(--primary); }
+        .status-bar { display: flex; gap: 15px; align-items: center; }
+        .status-dot { width: 10px; height: 10px; background: var(--danger); border-radius: 50%; display: inline-block; }
+        .status-dot.online { background: var(--success); box-shadow: 0 0 10px var(--success); }
+        .status-text { font-size: 13px; font-weight: bold; }
 
-        .main-card {
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            border-radius: 12px;
-            padding: 20px;
-        }
-        .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-        }
-        h2 { font-size: 15px; color: var(--primary); margin: 0; }
-        
-        .btn-clear {
-            background: rgba(239, 68, 68, 0.1);
-            color: var(--danger);
-            border: 1px solid var(--danger);
-            padding: 6px 12px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 12px;
-        }
-        .btn-clear:hover { background: var(--danger); color: #fff; }
-
-        .log-list {
-            max-height: 550px;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-        .log-item {
-            background: rgba(255, 255, 255, 0.01);
-            border-left: 4px solid var(--primary);
-            padding: 15px;
-            border-radius: 4px;
-        }
-        .log-item.money-up { border-left-color: var(--success); background: rgba(16, 185, 129, 0.02); }
-        .log-item.money-down { border-left-color: var(--danger); background: rgba(239, 68, 68, 0.02); }
-        .log-item.key-action { border-left-color: var(--warning); background: rgba(245, 158, 11, 0.02); }
-        
-        .log-meta { display: flex; justify-content: space-between; font-size: 11px; color: var(--text-sub); margin-bottom: 6px; }
-        .log-text { font-size: 14px; line-height: 1.5; }
-        
-        .hl-admin { color: #ff4d4d; font-weight: bold; }
-        .hl-user { color: #38bdf8; font-weight: bold; }
-        .hl-money { color: #10b981; font-weight: bold; }
-        .hl-key { color: #a855f7; font-weight: bold; }
-
-        .empty { text-align: center; color: var(--text-sub); padding: 40px; font-style: italic; }
+        .grid-layout { display: grid; grid-template-columns: 1fr 2fr; gap: 20px; }
+        .box { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 20px; }
+        h2 { font-size: 14px; color: var(--primary); margin-top: 0; margin-bottom: 15px; text-transform: uppercase; }
+        .search-input { width: 100%; background: #13192e; border: 1px solid var(--card-border); padding: 10px; border-radius: 6px; color: #fff; box-sizing: border-box; margin-bottom: 15px; }
+        .user-list { max-height: 400px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; }
+        .user-card { background: rgba(255,255,255,0.01); padding: 10px 12px; border-radius: 6px; display: flex; justify-content: space-between; align-items: center; font-size: 13.5px; border-left: 3px solid var(--text-sub); }
+        .user-card.active-user { border-left-color: var(--primary); }
+        .user-balance { font-family: monospace; color: var(--success); font-weight: bold; }
+        .log-container { max-height: 450px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
+        .log-card { background: rgba(255, 255, 255, 0.01); border-left: 4px solid var(--text-sub); padding: 12px 15px; border-radius: 6px; font-size: 13.5px; line-height: 1.5; }
+        .log-card.tele-cmd { border-left-color: var(--warning); background: rgba(251, 191, 36, 0.02); }
+        .log-meta { display: flex; justify-content: space-between; font-size: 11px; color: var(--text-sub); margin-bottom: 4px; }
+        .hl-user-name { color: var(--primary); font-weight: bold; }
+        .hl-money-up { color: var(--success); font-weight: bold; }
+        .hl-money-down { color: var(--danger); font-weight: bold; }
+        .empty { text-align: center; color: var(--text-sub); padding: 30px; font-style: italic; }
     </style>
 </head>
 <body>
 
 <div class="container">
     <header>
-        <h1>SHOPMDUY AI CONTROL PANEL</h1>
-        <div style="font-size: 12px; color: var(--text-sub); margin-top: 4px;">Công nghệ Multi-Stream: Độc lập nhánh `users` & `purchased_keys`</div>
+        <div>
+            <h1>SHOPMDUY AI TELEGRAM CONNECTOR</h1>
+            <div style="font-size: 12px; color: var(--text-sub); margin-top: 4px;">Trạm phát sóng điều khiển @Mduy_bot realtime</div>
+        </div>
+        <div class="status-bar">
+            <span id="status-dot" class="status-dot"></span>
+            <span id="status-text" class="status-text">BOT TELEGRAM ĐANG TẮT</span>
+        </div>
     </header>
 
-    <div class="dashboard-grid">
-        <div class="stat-card">
-            <div class="stat-title">👥 Tổng thành viên thường (Bỏ Admin)</div>
-            <div id="total-users" class="stat-value users">0</div>
+    <div class="grid-layout">
+        <div class="box">
+            <h2>👥 Ví Khách Hàng</h2>
+            <input type="text" id="search-bar" class="search-input" placeholder="Tìm tên tài khoản...">
+            <div id="user-list-target" class="user-list"><div class="empty">Đang tải...</div></div>
         </div>
-        <div class="stat-card">
-            <div class="stat-title">📊 Tổng số dư tích lũy hiện tại (Trừ Admin)</div>
-            <div id="total-revenue" class="stat-value total">0đ</div>
-        </div>
-    </div>
 
-    <div class="main-card">
-        <div class="card-header">
-            <h2>🤖 NHẬT KÝ ĐỌC HÀNH VI TỐC ĐỘ CAO (LƯU TRỮ VĨNH VIỄN)</h2>
-            <button class="btn-clear" id="clear-btn">Xóa nhật ký AI</button>
-        </div>
-        <div id="log-list" class="log-list">
-            <div class="empty">Hệ thống AI đang kết nối trực tiếp vào luồng dữ liệu...</div>
+        <div class="box" style="display: flex; flex-direction: column;">
+            <h2>🤖 Nhật Ký Chat Lệnh Telegram</h2>
+            <div id="log-list-target" class="log-container">
+                <div class="empty">Đang kích hoạt hệ thống lắng nghe tin nhắn...</div>
+            </div>
         </div>
     </div>
 </div>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+    import { getDatabase, ref, onValue, update, get, child } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
+    // 1. Ráp nối Database của Duy
     const firebaseConfig = {
         databaseURL: "https://shopmduy-default-rtdb.asia-southeast1.firebasedatabase.app/"
     };
@@ -146,194 +86,176 @@
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
-    const logListEl = document.getElementById('log-list');
-    const totalUsersEl = document.getElementById('total-users');
-    const totalRevenueEl = document.getElementById('total-revenue');
+    // 2. Ráp nối Token Bot Telegram Duy vừa tạo
+    const TELEGRAM_TOKEN = "8314558446:AAECq0SeBmH_cDmYTpwS9pX0MgvaRlcgs9A";
+    let lastUpdateId = 0;
 
-    let savedLogs = JSON.parse(localStorage.getItem('shopmduy_ai_v4_logs')) || [];
+    const userListTarget = document.getElementById('user-list-target');
+    const logListTarget = document.getElementById('log-list-target');
+    const searchBar = document.getElementById('search-bar');
+    const statusDot = document.getElementById('status-dot');
+    const statusText = document.getElementById('status-text');
+
     const adminKeywords = ['admin', 'mduy', 'shopmduy', 'root', 'quanly'];
 
-    let oldUsersData = null;
-    let isFirstLoadUsers = true;
-
-    let oldKeysData = null;
-    let isFirstLoadKeys = true;
-
-    renderSavedLogs();
-
-    // 🔴 LUỒNG TRUYỀN 1: Cắm thẳng vào nhánh 'users' (Duyệt tiền, đổi số dư)
+    // Lắng nghe nhánh users hiển thị lên Web như cũ
     onValue(ref(db, 'users'), (snapshot) => {
-        const usersData = snapshot.val() || {};
-
-        // 1. Tính toán số tiền tổng và số lượng user ngay khi có thay đổi
-        controlFinancials(usersData);
-
-        // Lần đầu tải trang, chỉ ghi nhận mốc dữ liệu cũ
-        if (isFirstLoadUsers) {
-            oldUsersData = JSON.parse(JSON.stringify(usersData));
-            isFirstLoadUsers = false;
-            checkInitialSystem();
-            return;
-        }
-
-        // Kiểm tra biến động tiền tệ
-        detectUserChanges(oldUsersData, usersData);
-
-        // Cập nhật lại mốc so sánh
-        oldUsersData = JSON.parse(JSON.stringify(usersData));
+        const currentUsers = snapshot.val() || {};
+        renderUserBalances(currentUsers);
     });
 
-
-    // 🟣 LUỒNG TRUYỀN 2: Cắm thẳng vào nhánh 'purchased_keys' (Khách mua key)
-    onValue(ref(db, 'purchased_keys'), (snapshot) => {
-        const keysData = snapshot.val() || {};
-
-        if (isFirstLoadKeys) {
-            oldKeysData = JSON.parse(JSON.stringify(keysData));
-            isFirstLoadKeys = false;
-            checkInitialSystem();
-            return;
+    function renderUserBalances(users) {
+        let html = '';
+        for (let id in users) {
+            let u = users[id];
+            let name = u.username || u.name || id;
+            let isAdmin = adminKeywords.some(kw => name.toLowerCase().includes(kw) || id.toLowerCase().includes(kw));
+            let bal = Number(u.balance || 0);
+            html += `
+                <div class="${isAdmin ? 'user-card' : 'user-card active-user'}" data-search="${name.toLowerCase()}">
+                    <span class="user-name">👤 ${name} ${isAdmin ? '<span style="color:#ec4899">[Admin]</span>':''}</span>
+                    <span class="user-balance">${bal.toLocaleString('vi-VN')}đ</span>
+                </div>
+            `;
         }
-
-        // Kiểm tra xem số lượng key có tăng lên không (Có người mua key mới)
-        const oldLength = oldKeysData ? Object.keys(oldKeysData).length : 0;
-        const newLength = keysData ? Object.keys(keysData).length : 0;
-
-        if (newLength > oldLength) {
-            // Lấy ra phần tử cuối cùng vừa được thêm vào
-            const keysArray = Object.keys(keysData);
-            const newestKeyId = keysArray[keysArray.length - 1];
-            const newestKeyInfo = keysData[newestKeyId];
-
-            let buyer = newestKeyInfo.username || newestKeyInfo.user || newestKeyInfo.name || "Ẩn danh";
-            let keyName = newestKeyInfo.key_name || newestKeyInfo.product || newestKeyId;
-
-            pushAiLog('key-action', `🔑 <strong>Giao dịch Key thành công:</strong> Khách hàng <span class="hl-user">${buyer}</span> vừa thực hiện mua thành công mã key <span class="hl-key">${keyName}</span>. Hệ thống đã xuất kho dịch vụ.`);
-        }
-
-        oldKeysData = JSON.parse(JSON.stringify(keysData));
-    });
-
-
-    // --- HÀM TÍNH TOÁN VÀ SÀNG LỌC TIỀN TỪ NHÁNH USERS ---
-    function controlFinancials(usersNode) {
-        let userCount = 0;
-        let totalMoney = 0;
-
-        for (let userId in usersNode) {
-            let u = usersNode[userId];
-            let name = (u.username || u.name || userId).toLowerCase();
-            
-            let isAdmin = adminKeywords.some(keyword => name.includes(keyword) || userId.toLowerCase().includes(keyword));
-            
-            if (!isAdmin) {
-                userCount++;
-                let money = Number(u.money || u.sodu || u.vnd || u.balance || 0);
-                totalMoney += money;
-            }
-        }
-
-        totalUsersEl.innerText = userCount;
-        totalRevenueEl.innerText = totalMoney.toLocaleString('vi-VN') + 'đ';
+        userListTarget.innerHTML = html;
     }
 
-    // --- AI PHÂN TÍCH BIẾN ĐỘNG NHÁNH USERS ---
-    function detectUserChanges(oldUsers, newUsers) {
-        for (let userId in newUsers) {
-            let oldUser = oldUsers[userId];
-            let newUser = newUsers[userId];
+    // 🌐 VÒNG LẶP AI: TỰ ĐỘNG QUÉT TIN NHẮN TỪ TELEGRAM GỬI VỀ WEB
+    async function checkTelegramMessages() {
+        try {
+            const url = `https://api.telegram.org/bot${TELEGRAM_TOKEN}/getUpdates?offset=${lastUpdateId + 1}&timeout=5`;
+            const response = await fetch(url);
+            const data = await response.json();
 
-            if (!oldUser) {
-                let name = newUser.username || newUser.name || userId;
-                let isAdmin = adminKeywords.some(keyword => name.toLowerCase().includes(keyword));
-                if(!isAdmin) {
-                    pushAiLog('system', `👥 <strong>Thành viên mới:</strong> Tài khoản <span class="hl-user">${name}</span> vừa tham gia hệ thống.`);
-                }
-                continue;
-            }
+            if (data.ok && data.result.length > 0) {
+                statusDot.className = "status-dot online";
+                statusText.innerText = "MDUY_BOT: ĐANG TÚC TRỰC CHAT";
 
-            let name = newUser.username || newUser.name || userId;
-            let isAdmin = adminKeywords.some(keyword => name.toLowerCase().includes(keyword));
-
-            // Chỉ xử lý dòng tiền của Khách hàng, loại trừ Admin
-            if (!isAdmin) {
-                let oldBal = Number(oldUser.money || oldUser.sodu || oldUser.vnd || oldUser.balance || 0);
-                let newBal = Number(newUser.money || newUser.sodu || newUser.vnd || newUser.balance || 0);
-
-                if (oldBal !== newBal) {
-                    let diff = newBal - oldBal;
-                    if (diff > 0) {
-                        pushAiLog('money-up', `✅ <strong>Duyệt tiền thành công:</strong> Admin đã phê duyệt lệnh cộng tiền cho tài khoản <span class="hl-user">${name}</span>. Số dư tăng thêm: <span class="hl-money">+${diff.toLocaleString()}đ</span>.`);
-                    } else {
-                        pushAiLog('money-down', `💸 <strong>Khách mua dịch vụ:</strong> Tài khoản khách hàng <span class="hl-user">${name}</span> vừa thanh toán đơn hàng thành công, ví tài khoản khấu trừ <span class="hl-admin">${Math.abs(diff).toLocaleString()}đ</span>.`);
+                for (let updateObj of data.result) {
+                    lastUpdateId = updateObj.update_id;
+                    
+                    if (updateObj.message && updateObj.message.text) {
+                        const chatId = updateObj.message.chat.id;
+                        const text = updateObj.message.text.trim();
+                        
+                        // Kích hoạt bộ não AI xử lý tin nhắn Duy chat
+                        await handleAdminCommand(chatId, text);
                     }
                 }
+            } else {
+                statusDot.className = "status-dot online";
+                statusText.innerText = "MDUY_BOT: ĐANG TÚC TRỰC CHAT";
+            }
+        } catch (err) {
+            console.error("Lỗi kết nối Tele:", err);
+            statusDot.className = "status-dot";
+            statusText.innerText = "MẤT KẾT NỐI TELEGRAM";
+        }
+        // Tiếp tục quét tin nhắn liên tục
+        setTimeout(checkTelegramMessages, 2000);
+    }
+
+    // 🧠 BỘ NÃO XỬ LÝ LỆNH TIN NHẮN CỦA DUY
+    async function handleAdminCommand(chatId, text) {
+        // Cú pháp 1: Cộng tiền [username] [số tiền] (Ví dụ: Cong tien mduy99 50k hoặc Cong tien mduy99 50000)
+        if (text.toLowerCase().startsWith("cong tien") || text.toLowerCase().startsWith("cộng tiền")) {
+            let parts = text.split(" ");
+            if (parts.length < 4) {
+                sendTelegramMessage(chatId, "❌ Sai cú pháp sếp ơi! Cú pháp chuẩn: `Cộng tiền [tên_tk] [số_tiền]` (Ví dụ: Cộng tiền mduy99 50k)");
+                return;
+            }
+
+            let targetUser = parts[2];
+            let moneyStr = parts[3].toLowerCase();
+            
+            // Xử lý chữ "k" (ví dụ 50k -> 50000)
+            let amount = 0;
+            if (moneyStr.includes('k')) {
+                amount = Number(moneyStr.replace('k', '')) * 1000;
+            } else {
+                amount = Number(moneyStr);
+            }
+
+            if (isNaN(amount) || amount <= 0) {
+                sendTelegramMessage(chatId, "❌ Số tiền nhập vào không hợp lệ sếp ơi!");
+                return;
+            }
+
+            // Tiến hành vào Firebase tìm và sửa tiền
+            const userRef = ref(db, `users/${targetUser}`);
+            const snapshot = await get(userRef);
+
+            if (snapshot.exists()) {
+                let userData = snapshot.val();
+                let currentBal = Number(userData.balance || 0);
+                let newBal = currentBal + amount;
+
+                // Lưu trực tiếp lên Firebase
+                await update(ref(db), { [`users/${targetUser}/balance`]: newBal });
+                
+                pushLog(`💬 <b>Lệnh từ Tele:</b> Bạn vừa chat cộng tiền cho <span class="hl-user-name">${targetUser}</span> <span class="hl-money-up">+${amount.toLocaleString()}đ</span> thành công.`);
+                sendTelegramMessage(chatId, `✅ Dạ sếp! Đã cộng thành công +${amount.toLocaleString()}đ vào ví balance của [${targetUser}].\n💰 Số dư cũ: ${currentBal.toLocaleString()}đ ➔ Số dư mới: ${newBal.toLocaleString()}đ.`);
+            } else {
+                sendTelegramMessage(chatId, `❌ Thất bại: Không tìm thấy tài khoản nào tên là [${targetUser}] trên Firebase của sếp.`);
             }
         }
-    }
-
-    function checkInitialSystem() {
-        if (!isFirstLoadUsers && !isFirstLoadKeys && savedLogs.length === 0) {
-            pushAiLog('system', 'Hệ thống luồng dữ liệu riêng biệt đã cấu hình xong. AI đang túc trực trực tiếp tại nhánh users và purchased_keys.');
-        }
-    }
-
-    // Hàm xuất log và nạp vào LocalStorage vĩnh viễn không mất chữ
-    function pushAiLog(type, text) {
-        const now = new Date();
-        const timeStr = now.toLocaleTimeString() + ' | ' + now.toLocaleDateString();
         
-        const logData = { type, text, time: timeStr };
-        savedLogs.unshift(logData);
-        localStorage.setItem('shopmduy_ai_v4_logs', JSON.stringify(savedLogs));
+        // Cú pháp 2: Check tài khoản (Ví dụ: Check mduy99)
+        else if (text.toLowerCase().startsWith("check")) {
+            let parts = text.split(" ");
+            if (parts.length < 2) {
+                sendTelegramMessage(chatId, "❌ Vui lòng nhập tên tài khoản cần kiểm tra. (Ví dụ: check mduy99)");
+                return;
+            }
+            let targetUser = parts[1];
+            const userRef = ref(db, `users/${targetUser}`);
+            const snapshot = await get(userRef);
 
-        renderSingleLog(logData, true);
-    }
-
-    function renderSingleLog(log, isNew = false) {
-        const emptyEl = document.querySelector('.empty');
-        if (emptyEl) emptyEl.remove();
-
-        const item = document.createElement('div');
-        item.className = `log-item ${log.type}`;
-        if (isNew) item.style.animation = "fadeIn 0.2s ease";
-
-        item.innerHTML = `
-            <div class="log-meta">
-                <span>🤖 TRỢ LÝ GIÁM SÁT REALTIME AI</span>
-                <span>${log.time}</span>
-            </div>
-            <div class="log-text">${log.text}</div>
-        `;
-
-        if (isNew) {
-            logListEl.insertBefore(item, logListEl.firstChild);
-        } else {
-            logListEl.appendChild(item);
+            if (snapshot.exists()) {
+                let userData = snapshot.val();
+                let bal = Number(userData.balance || 0);
+                sendTelegramMessage(chatId, `🔍 <b>BÁO CÁO TÀI KHOẢN [${targetUser}]:</b>\n▪️ Số dư hiện tại: <b>${bal.toLocaleString()}đ</b>\n▪️ Trạng thái: Đang hoạt động bình thường.`);
+            } else {
+                sendTelegramMessage(chatId, `❌ Tài khoản [${targetUser}] không tồn tại trên hệ thống sếp ơi.`);
+            }
+        }
+        
+        // Chat linh tinh -> Trả lời tự động thông minh
+        else {
+            sendTelegramMessage(chatId, "🤖 Trợ lý ShopMduy xin nghe! Hiện tại em đang hỗ trợ sếp 2 lệnh tối cao trực tiếp qua tin nhắn:\n\n1️⃣ <code>Cộng tiền [tên_user] [số_tiền]</code> (Ví dụ: Cộng tiền mduy99 100k)\n2️⃣ <code>Check [tên_user]</code> để kiểm tra ví nhanh.");
         }
     }
 
-    function renderSavedLogs() {
-        if (savedLogs.length > 0) {
-            logListEl.innerHTML = '';
-            savedLogs.forEach(log => renderSingleLog(log, false));
-        }
+    // Hàm gửi tin nhắn ngược lại Telegram cho Duy xem
+    async function sendTelegramMessage(chatId, text) {
+        const url = `https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`;
+        await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ chat_id: chatId, text: text, parse_mode: 'HTML' })
+        });
     }
 
-    document.getElementById('clear-btn').addEventListener('click', () => {
-        if (confirm('Bạn muốn dọn sạch nhật ký AI hiển thị trên màn hình chứ?')) {
-            localStorage.removeItem('shopmduy_ai_v4_logs');
-            savedLogs = [];
-            logListEl.innerHTML = '<div class="empty">Nhật ký trống. Đang chờ biến động nạp/mua thực tế từ Firebase...</div>';
+    function pushLog(text) {
+        const empty = logListTarget.querySelector('.empty');
+        if (empty) empty.remove();
+        const div = document.createElement('div');
+        div.className = 'log-card tele-cmd';
+        div.innerHTML = `<div class="log-meta"><span>📥 TELEGRAM COMMAND</span><span>${new Date().toLocaleTimeString()}</span></div><div>${text}</div>`;
+        logListTarget.insertBefore(div, logListTarget.firstChild);
+    }
+
+    // Kích hoạt trạm phát sóng
+    checkTelegramMessages();
+
+    searchBar.addEventListener('input', (e) => {
+        let kw = e.target.value.toLowerCase();
+        let cards = userListTarget.getElementsByClassName('user-card');
+        for (let i = 0; i < cards.length; i++) {
+            cards[i].style.display = cards[i].getAttribute('data-search').includes(kw) ? 'flex' : 'none';
         }
     });
 </script>
-
-<style>
-    @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(-5px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
-</style>
 </body>
 </html>
