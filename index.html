@@ -3,116 +3,111 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trợ Lý AI Giám Sát Máy Chủ</title>
+    <title>AI Server Monitor Professional</title>
     <style>
         :root {
-            --bg-color: #090d16;
-            --card-bg: #111827;
-            --text-color: #f3f4f6;
+            --bg-color: #060814;
+            --card-bg: #0b1120;
+            --card-border: #1e293b;
+            --text-main: #f8fafc;
+            --text-sub: #94a3b8;
             --primary: #38bdf8;
-            --success: #34d399;
-            --warning: #fbbf24;
-            --danger: #f87171;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
         }
         body {
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            font-family: 'Segoe UI', system-ui, sans-serif;
             background-color: var(--bg-color);
-            color: var(--text-color);
+            color: var(--text-main);
             margin: 0;
             padding: 20px;
         }
         .container {
-            max-width: 850px;
+            max-width: 1000px;
             margin: 0 auto;
         }
         header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 20px 0;
-            border-bottom: 1px solid #1f2937;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--card-border);
+            margin-bottom: 20px;
+        }
+        h1 { margin: 0; font-size: 24px; color: var(--primary); }
+        
+        /* Khu vực thống kê số dư */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 15px;
             margin-bottom: 25px;
         }
-        h1 {
-            margin: 0;
-            font-size: 24px;
-            background: linear-gradient(to right, #38bdf8, #818cf8);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        .btn-clear {
-            background: rgba(248, 113, 113, 0.1);
-            color: var(--danger);
-            border: 1px solid var(--danger);
-            padding: 8px 15px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: all 0.2s;
-        }
-        .btn-clear:hover {
-            background: var(--danger);
-            color: white;
-        }
-        .card {
+        .stat-card {
             background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+        }
+        .stat-title { font-size: 12px; color: var(--text-sub); text-transform: uppercase; letter-spacing: 0.5px; }
+        .stat-value { font-size: 22px; font-weight: bold; margin-top: 5px; font-family: monospace; }
+        .stat-value.total { color: var(--success); }
+        .stat-value.admin { color: var(--danger); }
+
+        .main-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
             border-radius: 12px;
             padding: 20px;
-            border: 1px solid #1f2937;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
         }
-        h2 {
-            margin-top: 0;
-            font-size: 16px;
-            color: #9ca3af;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+        .card-header {
             display: flex;
+            justify-content: space-between;
             align-items: center;
-            gap: 8px;
+            margin-bottom: 15px;
         }
-        .log-container {
-            max-height: 650px;
+        h2 { font-size: 16px; color: var(--primary); margin: 0; }
+        
+        .btn-clear {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+            border: 1px solid var(--danger);
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+        }
+        .btn-clear:hover { background: var(--danger); color: #fff; }
+
+        /* Danh sách Log AI */
+        .log-list {
+            max-height: 550px;
             overflow-y: auto;
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            gap: 12px;
         }
         .log-item {
-            background: #1f2937;
-            border-radius: 8px;
-            padding: 15px;
+            background: rgba(255, 255, 255, 0.02);
             border-left: 4px solid var(--primary);
-            position: relative;
+            padding: 15px;
+            border-radius: 4px;
         }
-        .log-header {
-            display: flex;
-            justify-content: space-between;
-            font-size: 12px;
-            color: #9ca3af;
-            margin-bottom: 6px;
-        }
-        .ai-text {
-            font-size: 15px;
-            line-height: 1.6;
-            color: #f3f4f6;
-        }
-        .ai-text strong {
-            color: #fff;
-        }
-        /* Chỉ định màu sắc theo loại hành động */
-        .log-item.money { border-left-color: var(--success); background: rgba(52, 211, 153, 0.03); }
-        .log-item.status { border-left-color: var(--warning); background: rgba(251, 191, 36, 0.03); }
-        .log-item.general { border-left-color: var(--primary); }
+        .log-item.approved { border-left-color: var(--success); background: rgba(16, 185, 129, 0.03); }
+        .log-item.changed { border-left-color: var(--warning); }
         
-        .empty-state {
-            text-align: center;
-            color: #6b7280;
-            padding: 40px;
-            font-style: italic;
-        }
-        .highlight-name { color: #60a5fa !important; font-weight: bold; }
-        .highlight-money { color: #34d399 !important; font-weight: bold; }
+        .log-meta { display: flex; justify-content: space-between; font-size: 11px; color: var(--text-sub); margin-bottom: 6px; }
+        .log-text { font-size: 14px; line-height: 1.5; }
+        
+        /* Highlight chữ */
+        .hl-admin { color: #f43f5e; font-weight: bold; }
+        .hl-user { color: #38bdf8; font-weight: bold; }
+        .hl-money { color: #10b981; font-weight: bold; }
+        .hl-info { color: #e2e8f0; font-weight: bold; }
+
+        .empty { text-align: center; color: var(--text-sub); padding: 40px; font-style: italic; }
     </style>
 </head>
 <body>
@@ -120,16 +115,29 @@
 <div class="container">
     <header>
         <div>
-            <h1>M.DUY AI MONITOR</h1>
-            <div style="font-size: 12px; color: #6b7280; margin-top: 4px;">Hệ thống lưu trữ vĩnh viễn đã kích hoạt ✔</div>
+            <h1>M.DUY AI LIVE MONITOR</h1>
+            <div style="font-size: 12px; color: var(--text-sub);">Hệ thống giám sát tối cao - Lưu trữ vĩnh viễn</div>
         </div>
-        <button class="btn-clear" id="clear-btn">Xóa Lịch Sử</button>
     </header>
 
-    <div class="card">
-        <h2>🤖 Báo cáo từ Trợ lý ảo (AI Insights)</h2>
-        <div id="log-container" class="log-container">
-            <div class="empty-state">Đang đợi kết nối và phân tích luồng dữ liệu...</div>
+    <div class="dashboard-grid">
+        <div class="stat-card">
+            <div class="stat-title">💰 Tổng Giao Dịch Đã Duyệt</div>
+            <div id="total-approved" class="stat-value total">0đ</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-title">👑 Tài Khoản Admin (Loại trừ)</div>
+            <div id="admin-balance" class="stat-value admin">0đ</div>
+        </div>
+    </div>
+
+    <div class="main-card">
+        <div class="card-header">
+            <h2>🤖 BÁO CÁO PHÂN TÍCH HÀNH VI TỪ AI</h2>
+            <button class="btn-clear" id="clear-btn">Xóa nhật ký</button>
+        </div>
+        <div id="log-list" class="log-list">
+            <div class="empty">Đang đồng bộ dữ liệu hệ thống...</div>
         </div>
     </div>
 </div>
@@ -144,149 +152,182 @@
 
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
-    
-    const logContainerEl = document.getElementById('log-container');
-    const clearBtn = document.getElementById('clear-btn');
+
+    const logListEl = document.getElementById('log-list');
+    const totalApprovedEl = document.getElementById('total-approved');
+    const adminBalanceEl = document.getElementById('admin-balance');
 
     let oldData = null;
     let isFirstLoad = true;
+    let savedLogs = JSON.parse(localStorage.getItem('duy_ai_logs')) || [];
 
-    // Tải lại lịch sử cũ từ LocalStorage khi vừa mở web (Không lo mất khi đóng tab)
-    let savedLogs = JSON.parse(localStorage.getItem('ai_server_logs')) || [];
+    // Hiện lại log cũ đã lưu từ các phiên trước
     renderSavedLogs();
 
-    // Lắng nghe dữ liệu từ Firebase
+    // Lắng nghe biến động từ Firebase
     onValue(ref(db, '/'), (snapshot) => {
         const newData = snapshot.val();
+
+        // 1. Tự động tính toán tổng số tiền dựa trên dữ liệu hiện tại
+        calculateFinancials(newData);
 
         if (isFirstLoad) {
             oldData = JSON.parse(JSON.stringify(newData));
             isFirstLoad = false;
             if(savedLogs.length === 0) {
-                generateAiSpeech("general", "Hệ thống AI vừa khởi động thành công. Hiện tại đang giữ trạng thái giám sát tối cao, chưa phát hiện biến động mới nào.");
+                pushAiLog('system', 'Hệ thống kết nối thành công. AI đang quét cấu trúc dữ liệu để sẵn sàng báo cáo chi tiết.');
             }
             return;
         }
 
-        // Chạy bộ lọc thông minh dịch ngôn ngữ
-        translateDataToAiSpeech(oldData, newData);
-        
-        // Lưu lại dữ liệu cũ để so sánh tiếp
+        // 2. Chạy quét chuyên sâu phát hiện hành động duyệt tiền
+        deepAnalyze(oldData, newData);
+
+        // Lưu lại trạng thái cũ
         oldData = JSON.parse(JSON.stringify(newData));
     });
 
-    // 🧠 BỘ NÃO AI: Đọc hiểu dữ liệu và dịch thành câu nói của con người
-    function translateDataToAiSpeech(oldObj, newObj) {
-        if (!newObj || !oldObj) return;
+    // 🌟 HÀM TÍNH TỔNG TIỀN TỰ ĐỘNG
+    function calculateFinancials(data) {
+        if (!data) return;
+        
+        let totalApproved = 0;
+        let adminMoney = 0;
 
-        // Quét qua các key trong database của bạn (ví dụ: users, orders, nap_tien...)
-        for (let key in newObj) {
-            // So sánh nếu có sự thay đổi dữ liệu ở mục này
-            if (JSON.stringify(oldObj[key]) !== JSON.stringify(newObj[key])) {
-                
-                let currentItem = newObj[key];
-                let oldItem = oldObj[key];
+        // Định nghĩa các từ khóa nhận diện Admin để loại trừ
+        const adminKeywords = ['admin', 'mduy', 'shopmduy', 'root', 'quanly'];
 
-                // 🌟 KỊCH BẢN 1: DUYỆT TIỀN / NẠP TIỀN / ĐỔI SỐ DƯ
-                // Nếu cấu trúc dạng vật phẩm/user có trường "money" hoặc "sodu" hoặc "status"
-                if (typeof currentItem === 'object') {
-                    // Thử tìm xem đây là hành động duyệt/nạp gì thông qua cấu trúc phổ biến
-                    for (let subKey in currentItem) {
-                        let modern = currentItem[subKey];
-                        let ancient = oldItem ? oldItem[subKey] : null;
-                        
-                        if (ancient && JSON.stringify(modern) !== JSON.stringify(ancient)) {
-                            // Trường hợp thay đổi số tiền / Số dư
-                            if (subKey === 'money' || subKey === 'sodu' || subKey === 'balance') {
-                                let tenUser = currentItem.username || currentItem.name || subKey;
-                                generateAiSpeech("money", `💰 <strong>Hệ thống vừa thực hiện giao dịch:</strong> Tài khoản của <span class="highlight-name">${tenUser}</span> vừa biến động từ <span class="highlight-money">${ancient[subKey]}đ</span> sang <span class="highlight-money">${modern[subKey]}đ</span>. Yêu cầu đã được xử lý thành công.`);
-                                return;
-                            }
-                            // Trường hợp thay đổi Trạng thái (Ví dụ: tu "đang chờ" sang "đã duyệt")
-                            if (subKey === 'status' || subKey === 'trangthai') {
-                                let tenUser = currentItem.username || currentItem.name || key;
-                                generateAiSpeech("status", `⚙️ <strong>Cập nhật trạng thái hành động:</strong> Admin đã thay đổi trạng thái mục <span class="highlight-name">${tenUser}</span> từ [${ancient[subKey]}] sang thành [${modern[subKey]}]. Các thông tin liên quan đã được đồng bộ hóa.`);
-                                return;
-                            }
-                        }
+        // Hàm đệ quy quét toàn bộ ngóc ngách của database để tìm tiền và trạng thái duyệt
+        function scan(obj) {
+            if (!obj || typeof obj !== 'object') return;
+
+            // Nếu tìm thấy một node chứa thông tin giao dịch hoặc user
+            if (obj.status === 'success' || obj.status === 'đã duyệt' || obj.status === 'approved' || obj.trangthai === 'thành công') {
+                let money = obj.money || obj.sodu || obj.amount || obj.sotien || 0;
+                totalApproved += Number(money);
+            }
+
+            // Quét tìm ví Admin để tách riêng
+            for (let k in obj) {
+                if (typeof obj[k] === 'object') {
+                    // Kiểm tra xem node này có phải của admin không
+                    let isAdminNode = adminKeywords.some(keyword => k.toLowerCase().includes(keyword));
+                    if (isAdminNode) {
+                        adminMoney += Number(obj[k].money || obj[k].sodu || obj[k].balance || 0);
                     }
+                    scan(obj[k]);
                 }
-
-                // 🌟 KỊCH BẢN 2: Thêm một dòng/yêu cầu hoàn toàn mới
-                if (oldItem && Object.keys(currentItem).length > Object.keys(oldItem).length) {
-                    generateAiSpeech("general", `📥 <strong>Ghi nhận yêu cầu mới:</strong> Hệ thống máy chủ vừa tiếp nhận thêm một dữ liệu mới tại danh mục <strong>${key}</strong>. AI đã lưu trữ và bảo mật dữ liệu này.`);
-                    return;
-                }
-
-                // 🌟 KỊCH BẢN 3: Báo cáo chung chung nếu không rơi vào các trường hợp trên
-                generateAiSpeech("general", `⚡ <strong>Thông báo từ máy chủ:</strong> Danh mục <strong>${key}</strong> vừa có sự thay đổi nội dung. Admin hoặc hệ thống tự động đã cập nhật lại phần này.`);
             }
         }
+
+        scan(data);
+
+        // Hiển thị lên giao diện dạng VND
+        totalApprovedEl.innerText = totalApproved.toLocaleString('vi-VN') + 'đ';
+        adminBalanceEl.innerText = adminMoney.toLocaleString('vi-VN') + 'đ';
     }
 
-    // Hàm tạo câu nói AI, hiển thị lên màn hình và LƯU VÀO BỘ NHỚ MÁY
-    function generateAiSpeech(type, text) {
+    // 🧠 AI PHÂN TÍCH CHI TIẾT HÀNH VI DUYỆT TIỀN
+    function deepAnalyze(oldObj, newObj) {
+        if (!newObj || !oldObj) return;
+
+        // Hàm so sánh sâu giữa cũ và mới
+        function compareNodes(oldNode, newNode, path = '') {
+            if (typeof newNode !== 'object' || !newNode || !oldNode) return;
+
+            // Trường hợp 1: Có một giao dịch mới hoàn toàn được thêm vào và đã duyệt sẵn
+            for (let key in newNode) {
+                if (!oldNode[key]) {
+                    let item = newNode[key];
+                    if (item && (item.status === 'success' || item.status === 'đã duyệt')) {
+                        let target = item.username || item.name || item.user || 'Khách hàng';
+                        let amount = item.money || item.amount || item.sotien || 0;
+                        let lyDo = item.note || item.reason || 'Nạp tiền vào hệ thống';
+                        
+                        pushAiLog('approved', `🎉 <strong>Hành động mới:</strong> Hệ thống vừa ghi nhận một giao dịch mới thành công. Người nhận: <span class="hl-user">${target}</span>. Số tiền: <span class="hl-money">${Number(amount).toLocaleString()}đ</span>. Nội dung: <span class="hl-info">${lyDo}</span>.`);
+                    }
+                } else {
+                    // Trường hợp 2: Giao dịch có sẵn đổi trạng thái từ "Chờ" sang "Đã duyệt"
+                    let oldSub = oldNode[key];
+                    let newSub = newNode[key];
+
+                    if (typeof newSub === 'object' && oldSub) {
+                        let oldStatus = oldSub.status || oldSub.trangthai;
+                        let newStatus = newSub.status || newSub.trangthai;
+
+                        if (oldStatus !== newStatus && (newStatus === 'success' || newStatus === 'đã duyệt')) {
+                            let target = newSub.username || newSub.name || newSub.user || key;
+                            let amount = newSub.money || newSub.amount || newSub.sotien || 0;
+                            let adminName = newSub.handler || newSub.admin || 'Admin M.Duy';
+                            
+                            pushAiLog('approved', `✅ <strong>Lệnh duyệt tiền thành công:</strong> Người điều hành <span class="hl-admin">${adminName}</span> vừa bấm duyệt lệnh cho tài khoản <span class="hl-user">${target}</span>. Số tiền cộng vào ví là: <span class="hl-money">${Number(amount).toLocaleString()}đ</span>. Hệ thống đã lưu lại lịch sử.`);
+                        }
+                    }
+                    
+                    // Tiếp tục đào sâu xuống nếu cấu trúc lồng nhau
+                    compareNodes(oldNode[key], newNode[key], path + '/' + key);
+                }
+            }
+        }
+
+        compareNodes(oldObj, newObj);
+    }
+
+    // Hàm tạo Log, in ra màn hình và nạp vào LocalStorage vĩnh viễn
+    function pushAiLog(type, text) {
         const now = new Date();
-        const timeString = now.toLocaleTimeString() + " - " + now.toLocaleDateString();
-
-        const newLog = { type, text, time: timeString };
+        const timeStr = now.toLocaleTimeString() + ' | ' + now.toLocaleDateString();
         
-        // Thêm vào mảng tạm và lưu thẳng vào LocalStorage của trình duyệt
-        savedLogs.unshift(newLog); // Đưa lên đầu
-        localStorage.setItem('ai_server_logs', JSON.stringify(savedLogs));
+        const logData = { type, text, time: timeStr };
+        savedLogs.unshift(logData);
+        localStorage.setItem('duy_ai_logs', JSON.stringify(savedLogs));
 
-        // Render ra màn hình
-        renderLogItem(newLog, true);
+        renderSingleLog(logData, true);
     }
 
-    // Hàm vẽ giao diện từ dữ liệu log
-    function renderLogItem(log, isNew = false) {
-        // Xóa chữ trống ban đầu nếu có
-        const emptyState = document.querySelector('.empty-state');
-        if (emptyState) emptyState.remove();
+    function renderSingleLog(log, isNew = false) {
+        const emptyEl = document.querySelector('.empty');
+        if (emptyEl) emptyEl.remove();
 
-        const logItem = document.createElement('div');
-        logItem.className = `log-item ${log.type}`;
-        if(isNew) logItem.style.animation = "slideIn 0.3s ease";
+        const item = document.createElement('div');
+        item.className = `log-item ${log.type}`;
+        if (isNew) item.style.animation = "fadeIn 0.3s ease";
 
-        logItem.innerHTML = `
-            <div class="log-header">
-                <span>🤖 TRỢ LÝ AI PHÂN TÍCH</span>
+        item.innerHTML = `
+            <div class="log-meta">
+                <span>🤖 TRỢ LÝ AI BÁO CÁO DETAILED LOG</span>
                 <span>${log.time}</span>
             </div>
-            <div class="ai-text">${log.text}</div>
+            <div class="log-text">${log.text}</div>
         `;
 
         if (isNew) {
-            logContainerEl.insertBefore(logItem, logContainerEl.firstChild);
+            logListEl.insertBefore(item, logListEl.firstChild);
         } else {
-            logContainerEl.appendChild(logItem);
+            logListEl.appendChild(item);
         }
     }
 
-    // Hàm tải lại toàn bộ Log cũ khi F5/Mở lại trang
     function renderSavedLogs() {
         if (savedLogs.length > 0) {
-            logContainerEl.innerHTML = "";
-            savedLogs.forEach(log => {
-                renderLogItem(log, false);
-            });
+            logListEl.innerHTML = '';
+            savedLogs.forEach(log => renderSingleLog(log, false));
         }
     }
 
-    // Nút xóa toàn bộ lịch sử nếu muốn làm sạch trang
-    clearBtn.addEventListener('click', () => {
-        if(confirm("Bạn có chắc chắn muốn xóa toàn bộ lịch sử báo cáo của AI không?")) {
-            localStorage.removeItem('ai_server_logs');
+    // Nút xóa lịch sử
+    document.getElementById('clear-btn').addEventListener('click', () => {
+        if (confirm('Bạn muốn xóa sạch bộ nhớ lịch sử của AI không? (Số tiền tổng trên bảng điều khiển vẫn giữ nguyên)')) {
+            localStorage.removeItem('duy_ai_logs');
             savedLogs = [];
-            logContainerEl.innerHTML = '<div class="empty-state">Lịch sử đã được dọn sạch. Đang đợi biến động mới...</div>';
+            logListEl.innerHTML = '<div class="empty">Lịch sử trống. Đang đợi giao dịch tiếp theo...</div>';
         }
     });
 </script>
 
 <style>
-    @keyframes slideIn {
-        from { opacity: 0; transform: translateY(-10px); }
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(-8px); }
         to { opacity: 1; transform: translateY(0); }
     }
 </style>
