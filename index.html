@@ -1,262 +1,63 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Công cụ Nén HTML Siêu Tốc</title>
-    <style>
-        :root {
-            --primary: #2563eb;
-            --primary-hover: #1d4ed8;
-            --success: #16a34a;
-            --bg: #f8fafc;
-            --card: #ffffff;
-            --text: #1e293b;
-            --border: #e2e8f0;
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: var(--bg);
-            color: var(--text);
-            line-height: 1.5;
-            margin: 0;
-            padding: 20px;
-            display: flex;
-            justify-content: center;
-        }
-
-        .container {
-            width: 100%;
-            max-width: 800px;
-            background: var(--card);
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-        }
-
-        h2 {
-            margin-top: 0;
-            color: #0f172a;
-            text-align: center;
-            font-size: 24px;
-        }
-
-        .upload-section {
-            border: 2px dashed #cbd5e1;
-            padding: 30px;
-            text-align: center;
-            border-radius: 8px;
-            background: #f1f5f9;
-            cursor: pointer;
-            transition: all 0.2s;
-            margin-bottom: 20px;
-        }
-
-        .upload-section:hover {
-            border-color: var(--primary);
-            background: #eff6ff;
-        }
-
-        #fileInput {
-            display: none;
-        }
-
-        .upload-icon {
-            font-size: 40px;
-            margin-bottom: 10px;
-            display: block;
-        }
-
-        .button-group {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-
-        button {
-            flex: 1;
-            padding: 12px;
-            border: none;
-            border-radius: 6px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-
-        .btn-copy {
-            background-color: var(--primary);
-            color: white;
-        }
-
-        .btn-copy:hover {
-            background-color: var(--primary-hover);
-        }
-
-        .btn-copy.copied {
-            background-color: var(--success);
-        }
-
-        .btn-clear {
-            background-color: #e2e8f0;
-            color: #475569;
-            max-width: 150px;
-        }
-
-        .btn-clear:hover {
-            background-color: #cbd5e1;
-        }
-
-        textarea {
-            width: 100%;
-            height: 250px;
-            padding: 12px;
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            font-family: "Courier New", Courier, monospace;
-            font-size: 14px;
-            background: #0f172a;
-            color: #38bdf8;
-            resize: vertical;
-            box-sizing: border-box;
-        }
-
-        .status-msg {
-            text-align: center;
-            font-weight: bold;
-            color: var(--success);
-            margin-top: 10px;
-            height: 24px;
-        }
-    </style>
+  <meta charset="utf-8">
+  <style>
+    body { width: 350px; font-family: Arial, sans-serif; padding: 10px; margin: 0; }
+    h3 { color: #0084FF; margin-top: 0; }
+    textarea { width: 100%; height: 100px; font-family: monospace; font-size: 11px; margin-bottom: 10px; resize: vertical; }
+    button { background: #0084FF; color: white; border: none; padding: 8px 12px; cursor: pointer; border-radius: 4px; width: 100%; }
+    button:hover { background: #0066CC; }
+  </style>
 </head>
 <body>
+  <h3>MDUYK ZALO UTILS</h3>
+  <label><b>IMEI:</b></label>
+  <textarea id="imeiBox" readonly placeholder="Đang tải..."></textarea>
+  
+  <label><b>Cookie JSON:</b></label>
+  <textarea id="cookieBox" readonly placeholder="Đang tải..."></textarea>
+  
+  <button id="btnCopy">Copy tất cả thông tin</button>
 
-<div class="container">
-    <h2>Nén & Sao Chép File HTML</h2>
-    
-    <!-- Vùng kéo thả hoặc chọn file -->
-    <div class="upload-section" onclick="document.getElementById('fileInput').click()">
-        <span class="upload-icon">📄</span>
-        <strong>Nhấp để chọn</strong> hoặc kéo thả file .html vào đây
-        <input type="file" id="fileInput" accept=".html">
-    </div>
+  <script>
+    // Hàm chạy trực tiếp trên trang Zalo để lấy dữ liệu công khai của tab đó
+    function getZaloData() {
+      let cookies = document.cookie.split(';').reduce((res, c) => {
+          let [key, val] = c.trim().split('=');
+          if (key) res[key] = decodeURIComponent(val);
+          return res;
+      }, {});
+      let imei = window.localStorage.getItem('zalo_imei') || window.localStorage.getItem('z_uuid') || "Không tìm thấy";
+      return { imei, cookies };
+    }
 
-    <!-- Khu vực nút bấm điều khiển -->
-    <div class="button-group">
-        <button class="btn-copy" id="copyBtn" onclick="copyToClipboard()" disabled>Chưa có code để sao chép</button>
-        <button class="btn-clear" onclick="clearAll()">Xóa hết</button>
-    </div>
+    // Khi popup mở ra, yêu cầu trình duyệt đọc dữ liệu từ trang web hiện tại
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+      let activeTab = tabs[0];
+      if (!activeTab.url.includes("zalo.me")) {
+        document.body.innerHTML = "<h3>Lỗi: Hãy mở trang chat.zalo.me trước!</h3>";
+        return;
+      }
 
-    <!-- Ô hiển thị kết quả code sau khi đã nén -->
-    <label for="outputCode" style="font-weight: bold; display: block; margin-bottom: 5px;">Kết quả code đã nén:</label>
-    <textarea id="outputCode" placeholder="Code sau khi nén sẽ hiển thị ở đây..." readonly></textarea>
-    
-    <div class="status-msg" id="statusMsg"></div>
-</div>
-
-<script>
-    const fileInput = document.getElementById('fileInput');
-    const outputCode = document.getElementById('outputCode');
-    const copyBtn = document.getElementById('copyBtn');
-    const statusMsg = document.getElementById('statusMsg');
-    const uploadSection = document.querySelector('.upload-section');
-
-    // Xử lý khi người dùng chọn file
-    fileInput.addEventListener('change', handleFile);
-
-    // Xử lý kéo thả file
-    uploadSection.addEventListener('dragover', (e) => {
-        e.preventDefault();
-        uploadSection.style.borderColor = 'var(--primary)';
-    });
-
-    uploadSection.addEventListener('dragleave', () => {
-        uploadSection.style.borderColor = '#cbd5e1';
-    });
-
-    uploadSection.addEventListener('drop', (e) => {
-        e.preventDefault();
-        uploadSection.style.borderColor = '#cbd5e1';
-        if (e.dataTransfer.files.length > 0) {
-            fileInput.files = e.dataTransfer.files;
-            handleFile();
+      chrome.scripting.executeScript({
+        target: { tabId: activeTab.id },
+        func: getZaloData
+      }, (results) => {
+        if (results && results[0]) {
+          const data = results[0].result;
+          document.getElementById('imeiBox').value = data.imei;
+          document.getElementById('cookieBox').value = JSON.stringify(data.cookies, null, 2);
+          
+          // Nút bấm copy nhanh
+          document.getElementById('btnCopy').addEventListener('click', () => {
+            let fullText = `IMEI:\n${data.imei}\n\nCOOKIE:\n${JSON.stringify(data.cookies)}`;
+            navigator.clipboard.writeText(fullText);
+            alert("Đã copy toàn bộ thông tin vào khay nhớ tạm!");
+          });
         }
+      });
     });
-
-    // Hàm đọc và xử lý file HTML
-    function handleFile() {
-        const file = fileInput.files[0];
-        if (!file) return;
-
-        // Kiểm tra xem có đúng là file html không
-        if (!file.name.endsWith('.html') && file.type !== 'text/html') {
-            alert('Vui lòng chỉ chọn file có đuôi .html');
-            return;
-        }
-
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            const originalCode = e.target.result;
-            const compressedCode = minifyHTML(originalCode);
-            
-            outputCode.value = compressedCode;
-            copyBtn.disabled = false;
-            copyBtn.innerText = 'Ấn để sao chép code';
-            showStatus('Đã nén file thành công!');
-        };
-        reader.readAsText(file);
-    }
-
-    // Hàm logic dùng để nén code HTML (Xóa khoảng trắng thừa, xóa xuống dòng, xóa comment)
-    function minifyHTML(html) {
-        return html
-            .replace(/<!--[\s\S]*?-->/g, '') // Xóa các đoạn ghi chú (comment) <!-- -->
-            .replace(/\s+/g, ' ')            // Biến tất cả khoảng trắng liên tiếp và xuống dòng thành 1 khoảng trắng duy nhất
-            .replace(/>\s+</g, '><')         // Xóa khoảng trắng giữa các thẻ tag ẩn (ví dụ: </div>  <div>)
-            .trim();                         // Cắt bỏ khoảng trắng thừa ở đầu và cuối dòng
-    }
-
-    // Hàm thực hiện sao chép nhanh vào bộ nhớ tạm
-    function copyToClipboard() {
-        if (!outputCode.value) return;
-
-        outputCode.select();
-        outputCode.setSelectionRange(0, 99999); // Dành cho thiết bị di động
-
-        navigator.clipboard.writeText(outputCode.value).then(() => {
-            copyBtn.innerText = '✓ Đã sao chép vào bộ nhớ!';
-            copyBtn.classList.add('copied');
-            showStatus('Đã sao chép thành công vào Clipboard!');
-            
-            // Khôi phục lại trạng thái nút sau 2 giây
-            setTimeout(() => {
-                copyBtn.innerText = 'Ấn để sao chép code';
-                copyBtn.classList.remove('copied');
-            }, 2000);
-        }).catch(err => {
-            alert('Lỗi khi sao chép: ' + err);
-        });
-    }
-
-    // Hàm xóa dữ liệu làm lại từ đầu
-    function clearAll() {
-        fileInput.value = '';
-        outputCode.value = '';
-        copyBtn.disabled = true;
-        copyBtn.innerText = 'Chưa có code để sao chép';
-        statusMsg.innerText = '';
-    }
-
-    // Hiển thị thông báo trạng thái tạm thời
-    function showStatus(msg) {
-        statusMsg.innerText = msg;
-        setTimeout(() => {
-            statusMsg.innerText = '';
-        }, 3000);
-    }
-</script>
-
+  </script>
 </body>
 </html>
