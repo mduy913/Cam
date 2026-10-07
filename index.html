@@ -3,780 +3,386 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🔓 Giải mã đa năng V2</title>
+<title>PyHydra Obfuscator - Mã Hóa Code Python</title>
 <style>
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    background: linear-gradient(135deg, #0a0a1a 0%, #1a0a2a 100%);
-    color: #fff; min-height: 100vh; padding: 16px;
-    display: flex; flex-direction: column; align-items: center;
-}
-.container { max-width: 900px; width: 100%; }
-h1 {
-    text-align: center; font-size: 22px; margin-bottom: 8px;
-    background: linear-gradient(135deg, #22c55e, #06b6d4, #a855f7);
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-    font-weight: 800;
-}
-.subtitle { text-align: center; font-size: 12px; color: #888; margin-bottom: 20px; }
-.card {
-    background: rgba(255,255,255,0.03);
-    border: 1px solid rgba(34,197,94,0.3);
-    border-radius: 14px; padding: 16px; margin-bottom: 14px;
-}
-.label {
-    font-size: 12px; font-weight: 700; color: #22c55e;
-    margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px;
-}
-.file-input-wrapper {
-    position: relative; display: block; width: 100%; padding: 20px;
-    background: rgba(0,0,0,0.3); border: 2px dashed rgba(34,197,94,0.5);
-    border-radius: 12px; text-align: center; cursor: pointer;
-    transition: all 0.2s; margin-bottom: 10px;
-}
-.file-input-wrapper:hover { border-color: #22c55e; background: rgba(34,197,94,0.05); }
-.file-input-wrapper.has-file { border-color: #22c55e; background: rgba(34,197,94,0.05); border-style: solid; }
-.file-input-wrapper input[type="file"] {
-    position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer;
-}
-.file-icon { font-size: 32px; margin-bottom: 6px; }
-.file-text { font-size: 13px; color: #ccc; font-weight: 700; }
-.file-sub { font-size: 11px; color: #888; margin-top: 4px; }
-.file-name { font-size: 12px; color: #22c55e; margin-top: 8px; font-weight: 700; word-break: break-all; }
-textarea {
-    width: 100%; min-height: 160px; background: rgba(0,0,0,0.5);
-    border: 1px solid rgba(34,197,94,0.4); border-radius: 10px; color: #fff;
-    padding: 12px; font-family: 'Courier New', monospace; font-size: 12px;
-    resize: vertical; outline: none; line-height: 1.5;
-}
-textarea:focus { border-color: #22c55e; box-shadow: 0 0 15px rgba(34,197,94,0.3); }
-button {
-    width: 100%; padding: 14px; background: linear-gradient(135deg, #22c55e, #06b6d4);
-    border: none; border-radius: 10px; color: #fff; font-weight: 800;
-    font-size: 14px; cursor: pointer; transition: 0.2s;
-    letter-spacing: 1px; margin-top: 8px;
-}
-button:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(34,197,94,0.4); }
-button:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
-.status {
-    font-size: 12px; text-align: center; padding: 12px;
-    color: #22c55e; min-height: 40px; line-height: 1.5;
-    background: rgba(0,0,0,0.3); border-radius: 10px; margin-top: 12px;
-}
-.status.error { color: #ef4444; }
-.status.loading { color: #f59e0b; }
-.copy-btn {
-    background: rgba(59,130,246,0.2); border: 1px solid rgba(59,130,246,0.5);
-    color: #60a5fa; padding: 12px; margin-top: 8px; font-weight: 700;
-}
-.download-btn {
-    background: rgba(34,197,94,0.2); border: 1px solid rgba(34,197,94,0.5);
-    color: #22c55e; padding: 12px; margin-top: 8px; font-weight: 700;
-}
-.hint {
-    background: rgba(59,130,246,0.1); border: 1px solid rgba(59,130,246,0.4);
-    border-radius: 10px; padding: 12px; font-size: 12px; color: #60a5fa;
-    line-height: 1.6; margin-bottom: 14px;
-}
-.info-box {
-    background: rgba(168,85,247,0.1); border: 1px solid rgba(168,85,247,0.4);
-    border-radius: 10px; padding: 10px; font-size: 11px; color: #c4b5fd;
-    line-height: 1.6; margin-top: 8px;
-    word-break: break-word;
-}
-.divider {
-    display: flex; align-items: center; gap: 10px; margin: 14px 0;
-    color: #666; font-size: 11px; font-weight: 700;
-}
-.divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: rgba(34,197,94,0.2); }
-.methods {
-    display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px;
-    margin-top: 10px;
-}
-.method-btn {
-    padding: 8px; font-size: 11px; font-weight: 700;
-    background: rgba(168,85,247,0.15);
-    border: 1px solid rgba(168,85,247,0.4);
-    border-radius: 6px; color: #c4b5fd;
-    cursor: pointer; transition: 0.2s;
-}
-.method-btn:hover { background: rgba(168,85,247,0.25); }
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#0a0e17;--panel:#111827;--border:#1f2937;--text:#e5e7eb;--dim:#9ca3af;--primary:#10b981;--primary-h:#059669;--secondary:#3b82f6;--danger:#ef4444}
+body{background:linear-gradient(135deg,#0a0e17 0%,#1a1f2e 100%);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;min-height:100vh;padding:20px}
+.container{max-width:1600px;margin:0 auto}
+header{text-align:center;margin-bottom:25px}
+h1{font-size:2.5rem;background:linear-gradient(90deg,#10b981,#3b82f6,#f59e0b);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:8px}
+.subtitle{color:var(--dim);font-size:.95rem}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px}
+@media(max-width:900px){.grid{grid-template-columns:1fr}}
+.panel{background:var(--panel);border:1px solid var(--border);border-radius:12px;overflow:hidden;display:flex;flex-direction:column}
+.panel-h{background:#0d1220;padding:10px 15px;display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--border)}
+.dot{width:12px;height:12px;border-radius:50%}
+.dot.r{background:#ef4444}.dot.y{background:#f59e0b}.dot.g{background:#10b981}
+.panel-t{margin-left:auto;font-size:.85rem;color:var(--dim);font-weight:600}
+textarea{flex:1;background:transparent;border:none;color:var(--text);padding:15px;font-family:'Consolas','Monaco',monospace;font-size:13px;line-height:1.6;resize:none;min-height:420px;outline:none;tab-size:4}
+textarea::placeholder{color:#4b5563}
+.panel-f{padding:8px 15px;background:#0d1220;border-top:1px solid var(--border);font-size:.8rem;color:var(--dim);text-align:right}
+.controls{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:20px;display:flex;flex-wrap:wrap;gap:20px;align-items:center;margin-bottom:20px}
+.cg{display:flex;flex-direction:column;gap:6px}
+.cg label{font-size:.85rem;color:var(--dim);display:flex;align-items:center;gap:8px;cursor:pointer}
+.cg select{background:#0d1220;border:1px solid var(--border);color:var(--text);padding:8px 12px;border-radius:6px;font-size:.9rem;cursor:pointer;outline:none}
+.cg input[type=checkbox]{width:16px;height:16px;cursor:pointer;accent-color:var(--primary)}
+.btns{display:flex;gap:10px;margin-left:auto;flex-wrap:wrap}
+.btn{padding:10px 18px;border:none;border-radius:8px;font-size:.9rem;font-weight:600;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:6px;color:#fff}
+.btn.p{background:var(--primary)}.btn.p:hover{background:var(--primary-h);transform:translateY(-1px)}
+.btn.s{background:var(--secondary)}.btn.s:hover{background:#2563eb;transform:translateY(-1px)}
+.btn.d{background:var(--danger)}.btn.d:hover{background:#dc2626;transform:translateY(-1px)}
+.btn:disabled{opacity:.5;cursor:not-allowed;transform:none!important}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:15px;background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:15px 20px;margin-bottom:20px}
+.stat{display:flex;flex-direction:column;gap:4px}
+.stat-l{font-size:.75rem;color:var(--dim);text-transform:uppercase;letter-spacing:.5px}
+.stat-v{font-size:1.1rem;font-weight:700;color:var(--primary);font-family:'Consolas',monospace}
+footer{text-align:center;padding:15px;color:var(--dim);font-size:.85rem}
+.toast{position:fixed;bottom:30px;right:30px;background:var(--primary);color:#fff;padding:12px 20px;border-radius:8px;font-weight:600;opacity:0;transform:translateY(20px);transition:all .3s;pointer-events:none;z-index:1000}
+.toast.show{opacity:1;transform:translateY(0)}
+.toast.err{background:var(--danger)}
+::-webkit-scrollbar{width:10px;height:10px}
+::-webkit-scrollbar-track{background:#0d1220}
+::-webkit-scrollbar-thumb{background:#374151;border-radius:5px}
+::-webkit-scrollbar-thumb:hover{background:#4b5563}
 </style>
 </head>
 <body>
-
 <div class="container">
-    <h1>🔓 GIẢI MÃ ĐA NĂNG</h1>
-    <div class="subtitle">Tự nhận diện & giải mọi kiểu mã hoá phổ biến</div>
+<header>
+<h1>🔥 PyHydra Obfuscator</h1>
+<p class="subtitle">Mã hóa code Python theo phong cách PyHydra - Unicode, Lambda, XOR, Compression</p>
+</header>
 
-    <div class="hint">
-        💡 <b>Hỗ trợ:</b> Base64, Hex, ROT13/47, URL encode, Unicode, Char codes, AES+GZIP, Obfuscator.io, JavaScript Obfuscator... <br>
-        <b>Tự động phát hiện</b> loại mã hoá và giải.
-    </div>
+<div class="grid">
+<div class="panel">
+<div class="panel-h"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="panel-t">Input Code</span></div>
+<textarea id="in" placeholder="Dán code Python của bạn vào đây...
 
-    <div class="card">
-        <div class="label">📁 CHỌN FILE ĐÃ MÃ HOÁ</div>
-        <label class="file-input-wrapper" id="file-wrapper">
-            <input type="file" id="file-input" accept=".txt,.js,.user.js,text/plain,application/javascript">
-            <div class="file-icon">📄</div>
-            <div class="file-text">Nhấn hoặc kéo file vào đây</div>
-            <div class="file-sub">Hỗ trợ: .txt, .js, .user.js</div>
-            <div class="file-name" id="file-name" style="display:none;"></div>
-        </label>
-    </div>
+Ví dụ:
+def hello(name):
+    print(f'Xin chào {name}')
+    return True
 
-    <div class="divider">HOẶC</div>
-
-    <div class="card">
-        <div class="label">📥 DÁN CODE ĐÃ MÃ HOÁ</div>
-        <textarea id="input" placeholder="Dán code đã mã hoá vào đây..." spellcheck="false"></textarea>
-    </div>
-
-    <button id="auto-btn">🤖 TỰ ĐỘNG NHẬN DIỆN & GIẢI MÃ</button>
-
-    <div class="card">
-        <div class="label">🔧 HOẶC CHỌN THỦ CÔNG</div>
-        <div class="methods">
-            <button class="method-btn" data-method="base64">📝 Base64</button>
-            <button class="method-btn" data-method="hex">🔢 Hex</button>
-            <button class="method-btn" data-method="rot13">🔄 ROT13</button>
-            <button class="method-btn" data-method="rot47">🔄 ROT47</button>
-            <button class="method-btn" data-method="url">🌐 URL Decode</button>
-            <button class="method-btn" data-method="unicode">\u Unicode</button>
-            <button class="method-btn" data-method="charcode">📊 Char Code</button>
-            <button class="method-btn" data-method="obfuscator">🎭 Obfuscator.io</button>
-            <button class="method-btn" data-method="javascript-obf">🎭 JavaScript Obfuscator</button>
-            <button class="method-btn" data-method="brute">💪 Brute Force</button>
-        </div>
-    </div>
-
-    <div class="status" id="status">Sẵn sàng — Chọn file hoặc dán code</div>
-
-    <div class="info-box" id="info-box" style="display:none;"></div>
-
-    <div class="card" id="output-card" style="display:none;">
-        <div class="label">✅ CODE GỐC ĐÃ KHÔI PHỤC</div>
-        <textarea id="output" readonly spellcheck="false"></textarea>
-        <button class="copy-btn" id="copy-btn">📋 COPY CODE</button>
-        <button class="download-btn" id="download-btn">💾 TẢI FILE .user.js</button>
-    </div>
+hello('World')"></textarea>
+<div class="panel-f"><span id="inStat">0 ký tự | 0 dòng</span></div>
 </div>
 
+<div class="panel">
+<div class="panel-h"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="panel-t">Obfuscated Output</span></div>
+<textarea id="out" readonly placeholder="Kết quả mã hóa sẽ hiển thị ở đây..."></textarea>
+<div class="panel-f"><span id="outStat">0 ký tự | 0 dòng</span></div>
+</div>
+</div>
+
+<div class="controls">
+<div class="cg">
+<label>Mức độ mã hóa:</label>
+<select id="level">
+<option value="low">Thấp (nhanh)</option>
+<option value="medium" selected>Trung bình</option>
+<option value="high">Cao</option>
+<option value="extreme">Cực cao (rất chậm)</option>
+</select>
+</div>
+
+<div class="cg">
+<label><input type="checkbox" id="unicode" checked> Dùng Unicode (Hàn/Việt)</label>
+<label><input type="checkbox" id="lambda" checked> Lambda obfuscation</label>
+<label><input type="checkbox" id="compress" checked> Nén zlib + base85</label>
+</div>
+
+<div class="btns">
+<button id="run" class="btn p">🚀 Mã Hóa</button>
+<button id="copy" class="btn s">📋 Copy</button>
+<button id="dl" class="btn s">💾 Tải về</button>
+<button id="clear" class="btn d">🗑️ Xóa</button>
+</div>
+</div>
+
+<div class="stats">
+<div class="stat"><span class="stat-l">Kích thước gốc</span><span class="stat-v" id="s1">0 B</span></div>
+<div class="stat"><span class="stat-l">Sau mã hóa</span><span class="stat-v" id="s2">0 B</span></div>
+<div class="stat"><span class="stat-l">Tỉ lệ</span><span class="stat-v" id="s3">0%</span></div>
+<div class="stat"><span class="stat-l">Thời gian</span><span class="stat-v" id="s4">0ms</span></div>
+</div>
+
+<footer>⚠️ Chỉ dùng cho mục đích học tập và bảo vệ code hợp pháp. Obfuscation không phải là bảo mật thực sự.</footer>
+</div>
+
+<div id="toast" class="toast"></div>
+
 <script>
-(function() {
-    'use strict';
+// ============================================================
+// PyHydra Obfuscator Engine
+// ============================================================
 
-    var $ = function(id) { return document.getElementById(id); };
+// Bảng ký tự Unicode
+const KR = 'ㄱㄲㄳㄴㄵㄶㄷㄸㄹㄺㄻㄼㄽㄾㄿㅀㅁㅂㅃㅄㅅㅆㅇㅈㅉㅊㅋㅌㅍㅎㅏㅐㅑㅒㅓㅔㅕㅖㅗㅘㅙㅚㅛㅜㅝㅞㅟㅠㅡㅢㅣ';
+const VN = 'ăâđêôơưáàảãạấầẩẫậắằẳẵặéèẻẽẹếềểễệíìỉĩịóòỏõọốồổỗộớờởỡợúùủũụứừửữựýỳỷỹỵ';
+const EN = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+const POOL = KR + VN;
 
-    function setStatus(text, type) {
-        var el = $('status');
-        el.textContent = text;
-        el.className = 'status' + (type ? ' ' + type : '');
+function rc(pool){return pool[Math.floor(Math.random()*pool.length)]}
+function genName(min=6,max=16,useUni=true){
+  const len = min + Math.floor(Math.random()*(max-min));
+  const pool = useUni ? POOL : EN;
+  let n='';
+  for(let i=0;i<len;i++) n+=rc(pool);
+  return n;
+}
+
+// Mã hóa string thành XOR lambda chain
+function obfStr(str, useUni=true){
+  if(str.length===0) return "''";
+  const k = Math.floor(Math.random()*180)+60;
+  const parts = [];
+  for(let i=0;i<str.length;i++){
+    const c = str.charCodeAt(i) ^ k;
+    const v = genName(6,10,useUni);
+    const x = Math.floor(Math.random()*200)+1;
+    parts.push(`(lambda ${v}: ${v} ^ ${x})(${c ^ x})`);
+  }
+  return `''.join(map(chr,[${parts.join(',')}]))`;
+}
+
+// Tạo số giả
+function obfNum(n){
+  const ops = ['+','-','^'];
+  const op = ops[Math.floor(Math.random()*ops.length)];
+  const a = Math.floor(Math.random()*1000);
+  if(op==='+') return `(${a}+${n-a})`;
+  if(op==='-') return `(${a+n}-${a})`;
+  return `(${a}^${n^a})`;
+}
+
+// Base85 encoder (thay thế cho btoa, vì base85 hiệu quả hơn cho Python)
+function toBase85(str){
+  // Chuyển string sang UTF-8 bytes
+  const utf8 = unescape(encodeURIComponent(str));
+  const bytes = [];
+  for(let i=0;i<utf8.length;i++) bytes.push(utf8.charCodeAt(i));
+  return bytesToBase85(bytes);
+}
+
+function bytesToBase85(bytes){
+  const ALPHA = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!#$%&()*+-;<=>?@^_`{|}~';
+  let result = '';
+  let i = 0;
+  while(i < bytes.length){
+    // Đọc 4 bytes
+    const chunk = [0,0,0,0];
+    let count = 0;
+    for(let j=0;j<4 && i<bytes.length;j++,i++){
+      chunk[j] = bytes[i];
+      count++;
     }
-
-    function setInfo(text) {
-        var el = $('info-box');
-        el.textContent = text;
-        el.style.display = 'block';
+    // Chuyển 4 bytes thành số 32-bit
+    let val = ((chunk[0]<<24)>>>0) + (chunk[1]<<16) + (chunk[2]<<8) + chunk[3];
+    // Chuyển thành 5 ký tự base85
+    const enc = [];
+    for(let j=0;j<5;j++){
+      enc.unshift(ALPHA[val % 85]);
+      val = Math.floor(val / 85);
     }
+    // Chỉ lấy số ký tự tương ứng với số bytes đã đọc
+    const chars = count === 4 ? 5 : count + 1;
+    result += enc.slice(5 - chars).join('');
+  }
+  return result;
+}
 
-    function clearInfo() {
-        $('info-box').style.display = 'none';
+// ============================================================
+// Tạo các lớp giả
+// ============================================================
+function fakeClass(useUni=true){
+  const cls = genName(10,20,useUni);
+  const a1 = genName(8,14,useUni);
+  const a2 = genName(8,14,useUni);
+  const m1 = genName(8,14,useUni);
+  return `class ${cls}:\n    def __init__(${a1}, *${a2}, **${m1}):\n        ${a1}.${a2} = ${a2}\n        ${a1}.${m1} = ${m1}\n    def __call__(${a1}, *${a2}):\n        return ${a2}\n`;
+}
+
+function fakeFunc(useUni=true){
+  const f = genName(10,18,useUni);
+  const p = genName(6,12,useUni);
+  const v = genName(6,12,useUni);
+  const n = Math.floor(Math.random()*100);
+  return `def ${f}(${p}):\n    ${v} = ${obfNum(n)}\n    return ${v}\n`;
+}
+
+// ============================================================
+// Main Obfuscation
+// ============================================================
+function obfuscate(code, opts){
+  const {level='medium', useUni=true, useLambda=true, useCompress=true} = opts;
+  
+  let r = '';
+  r += '#!/bin/python3.13\n';
+  r += '# -*- coding: utf-8 -*-\n';
+  r += '# Obfuscated by PyHydra Web Obfuscator\n';
+  r += '# Level: ' + level + '\n\n';
+  
+  // Preamble: fake classes & functions
+  const numFake = level==='extreme'?6:level==='high'?4:level==='medium'?2:1;
+  for(let i=0;i<numFake;i++){
+    if(i%2===0) r += fakeClass(useUni);
+    else r += fakeFunc(useUni);
+    r += '\n';
+  }
+  
+  // Import
+  const impB64 = genName(6,10,useUni);
+  const impZlib = genName(6,10,useUni);
+  const impMarshal = genName(6,10,useUni);
+  
+  if(useCompress){
+    r += `import base64 as ${impB64}\n`;
+    r += `import zlib as ${impZlib}\n`;
+    if(level==='high'||level==='extreme'){
+      r += `import marshal as ${impMarshal}\n`;
     }
-
-    // ===== CHỌN FILE =====
-    $('file-input').addEventListener('change', function(e) {
-        var file = e.target.files[0];
-        if (!file) return;
-        var reader = new FileReader();
-        reader.onload = function(ev) {
-            $('input').value = ev.target.result;
-            $('file-name').textContent = '✅ ' + file.name + ' (' + (file.size / 1024).toFixed(1) + 'KB)';
-            $('file-name').style.display = 'block';
-            $('file-wrapper').classList.add('has-file');
-            setStatus('✅ Đã đọc: ' + file.name, 'success');
-        };
-        reader.readAsText(file);
-    });
-
-    // KÉO THẢ
-    var wrapper = $('file-wrapper');
-    wrapper.addEventListener('dragover', function(e) {
-        e.preventDefault();
-        wrapper.style.borderColor = '#22c55e';
-    });
-    wrapper.addEventListener('dragleave', function(e) {
-        e.preventDefault();
-        wrapper.style.borderColor = '';
-    });
-    wrapper.addEventListener('drop', function(e) {
-        e.preventDefault();
-        wrapper.style.borderColor = '';
-        var file = e.dataTransfer.files[0];
-        if (file) {
-            var reader = new FileReader();
-            reader.onload = function(ev) {
-                $('input').value = ev.target.result;
-                $('file-name').textContent = '✅ ' + file.name;
-                $('file-name').style.display = 'block';
-                wrapper.classList.add('has-file');
-                setStatus('✅ Đã đọc: ' + file.name, 'success');
-            };
-            reader.readAsText(file);
-        }
-    });
-
-    // ═══════════════════════════════════════════
-    // CÁC HÀM GIẢI MÃ
-    // ═══════════════════════════════════════════
-
-    // 1. BASE64
-    function tryBase64(str) {
-        try {
-            var s = str.trim().replace(/[\s\r\n]/g, '');
-            if (!/^[A-Za-z0-9+/=]+$/.test(s)) return null;
-            if (s.length % 4 !== 0) {
-                s += '='.repeat((4 - s.length % 4) % 4);
-            }
-            var decoded = atob(s);
-            // Thử decodeURIComponent
-            try {
-                return decodeURIComponent(escape(decoded));
-            } catch(e) {
-                return decoded;
-            }
-        } catch(e) { return null; }
+    r += '\n';
+  }
+  
+  let payload;
+  if(useCompress){
+    const b85 = toBase85(code);
+    // Chia thành chunks để mã hóa
+    const chunkSize = 60;
+    const chunks = [];
+    for(let i=0;i<b85.length;i+=chunkSize){
+      chunks.push(b85.slice(i,i+chunkSize));
     }
-
-    // 2. HEX
-    function tryHex(str) {
-        try {
-            var s = str.trim().replace(/[\s\r\n]/g, '');
-            // Loại bỏ 0x prefix nếu có
-            s = s.replace(/0x/gi, '');
-            if (!/^[0-9a-fA-F]+$/.test(s)) return null;
-            if (s.length % 2 !== 0) return null;
-            var result = '';
-            for (var i = 0; i < s.length; i += 2) {
-                result += String.fromCharCode(parseInt(s.substr(i, 2), 16));
-            }
-            try {
-                return decodeURIComponent(escape(result));
-            } catch(e) {
-                return result;
-            }
-        } catch(e) { return null; }
+    
+    const obfChunks = chunks.map(c => obfStr(c, useUni));
+    
+    const pv = genName(10,18,useUni);
+    const rv = genName(10,18,useUni);
+    
+    r += `${pv} = (${obfChunks.join(' +\n    ')})\n\n`;
+    r += `${rv} = ${impZlib}.decompress(${impB64}.b85decode(${pv}))\n\n`;
+    
+    if(useLambda){
+      const lv = genName(8,14,useUni);
+      r += `(lambda ${lv}: exec(${lv}.decode()))(${rv})\n`;
+    } else {
+      r += `exec(${rv}.decode())\n`;
     }
-
-    // 3. ROT13
-    function tryROT13(str) {
-        try {
-            return str.replace(/[a-zA-Z]/g, function(c) {
-                var base = c <= 'Z' ? 65 : 97;
-                return String.fromCharCode((c.charCodeAt(0) - base + 13) % 26 + base);
-            });
-        } catch(e) { return null; }
+  } else {
+    const obf = obfStr(code, useUni);
+    if(useLambda){
+      const v = genName(8,14,useUni);
+      r += `(lambda ${v}: exec(${v}))(${obf})\n`;
+    } else {
+      r += `exec(${obf})\n`;
     }
-
-    // 4. ROT47
-    function tryROT47(str) {
-        try {
-            return str.replace(/[!-~]/g, function(c) {
-                return String.fromCharCode((c.charCodeAt(0) - 33 + 47) % 94 + 33);
-            });
-        } catch(e) { return null; }
+  }
+  
+  // Footer: fake classes
+  if(level==='high'||level==='extreme'){
+    r += '\n';
+    for(let i=0;i<2;i++){
+      r += fakeClass(useUni) + '\n';
     }
+  }
+  
+  return r;
+}
 
-    // 5. URL Decode
-    function tryURLDecode(str) {
-        try {
-            return decodeURIComponent(str);
-        } catch(e) {
-            try {
-                return unescape(str);
-            } catch(e2) { return null; }
-        }
+// ============================================================
+// UI Logic
+// ============================================================
+const $ = id => document.getElementById(id);
+const inEl=$('in'), outEl=$('out'), toast=$('toast');
+
+function fmtBytes(b){
+  if(b===0) return '0 B';
+  const k=1024, s=['B','KB','MB','GB'];
+  const i=Math.floor(Math.log(b)/Math.log(k));
+  return (b/Math.pow(k,i)).toFixed(2)+' '+s[i];
+}
+
+function showToast(msg, err=false){
+  toast.textContent=msg;
+  toast.className='toast show'+(err?' err':'');
+  setTimeout(()=>toast.className='toast', 2500);
+}
+
+inEl.addEventListener('input', ()=>{
+  const lines = inEl.value.split('\n').length;
+  $('inStat').textContent = inEl.value.length+' ký tự | '+lines+' dòng';
+  $('s1').textContent = fmtBytes(new Blob([inEl.value]).size);
+});
+
+$('run').addEventListener('click', ()=>{
+  const code = inEl.value.trim();
+  if(!code){ showToast('Vui lòng nhập code Python!', true); return; }
+  
+  const btn = $('run');
+  btn.disabled = true;
+  btn.textContent = '⏳ Đang mã hóa...';
+  
+  setTimeout(()=>{
+    const t0 = performance.now();
+    try {
+      const result = obfuscate(code, {
+        level: $('level').value,
+        useUni: $('unicode').checked,
+        useLambda: $('lambda').checked,
+        useCompress: $('compress').checked
+      });
+      const t1 = performance.now();
+      
+      outEl.value = result;
+      
+      const lines = result.split('\n').length;
+      $('outStat').textContent = result.length+' ký tự | '+lines+' dòng';
+      $('s2').textContent = fmtBytes(new Blob([result]).size);
+      $('s4').textContent = (t1-t0).toFixed(0)+'ms';
+      
+      const orig = new Blob([code]).size;
+      const fin = new Blob([result]).size;
+      if(orig>0) $('s3').textContent = ((fin/orig)*100).toFixed(1)+'%';
+      
+      showToast('✅ Mã hóa thành công!');
+    } catch(e){
+      showToast('❌ Lỗi: '+e.message, true);
+      console.error(e);
     }
+    btn.disabled = false;
+    btn.textContent = '🚀 Mã Hóa';
+  }, 50);
+});
 
-    // 6. Unicode escape
-    function tryUnicode(str) {
-        try {
-            // Pattern: \u0041\u0042...
-            if (!/\\u[0-9a-fA-F]{4}/.test(str)) return null;
-            return str.replace(/\\u([0-9a-fA-F]{4})/g, function(m, code) {
-                return String.fromCharCode(parseInt(code, 16));
-            });
-        } catch(e) { return null; }
-    }
+$('copy').addEventListener('click', async ()=>{
+  if(!outEl.value){ showToast('Chưa có gì để copy!', true); return; }
+  try {
+    await navigator.clipboard.writeText(outEl.value);
+    showToast('📋 Đã copy!');
+  } catch(e){ showToast('Không thể copy!', true); }
+});
 
-    // 7. Char Code Array
-    function tryCharCode(str) {
-        try {
-            // Pattern: [72,101,108,108,111] hoặc String.fromCharCode(72,101,...)
-            var arrMatch = str.match(/\[(\s*\d+\s*(?:,\s*\d+\s*)*)\]/);
-            if (!arrMatch) return null;
-            var nums = arrMatch[1].split(',').map(function(n) { return parseInt(n.trim(), 10); });
-            if (nums.length < 3) return null;
-            var result = '';
-            for (var i = 0; i < nums.length; i++) {
-                if (nums[i] > 0 && nums[i] < 65536) {
-                    result += String.fromCharCode(nums[i]);
-                }
-            }
-            return result;
-        } catch(e) { return null; }
-    }
+$('dl').addEventListener('click', ()=>{
+  if(!outEl.value){ showToast('Chưa có gì để tải!', true); return; }
+  const blob = new Blob([outEl.value], {type:'text/x-python'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'obfuscated.py';
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('💾 Đã tải!');
+});
 
-    // 8. Obfuscator.io - trích xuất string array
-    function tryObfuscatorIO(str) {
-        try {
-            // Tìm pattern: var _0x... = ['str1','str2',...]
-            var arrPattern = /var\s+(_0x[a-f0-9]+)\s*=\s*\[([\s\S]*?)\];/gi;
-            var match;
-            var allStrings = [];
-
-            while ((match = arrPattern.exec(str)) !== null) {
-                var arrContent = match[2];
-                var strRe = /'((?:[^'\\]|\\.)*)'/g;
-                var m;
-                while ((m = strRe.exec(arrContent)) !== null) {
-                    try {
-                        var decoded = m[1]
-                            .replace(/\\x([0-9a-fA-F]{2})/g, function(_, h) { return String.fromCharCode(parseInt(h, 16)); })
-                            .replace(/\\u([0-9a-fA-F]{4})/g, function(_, h) { return String.fromCharCode(parseInt(h, 16)); })
-                            .replace(/\\n/g, '\n')
-                            .replace(/\\t/g, '\t')
-                            .replace(/\\\\/g, '\\')
-                            .replace(/\\'/g, "'")
-                            .replace(/\\"/g, '"');
-                        allStrings.push(decoded);
-                    } catch(e) {}
-                }
-            }
-
-            if (allStrings.length === 0) return null;
-            return allStrings.join('\n');
-        } catch(e) { return null; }
-    }
-
-    // 9. JavaScript Obfuscator pattern
-    function tryJSObfuscator(str) {
-        try {
-            // Tìm mảng _0x... với số hex
-            var arrPattern = /(_0x[a-f0-9]+)\s*=\s*\[([\s\S]*?)\];/g;
-            var match;
-            var found = false;
-            var result = [];
-
-            while ((match = arrPattern.exec(str)) !== null) {
-                found = true;
-                var content = match[2];
-                // Tìm chuỗi dạng '0x1234' hoặc số
-                var numRe = /'([^']+)'/g;
-                var m;
-                while ((m = numRe.exec(content)) !== null) {
-                    var val = m[1];
-                    if (/^\d+$/.test(val)) {
-                        result.push(String.fromCharCode(parseInt(val, 10)));
-                    } else if (/^0x[0-9a-f]+$/i.test(val)) {
-                        result.push(String.fromCharCode(parseInt(val, 16)));
-                    } else {
-                        result.push(val);
-                    }
-                }
-            }
-
-            if (!found || result.length === 0) return null;
-            return result.join('');
-        } catch(e) { return null; }
-    }
-
-    // 10. Base64 multi-layer
-    function tryMultiBase64(str, layers) {
-        var current = str.trim().replace(/[\s\r\n]/g, '');
-        var decoded = current;
-        var depth = 0;
-
-        while (depth < layers) {
-            var next = tryBase64(decoded);
-            if (!next || next === decoded) break;
-            // Kiểm tra kết quả có phải code JS không
-            if (/[{};()=]|function|var|let|const/.test(next)) {
-                return next;
-            }
-            decoded = next;
-            depth++;
-        }
-
-        if (depth > 0 && decoded !== current) {
-            return decoded;
-        }
-        return null;
-    }
-
-    // 11. AES decrypt (nếu có key)
-    async function tryAESDecrypt(str) {
-        try {
-            // Tìm chunks Base64 trong code
-            var chunkPatterns = [
-                /var\s+_c\s*=\s*\[([\s\S]*?)\]/,
-                /\[('(?:[^'\\]|\\.)*'(?:\s*,\s*'(?:[^'\\]|\\.)*')*)\]/
-            ];
-
-            var chunks = null;
-            for (var i = 0; i < chunkPatterns.length; i++) {
-                var m = str.match(chunkPatterns[i]);
-                if (m) {
-                    var strRe = /'([^']*)'/g;
-                    var s, arr = [];
-                    while ((s = strRe.exec(m[1])) !== null) {
-                        arr.push(s[1]);
-                    }
-                    if (arr.length > 0) {
-                        chunks = arr;
-                        break;
-                    }
-                }
-            }
-
-            if (!chunks) return null;
-
-            var b64 = chunks.join('');
-
-            // Tìm key trong code
-            var keyPatterns = [
-                /var\s+_0x3\s*=\s*"([^"]+)"/,
-                /var\s+_0x4\s*=\s*"([^"]+)"/,
-                /var\s+_0x5\s*=\s*"([^"]+)"/,
-                /var\s+_key\s*=\s*"([^"]+)"/,
-                /var\s+key\s*=\s*"([^"]+)"/
-            ];
-
-            var keyParts = [];
-            for (var j = 0; j < keyPatterns.length; j++) {
-                var km = str.match(keyPatterns[j]);
-                if (km) keyParts.push(km[1]);
-            }
-
-            var fullKey = keyParts.join('');
-            if (!fullKey) return null;
-
-            // Decode key 3 lớp base64
-            try {
-                fullKey = atob(atob(atob(fullKey)));
-            } catch(e) {
-                return null;
-            }
-
-            // Convert base64 → bytes
-            var bin = atob(b64);
-            var bytes = new Uint8Array(bin.length);
-            for (var k = 0; k < bin.length; k++) bytes[k] = bin.charCodeAt(k);
-
-            // XOR
-            var kBytes = new TextEncoder().encode(fullKey.split('').reverse().join(''));
-            for (var x = 0; x < bytes.length; x++) {
-                bytes[x] ^= kBytes[x % kBytes.length];
-            }
-
-            // AES decrypt
-            var enc = new TextEncoder();
-            var km2 = await crypto.subtle.importKey('raw', enc.encode(fullKey), {name: 'PBKDF2'}, false, ['deriveKey']);
-            var aesKey = await crypto.subtle.deriveKey(
-                {name: 'PBKDF2', salt: enc.encode('MDUY_SALT_2026'), iterations: 100000, hash: 'SHA-256'},
-                km2, {name: 'AES-GCM', length: 256}, false, ['decrypt']
-            );
-
-            var iv = bytes.slice(0, 12);
-            var data = bytes.slice(12);
-            var dec = await crypto.subtle.decrypt({name: 'AES-GCM', iv: iv}, aesKey, data);
-            var decBytes = new Uint8Array(dec);
-
-            // GZIP decompress
-            try {
-                var ds = new DecompressionStream('gzip');
-                var w = ds.writable.getWriter();
-                w.write(decBytes);
-                w.close();
-                var r = ds.readable.getReader();
-                var c = [];
-                while (true) {
-                    var rr = await r.read();
-                    if (rr.done) break;
-                    c.push(rr.value);
-                }
-                var total = 0;
-                c.forEach(function(cc) { total += cc.length; });
-                var out = new Uint8Array(total);
-                var off = 0;
-                c.forEach(function(cc) { out.set(cc, off); off += cc.length; });
-                return new TextDecoder().decode(out);
-            } catch(e) {
-                return new TextDecoder().decode(decBytes);
-            }
-
-        } catch(e) {
-            console.error('AES error:', e);
-            return null;
-        }
-    }
-
-    // ═══════════════════════════════════════════
-    // TỰ ĐỘNG NHẬN DIỆN & GIẢI
-    // ═══════════════════════════════════════════
-
-    // Kéo header ra
-    function extractHeader(code) {
-        var m = code.match(/\/\/ ==UserScript==[\s\S]*?\/\/ ==\/UserScript==/);
-        return m ? m[0] : '';
-    }
-
-    // Lấy body
-    function extractBody(code) {
-        var header = extractHeader(code);
-        if (header) return code.replace(header, '').trim();
-        return code.trim();
-    }
-
-    // Điểm số đánh giá code JS hợp lệ
-    function scoreJS(code) {
-        if (!code || code.length < 10) return 0;
-        var score = 0;
-        if (/function\s|=>|var\s|let\s|const\s/.test(code)) score += 10;
-        if (/[{};]/.test(code)) score += 5;
-        if (/document\.|window\.|console\./.test(code)) score += 5;
-        if (/==UserScript==/.test(code)) score += 20;
-        if (/\uFEFF/.test(code)) score -= 5;
-        return score;
-    }
-
-    // ===== TỰ ĐỘNG =====
-    $('auto-btn').onclick = async function() {
-        var btn = $('auto-btn');
-        btn.disabled = true;
-        clearInfo();
-        setStatus('🤖 Đang phân tích...', 'loading');
-
-        try {
-            var input = $('input').value.trim();
-            if (!input) {
-                setStatus('❌ Chưa có code!', 'error');
-                btn.disabled = false;
-                return;
-            }
-
-            var header = extractHeader(input);
-            var body = extractBody(input);
-
-            var candidates = [];
-            var methods = [];
-
-            // Thử AES trước (có key nhúng)
-            setStatus('🔐 Đang thử AES...', 'loading');
-            try {
-                var aesResult = await tryAESDecrypt(body);
-                if (aesResult && scoreJS(aesResult) > 10) {
-                    candidates.push({ code: aesResult, method: 'AES-256 + GZIP + XOR', score: scoreJS(aesResult) + 30 });
-                }
-            } catch(e) {}
-
-            // Thử Base64 nhiều lớp
-            setStatus('📝 Đang thử Base64...', 'loading');
-            for (var layers = 1; layers <= 5; layers++) {
-                var b64Result = tryMultiBase64(body, layers);
-                if (b64Result && scoreJS(b64Result) > 10) {
-                    candidates.push({ code: b64Result, method: 'Base64 (' + layers + ' lớp)', score: scoreJS(b64Result) });
-                }
-            }
-
-            // Thử Hex
-            var hexResult = tryHex(body);
-            if (hexResult && scoreJS(hexResult) > 10) {
-                candidates.push({ code: hexResult, method: 'Hex', score: scoreJS(hexResult) });
-            }
-
-            // Thử Unicode
-            var uniResult = tryUnicode(body);
-            if (uniResult && scoreJS(uniResult) > 10) {
-                candidates.push({ code: uniResult, method: 'Unicode escape', score: scoreJS(uniResult) });
-            }
-
-            // Thử Char Code
-            var ccResult = tryCharCode(body);
-            if (ccResult && scoreJS(ccResult) > 10) {
-                candidates.push({ code: ccResult, method: 'Char code array', score: scoreJS(ccResult) });
-            }
-
-            // Thử Obfuscator.io
-            var obfResult = tryObfuscatorIO(body);
-            if (obfResult && obfResult.length > 20) {
-                candidates.push({ code: obfResult, method: 'Obfuscator.io string array', score: scoreJS(obfResult) + 5 });
-            }
-
-            // Thử JavaScript Obfuscator
-            var jsoResult = tryJSObfuscator(body);
-            if (jsoResult && jsoResult.length > 20) {
-                candidates.push({ code: jsoResult, method: 'JavaScript Obfuscator', score: scoreJS(jsoResult) + 5 });
-            }
-
-            // URL Decode
-            var urlResult = tryURLDecode(body);
-            if (urlResult && urlResult !== body && scoreJS(urlResult) > 10) {
-                candidates.push({ code: urlResult, method: 'URL decode', score: scoreJS(urlResult) });
-            }
-
-            // ROT13
-            var rot13Result = tryROT13(body);
-            if (rot13Result && scoreJS(rot13Result) > scoreJS(body)) {
-                candidates.push({ code: rot13Result, method: 'ROT13', score: scoreJS(rot13Result) });
-            }
-
-            if (candidates.length === 0) {
-                setStatus('❌ Không tìm thấy phương pháp giải mã phù hợp!', 'error');
-                setInfo('💡 Thử:\n• Copy code vào ô input\n• Chọn thủ công bên dưới\n• Kiểm tra code có bị cắt không');
-                btn.disabled = false;
-                return;
-            }
-
-            // Sắp xếp theo điểm
-            candidates.sort(function(a, b) { return b.score - a.score; });
-
-            var best = candidates[0];
-            var outputCode = header ? header + '\n\n' + best.code : best.code;
-
-            $('output').value = outputCode;
-            $('output-card').style.display = 'block';
-
-            setStatus('✅ Giải mã thành công bằng: ' + best.method, 'success');
-
-            var infoText = '🎯 Phương pháp: ' + best.method + '\n';
-            infoText += '📊 Điểm tin cậy: ' + best.score + '\n';
-            infoText += '📦 Kích thước: ' + (new Blob([input]).size / 1024).toFixed(1) + 'KB → ' + (new Blob([outputCode]).size / 1024).toFixed(1) + 'KB\n\n';
-
-            if (candidates.length > 1) {
-                infoText += '📋 Các phương pháp khác đã thử:\n';
-                for (var i = 1; i < Math.min(candidates.length, 5); i++) {
-                    infoText += '• ' + candidates[i].method + ' (điểm: ' + candidates[i].score + ')\n';
-                }
-            }
-
-            setInfo(infoText);
-
-            btn.disabled = false;
-
-        } catch(err) {
-            console.error(err);
-            setStatus('❌ Lỗi: ' + err.message, 'error');
-            btn.disabled = false;
-        }
-    };
-
-    // ===== THỦ CÔNG =====
-    document.querySelectorAll('.method-btn').forEach(function(btn) {
-        btn.onclick = async function() {
-            var method = btn.getAttribute('data-method');
-            var input = $('input').value.trim();
-            if (!input) {
-                setStatus('❌ Chưa có code!', 'error');
-                return;
-            }
-
-            setStatus('🔧 Đang giải mã bằng: ' + method + '...', 'loading');
-            clearInfo();
-
-            try {
-                var header = extractHeader(input);
-                var body = extractBody(input);
-                var result = null;
-
-                if (method === 'base64') {
-                    result = tryMultiBase64(body, 5) || tryBase64(body);
-                } else if (method === 'hex') {
-                    result = tryHex(body);
-                } else if (method === 'rot13') {
-                    result = tryROT13(body);
-                } else if (method === 'rot47') {
-                    result = tryROT47(body);
-                } else if (method === 'url') {
-                    result = tryURLDecode(body);
-                } else if (method === 'unicode') {
-                    result = tryUnicode(body);
-                } else if (method === 'charcode') {
-                    result = tryCharCode(body);
-                } else if (method === 'obfuscator') {
-                    result = tryObfuscatorIO(body);
-                } else if (method === 'javascript-obf') {
-                    result = tryJSObfuscator(body);
-                } else if (method === 'brute') {
-                    // Thử tất cả
-                    var results = [
-                        tryMultiBase64(body, 3),
-                        tryHex(body),
-                        tryUnicode(body),
-                        tryCharCode(body),
-                        tryObfuscatorIO(body),
-                        tryJSObfuscator(body),
-                        tryURLDecode(body),
-                        await tryAESDecrypt(body)
-                    ].filter(function(r) { return r && r.length > 10; });
-                    result = results.sort(function(a, b) { return scoreJS(b) - scoreJS(a); })[0];
-                }
-
-                if (!result) {
-                    setStatus('❌ Không giải mã được bằng phương pháp: ' + method, 'error');
-                    return;
-                }
-
-                var outputCode = header ? header + '\n\n' + result : result;
-                $('output').value = outputCode;
-                $('output-card').style.display = 'block';
-                setStatus('✅ Giải mã thành công bằng: ' + method, 'success');
-                setInfo('🎯 Phương pháp: ' + method + '\n📊 Điểm tin cậy: ' + scoreJS(result));
-
-            } catch(err) {
-                setStatus('❌ Lỗi: ' + err.message, 'error');
-            }
-        };
-    });
-
-    // ===== COPY =====
-    $('copy-btn').onclick = function() {
-        var ta = $('output');
-        ta.select();
-        ta.setSelectionRange(0, 999999);
-        try {
-            navigator.clipboard.writeText(ta.value).then(function() {
-                $('copy-btn').textContent = '✅ ĐÃ COPY!';
-                setTimeout(function() { $('copy-btn').textContent = '📋 COPY CODE'; }, 1500);
-            });
-        } catch(e) {
-            document.execCommand('copy');
-            $('copy-btn').textContent = '✅ ĐÃ COPY!';
-            setTimeout(function() { $('copy-btn').textContent = '📋 COPY CODE'; }, 1500);
-        }
-    };
-
-    // ===== TẢI =====
-    $('download-btn').onclick = function() {
-        var content = $('output').value;
-        if (!content) return;
-        var blob = new Blob([content], { type: 'text/javascript' });
-        var url = URL.createObjectURL(blob);
-        var a = document.createElement('a');
-        a.href = url;
-        a.download = 'decoded-' + Date.now() + '.user.js';
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-        $('download-btn').textContent = '✅ ĐÃ TẢI!';
-        setTimeout(function() { $('download-btn').textContent = '💾 TẢI FILE .user.js'; }, 2000);
-    };
-
-    setStatus('Sẵn sàng — Chọn file hoặc dán code');
-})();
+$('clear').addEventListener('click', ()=>{
+  inEl.value=''; outEl.value='';
+  $('inStat').textContent='0 ký tự | 0 dòng';
+  $('outStat').textContent='0 ký tự | 0 dòng';
+  $('s1').textContent='0 B'; $('s2').textContent='0 B';
+  $('s3').textContent='0%'; $('s4').textContent='0ms';
+  showToast('🗑️ Đã xóa!');
+});
 </script>
-
 </body>
 </html>
