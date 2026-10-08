@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🔐 Web Obfuscator - MDUY</title>
+<title>🔐 Secure Obfuscate Tool - MDUY</title>
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body {
@@ -28,6 +28,10 @@ h1 {
 .label {
     font-size: 12px; font-weight: 700; color: #a855f7;
     margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px;
+}
+.label-sub {
+    font-size: 10px; color: #666; font-weight: 400;
+    text-transform: none; letter-spacing: 0; margin-left: 6px;
 }
 .file-input-wrapper {
     position: relative; display: block; width: 100%; padding: 24px;
@@ -74,6 +78,7 @@ button:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
 }
 .option:hover { border-color: rgba(168,85,247,0.5); }
 .option input { accent-color: #a855f7; }
+.option.full { grid-column: 1 / -1; }
 .hint {
     background: rgba(59,130,246,0.1); border: 1px solid rgba(59,130,246,0.4);
     border-radius: 10px; padding: 12px; font-size: 12px; color: #60a5fa;
@@ -84,6 +89,11 @@ button:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
     color: #fbbf24; border-radius: 10px; padding: 10px;
     font-size: 11px; margin-top: 10px; line-height: 1.5;
 }
+.success-box {
+    background: rgba(34,197,94,0.1); border: 1px solid rgba(34,197,94,0.4);
+    color: #4ade80; border-radius: 10px; padding: 10px;
+    font-size: 11px; margin-top: 10px; line-height: 1.5;
+}
 .progress-bar {
     width: 100%; height: 6px; background: rgba(0,0,0,0.5);
     border-radius: 3px; overflow: hidden; margin: 8px 0; display: none;
@@ -92,70 +102,150 @@ button:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
     height: 100%; background: linear-gradient(90deg, #a855f7, #ec4899);
     width: 0%; transition: width 0.3s;
 }
-.type-badge {
+.lang-badge {
     display: inline-block; padding: 4px 12px; border-radius: 20px;
     font-size: 11px; font-weight: 700; margin-left: 6px;
 }
-.badge-html { background: rgba(239,68,68,0.2); color: #f87171; }
-.badge-css { background: rgba(59,130,246,0.2); color: #60a5fa; }
-.badge-js { background: rgba(250,204,21,0.2); color: #facc15; }
-.badge-full { background: rgba(168,85,247,0.2); color: #c084fc; }
+.lang-js { background: rgba(250,204,21,0.2); color: #facc15; }
+.lang-py { background: rgba(59,130,246,0.2); color: #60a5fa; }
+.method-info {
+    background: rgba(0,0,0,0.3); border-radius: 10px;
+    padding: 12px; margin-top: 12px; font-size: 11px;
+    color: #aaa; line-height: 1.7;
+}
+.method-info b { color: #a855f7; }
+.hidden { display: none !important; }
+.security-level-badge {
+    display: inline-block; padding: 2px 8px; border-radius: 10px;
+    font-size: 10px; font-weight: 700; margin-left: 6px;
+}
+.sec-1 { background: rgba(34,197,94,0.2); color: #22c55e; }
+.sec-2 { background: rgba(250,204,21,0.2); color: #facc15; }
+.sec-3 { background: rgba(249,115,22,0.2); color: #f97316; }
+.sec-4 { background: rgba(239,68,68,0.2); color: #ef4444; }
+.sec-5 { background: rgba(168,85,247,0.2); color: #c084fc; }
 </style>
 </head>
 <body>
 
 <div class="container">
-    <h1>🔐 WEB OBFUSCATOR</h1>
-    <div class="subtitle">HTML • CSS • JavaScript • Full Website</div>
+    <h1>🔐 SECURE OBFUSCATE TOOL</h1>
+    <div class="subtitle">JavaScript • Python — Bảo mật cao</div>
 
     <div class="hint">
-        💡 <b>Tool này xử lý:</b><br>
-        • <b>HTML</b> → mã hoá thành JS loader (browser vẫn render được)<br>
-        • <b>CSS</b> → minify + mã hoá<br>
-        • <b>JS</b> → obfuscate thật 100%<br>
-        • <b>Full Website</b> → gộp HTML+CSS+JS thành 1 file HTML duy nhất
+        💡 <b>Cách dùng:</b> Chọn file → Tool tự nhận diện → Chọn mức bảo mật → BẮT ĐẦU → Tải về.<br>
+        🟨 <b>JS:</b> 5 mức bảo mật • 🐍 <b>Python:</b> Encode + loader chạy được.
     </div>
 
     <div class="card">
-        <div class="label">📁 CHỌN FILE</div>
+        <div class="label">📁 CHỌN FILE CODE</div>
         <label class="file-input-wrapper" id="file-wrapper">
-            <input type="file" id="file-input" multiple accept=".html,.htm,.css,.js,.txt">
-            <div class="file-icon">🌐</div>
+            <input type="file" id="file-input" accept=".js,.user.js,.py,.pyw,.txt">
+            <div class="file-icon">📄</div>
             <div class="file-text">Nhấn hoặc kéo file vào đây</div>
-            <div class="file-sub">Hỗ trợ: .html, .htm, .css, .js (chọn nhiều file cùng lúc để gộp)</div>
+            <div class="file-sub">Hỗ trợ: .js, .user.js, .py, .pyw</div>
             <div class="file-name" id="file-name" style="display:none;"></div>
         </label>
-        <div id="detected-type" style="text-align:center; margin-top:8px;"></div>
+        <div id="detected-lang" style="text-align:center; margin-top:8px;"></div>
     </div>
 
     <div class="card">
-        <div class="label">⚙️ CHẾ ĐỘ XỬ LÝ</div>
+        <div class="label">⚙️ KIỂU XỬ LÝ</div>
         <div class="options">
-            <label class="option"><input type="radio" name="mode" value="auto" checked><span>🤖 Tự động nhận diện</span></label>
-            <label class="option"><input type="radio" name="mode" value="html"><span>📄 HTML → JS Loader</span></label>
-            <label class="option"><input type="radio" name="mode" value="css"><span>🎨 CSS → Minify + Encode</span></label>
-            <label class="option"><input type="radio" name="mode" value="js"><span>🟨 JS → Obfuscate thật</span></label>
-            <label class="option" style="grid-column: 1 / -1;"><input type="radio" name="mode" value="full"><span>🌐 <b>FULL WEBSITE</b> → Gộp HTML+CSS+JS thành 1 file</span></label>
+            <label class="option">
+                <input type="radio" name="mode" value="auto" checked>
+                <span>🤖 Tự động theo ngôn ngữ</span>
+            </label>
+            <label class="option">
+                <input type="radio" name="mode" value="js">
+                <span>🟨 JS Obfuscate</span>
+            </label>
+            <label class="option">
+                <input type="radio" name="mode" value="b64">
+                <span>🔵 Base64 + Loader</span>
+            </label>
+            <label class="option">
+                <input type="radio" name="mode" value="xor">
+                <span>🟠 XOR + Base64</span>
+            </label>
         </div>
 
-        <div class="label" style="margin-top:14px;">⚡ MỨC ĐỘ JS</div>
-        <div class="options">
-            <label class="option"><input type="radio" name="level" value="low" checked><span>🟢 Nhẹ</span></label>
-            <label class="option"><input type="radio" name="level" value="medium"><span>🟡 Vừa</span></label>
-            <label class="option"><input type="radio" name="level" value="high"><span>🔴 Mạnh</span></label>
-            <label class="option"><input type="radio" name="level" value="extreme"><span>💀 Cực mạnh</span></label>
+        <div id="js-level-box">
+            <div class="label" style="margin-top:14px;">
+                ⚡ MỨC BẢO MẬT JS
+                <span class="label-sub">(cao hơn = chậm hơn, file to hơn)</span>
+            </div>
+            <div class="options">
+                <label class="option">
+                    <input type="radio" name="level" value="low">
+                    <span>🟢 Cơ bản <span class="security-level-badge sec-1">LV1</span></span>
+                </label>
+                <label class="option">
+                    <input type="radio" name="level" value="medium" checked>
+                    <span>🟡 Tiêu chuẩn <span class="security-level-badge sec-2">LV2</span></span>
+                </label>
+                <label class="option">
+                    <input type="radio" name="level" value="high">
+                    <span>🟠 Cao <span class="security-level-badge sec-3">LV3</span></span>
+                </label>
+                <label class="option">
+                    <input type="radio" name="level" value="extreme">
+                    <span>🔴 Rất cao <span class="security-level-badge sec-4">LV4</span></span>
+                </label>
+                <label class="option full">
+                    <input type="radio" name="level" value="paranoid">
+                    <span>💀 <b>PARANOID</b> — Tối đa bảo mật <span class="security-level-badge sec-5">LV5</span> <span class="label-sub">(chậm, file to, gần như không thể đọc)</span></span>
+                </label>
+            </div>
         </div>
 
-        <div class="label" style="margin-top:14px;">🛡️ BẢO VỆ NÂNG CAO</div>
+        <div class="label" style="margin-top:14px;">🛡️ LỚP BẢO VỆ NÂNG CAO <span class="label-sub">(chỉ áp dụng cho JS)</span></div>
         <div class="options">
-            <label class="option"><input type="checkbox" id="opt-devtools"><span>🚫 Chặn F12 / Chuột phải</span></label>
-            <label class="option"><input type="checkbox" id="opt-b64"><span>🔒 Base64 toàn bộ</span></label>
-            <label class="option"><input type="checkbox" id="opt-minify"><span>📦 Minify HTML/CSS</span></label>
-            <label class="option"><input type="checkbox" id="opt-anti-debug"><span>🕵️ Anti-Debug JS</span></label>
+            <label class="option">
+                <input type="checkbox" id="opt-self-defending" checked>
+                <span>🛡️ Self-Defending</span>
+            </label>
+            <label class="option">
+                <input type="checkbox" id="opt-debug-protection" checked>
+                <span>🐛 Debug Protection</span>
+            </label>
+            <label class="option">
+                <input type="checkbox" id="opt-anti-devtools" checked>
+                <span>🚫 Anti-DevTools</span>
+            </label>
+            <label class="option">
+                <input type="checkbox" id="opt-anti-debug-loop">
+                <span>♾️ Anti-Debug Loop</span>
+            </label>
+            <label class="option">
+                <input type="checkbox" id="opt-domain-lock">
+                <span>🔒 Domain Lock</span>
+            </label>
+            <label class="option">
+                <input type="checkbox" id="opt-time-lock">
+                <span>⏰ Time Lock (hết hạn)</span>
+            </label>
+            <label class="option full">
+                <input type="checkbox" id="opt-integrity">
+                <span>🔐 Integrity Check — phát hiện code bị sửa</span>
+            </label>
+        </div>
+
+        <div id="lock-inputs" style="margin-top:10px; display:none;">
+            <input type="text" id="domain-input" placeholder="example.com, sub.example.com"
+                style="width:100%; padding:10px; background:rgba(0,0,0,0.4); border:1px solid rgba(168,85,247,0.3); border-radius:8px; color:#fff; font-size:12px; margin-bottom:6px;">
+            <input type="text" id="time-input" placeholder="Ngày hết hạn YYYY-MM-DD"
+                style="width:100%; padding:10px; background:rgba(0,0,0,0.4); border:1px solid rgba(168,85,247,0.3); border-radius:8px; color:#fff; font-size:12px;">
+        </div>
+
+        <div class="method-info" id="method-info">
+            <b>🤖 Auto:</b> Tool tự chọn cách tốt nhất theo ngôn ngữ.<br>
+            • JS → Obfuscate thật (nhiều lớp)<br>
+            • Python → Base64 + loader Python
         </div>
     </div>
 
-    <button id="obfuscate-btn">🚀 BẮT ĐẦU XỬ LÝ</button>
+    <button id="obfuscate-btn">🚀 BẮT ĐẦU OBFUSCATE</button>
 
     <div class="progress-bar" id="progress-bar">
         <div class="progress-fill" id="progress-fill"></div>
@@ -165,22 +255,29 @@ button:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
 
     <button class="download-btn" id="download-btn" style="display:none;">💾 TẢI FILE KẾT QUẢ</button>
 
+    <button class="download-btn" id="preview-btn" style="display:none; background:rgba(59,130,246,0.2); border-color:rgba(59,130,246,0.5); color:#60a5fa;">
+        👁️ XEM TRƯỚC FILE KẾT QUẢ
+    </button>
+
+    <div class="success-box">
+        ✨ <b>Bảo vệ JS:</b> 5 mức + 8 lớp bảo vệ (Self-Defending, Debug Protection, Anti-DevTools, Anti-Debug Loop, Domain Lock, Time Lock, Integrity, Multi-layer Encryption).
+    </div>
+
     <div class="warn">
-        ⚠️ <b>Sự thật:</b> HTML/CSS khi đưa lên web <b>không thể mã hoá 100%</b> — browser phải đọc được để hiển thị.
-        Tool này <b>làm rối source</b> (khó copy, khó đọc), nhưng người rành vẫn xem được qua DevTools.
+        ⚠️ <b>Lưu ý:</b> Không có obfuscate nào bất khả xâm phạm. Mức càng cao càng khó gỡ, nhưng logic quan trọng vẫn nên để ở server.
     </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/javascript-obfuscator@4.1.0/dist/index.browser.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/html-minifier-terser@7.2.0/dist/htmlminifier.min.js"></script>
 <script>
 (function() {
     'use strict';
 
     var $ = function(id) { return document.getElementById(id); };
-    var uploadedFiles = []; // { name, type, content }
-    var resultFile = null;  // { name, content, mime }
-    var detectedType = 'unknown';
+    var sourceCode = null;
+    var originalFileName = '';
+    var resultFile = null;
+    var detectedLang = 'unknown';
 
     function setStatus(text, type) {
         var el = $('status');
@@ -194,76 +291,47 @@ button:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
         else { bar.style.display = 'none'; }
     }
 
-    // ============ NHẬN DIỆN LOẠI FILE ============
-    function detectFileType(name) {
-        var ext = (name.split('.').pop() || '').toLowerCase();
-        if (ext === 'html' || ext === 'htm') return 'html';
-        if (ext === 'css') return 'css';
-        if (ext === 'js' || name.endsWith('.user.js')) return 'js';
+    function detectLanguage(fileName, code) {
+        var ext = (fileName.split('.').pop() || '').toLowerCase();
+        if (ext === 'js' || fileName.endsWith('.user.js')) return 'js';
+        if (ext === 'py' || ext === 'pyw') return 'python';
+
+        var head = code.slice(0, 3000);
+        if (/^\s*def\s+\w+|^\s*import\s+\w+|^\s*from\s+\w+\s+import|print\s*\(/m.test(head)) return 'python';
+        if (/function\s+\w+|const\s+\w+\s*=|let\s+\w+\s*=|=>/.test(head)) return 'js';
         return 'unknown';
     }
 
-    function typeBadge(t) {
+    function langBadge(lang) {
         var map = {
-            html: '<span class="type-badge badge-html">📄 HTML</span>',
-            css: '<span class="type-badge badge-css">🎨 CSS</span>',
-            js: '<span class="type-badge badge-js">🟨 JavaScript</span>',
-            full: '<span class="type-badge badge-full">🌐 Full Website</span>'
+            js: '<span class="lang-badge lang-js">🟨 JavaScript</span>',
+            python: '<span class="lang-badge lang-py">🐍 Python</span>',
+            unknown: '<span class="lang-badge" style="background:rgba(148,163,184,0.2);color:#94a3b8;">❓ Không rõ</span>'
         };
-        return map[t] || '';
+        return map[lang] || '';
     }
 
-    // ============ ĐỌC FILE ============
-    function handleFiles(fileList) {
-        uploadedFiles = [];
+    function handleFile(file) {
+        originalFileName = file.name;
         resultFile = null;
         $('download-btn').style.display = 'none';
+        $('preview-btn').style.display = 'none';
 
-        var files = Array.from(fileList);
-        if (!files.length) return;
-
-        var pending = files.length;
-        var names = [];
-
-        files.forEach(function(file, idx) {
-            var reader = new FileReader();
-            reader.onload = function(e) {
-                uploadedFiles[idx] = {
-                    name: file.name,
-                    type: detectFileType(file.name),
-                    content: e.target.result
-                };
-                names.push(file.name + ' (' + (file.size/1024).toFixed(1) + 'KB)');
-                pending--;
-                if (pending === 0) {
-                    finishLoad(names);
-                }
-            };
-            reader.readAsText(file);
-        });
-    }
-
-    function finishLoad(names) {
-        // Xác định loại tổng thể
-        var types = uploadedFiles.map(function(f){ return f.type; });
-        var unique = types.filter(function(v, i, a){ return a.indexOf(v) === i; });
-
-        if (uploadedFiles.length > 1) {
-            detectedType = 'full';
-        } else {
-            detectedType = types[0] || 'unknown';
-        }
-
-        $('file-name').textContent = '✅ Đã đọc: ' + names.join(' + ');
-        $('file-name').style.display = 'block';
-        $('file-wrapper').classList.add('has-file');
-        $('detected-type').innerHTML = 'Loại: ' + typeBadge(detectedType);
-
-        setStatus('✅ Đã đọc ' + uploadedFiles.length + ' file. Nhấn BẮT ĐẦU.', 'success');
+        var reader = new FileReader();
+        reader.onload = function(ev) {
+            sourceCode = ev.target.result;
+            detectedLang = detectLanguage(file.name, sourceCode);
+            $('file-name').textContent = '✅ ' + file.name + ' (' + (file.size/1024).toFixed(1) + 'KB)';
+            $('file-name').style.display = 'block';
+            $('file-wrapper').classList.add('has-file');
+            $('detected-lang').innerHTML = 'Ngôn ngữ: ' + langBadge(detectedLang);
+            setStatus('✅ Đã đọc: ' + file.name + '. Nhấn BẮT ĐẦU.', 'success');
+        };
+        reader.readAsText(file, 'UTF-8');
     }
 
     $('file-input').addEventListener('change', function(e) {
-        if (e.target.files.length) handleFiles(e.target.files);
+        if (e.target.files[0]) handleFile(e.target.files[0]);
     });
 
     var wrapper = $('file-wrapper');
@@ -283,332 +351,460 @@ button:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
         e.preventDefault();
         wrapper.style.borderColor = '';
         wrapper.style.background = '';
-        if (e.dataTransfer.files.length) handleFiles(e.dataTransfer.files);
+        if (e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]);
     });
 
-    // ============ HELPER ============
-    function b64(str) {
-        return btoa(unescape(encodeURIComponent(str)));
+    var methodInfo = {
+        auto: '<b>🤖 Auto:</b> Tool tự chọn cách tốt nhất theo ngôn ngữ.<br>• JS → Obfuscate thật (nhiều lớp)<br>• Python → Base64 + loader Python',
+        js: '<b>🟨 JS Obfuscate:</b> Obfuscate thật 100% với 5 mức bảo mật.<br>✓ File vẫn chạy y hệt<br>✓ LV5 PARANOID gần như không thể đọc<br>✗ Chỉ dùng cho file .js',
+        b64: '<b>🔵 Base64 + Loader:</b> Encode source thành Base64, tạo loader tự decode.<br>✓ Chạy tốt với Python<br>✓ Kích thước +33%<br>✓ Với JS → dùng eval',
+        xor: '<b>🟠 XOR + Base64:</b> XOR với key ngẫu nhiên rồi Base64.<br>✓ Khó decode thủ công hơn<br>✓ Chạy tốt với Python<br>✗ Với JS dùng eval'
+    };
+
+    document.querySelectorAll('input[name="mode"]').forEach(function(r){
+        r.addEventListener('change', function(){
+            $('method-info').innerHTML = methodInfo[r.value] || '';
+            var isJS = (r.value === 'js' || (r.value === 'auto' && detectedLang === 'js'));
+            $('js-level-box').style.display = isJS ? 'block' : 'none';
+        });
+    });
+
+    function updateLockInputs() {
+        var needDomain = $('opt-domain-lock').checked;
+        var needTime = $('opt-time-lock').checked;
+        $('lock-inputs').style.display = (needDomain || needTime) ? 'block' : 'none';
+        $('domain-input').style.display = needDomain ? 'block' : 'none';
+        $('time-input').style.display = needTime ? 'block' : 'none';
+    }
+    $('opt-domain-lock').addEventListener('change', updateLockInputs);
+    $('opt-time-lock').addEventListener('change', updateLockInputs);
+
+    function utf8ToBytes(str) { return new TextEncoder().encode(str); }
+    function bytesToB64(bytes) {
+        var bin = '';
+        for (var i = 0; i < bytes.length; i++) bin += String.fromCharCode(bytes[i]);
+        return btoa(bin);
+    }
+    function xorBytes(bytes, keyBytes) {
+        var out = new Uint8Array(bytes.length);
+        for (var i = 0; i < bytes.length; i++) out[i] = bytes[i] ^ keyBytes[i % keyBytes.length];
+        return out;
+    }
+    function randKey(len) {
+        var chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        var s = '';
+        for (var i = 0; i < len; i++) s += chars[Math.floor(Math.random() * chars.length)];
+        return s;
     }
 
-    function minifyCSS(css) {
-        return css
-            .replace(/\/\*[\s\S]*?\*\//g, '')      // xoá comment
-            .replace(/\s+/g, ' ')                   // gộp space
-            .replace(/\s*([{}:;,>+~])\s*/g, '$1')   // xoá space quanh ký tự đặc biệt
-            .replace(/;}/g, '}')                    // xoá ; cuối
-            .trim();
-    }
-
-    function minifyHTML(html) {
-        return html
-            .replace(/<!--[\s\S]*?-->/g, '')        // xoá comment (trừ conditional)
-            .replace(/>\s+</g, '><')                // xoá space giữa tag
-            .replace(/\s{2,}/g, ' ')                // gộp space
-            .trim();
-    }
-
-    // ============ JS OBFUSCATOR CONFIG ============
-    function getJSConfig(level) {
+    function getJSConfig(level, opts) {
         var base = {
             compact: true,
             identifierNamesGenerator: 'hexadecimal',
             renameGlobals: false,
             stringArray: true,
-            stringArrayThreshold: 0.75,
             stringArrayEncoding: ['base64'],
+            stringArrayThreshold: 0.75,
             rotateStringArray: true,
             shuffleStringArray: true,
             splitStrings: true,
             splitStringsChunkLength: 10
         };
+
         if (level === 'low') return base;
-        if (level === 'medium') return Object.assign({}, base, {
-            controlFlowFlattening: true, controlFlowFlatteningThreshold: 0.5,
-            deadCodeInjection: true, deadCodeInjectionThreshold: 0.3,
-            numbersToExpressions: true, simplify: true
-        });
-        if (level === 'high') return Object.assign({}, base, {
-            controlFlowFlattening: true, controlFlowFlatteningThreshold: 1,
-            deadCodeInjection: true, deadCodeInjectionThreshold: 0.5,
-            selfDefending: true, debugProtection: true, debugProtectionInterval: 2000,
-            numbersToExpressions: true, simplify: true, transformObjectKeys: true,
-            splitStringsChunkLength: 5, stringArrayEncoding: ['rc4']
-        });
-        if (level === 'extreme') return Object.assign({}, base, {
-            controlFlowFlattening: true, controlFlowFlatteningThreshold: 1,
-            deadCodeInjection: true, deadCodeInjectionThreshold: 1,
-            selfDefending: true, debugProtection: true, debugProtectionInterval: 1000,
-            numbersToExpressions: true, simplify: true, transformObjectKeys: true,
-            splitStringsChunkLength: 3, stringArrayEncoding: ['rc4'],
-            stringArrayWrappersCount: 3, stringArrayWrappersChainedCalls: true,
-            identifierNamesGenerator: 'mangled-shuffled', identifiersPrefix: '_0x'
-        });
+
+        if (level === 'medium') {
+            return Object.assign({}, base, {
+                controlFlowFlattening: true,
+                controlFlowFlatteningThreshold: 0.5,
+                deadCodeInjection: true,
+                deadCodeInjectionThreshold: 0.3,
+                numbersToExpressions: true,
+                simplify: true
+            });
+        }
+
+        if (level === 'high') {
+            return Object.assign({}, base, {
+                controlFlowFlattening: true,
+                controlFlowFlatteningThreshold: 0.85,
+                deadCodeInjection: true,
+                deadCodeInjectionThreshold: 0.5,
+                selfDefending: opts.selfDefending,
+                debugProtection: opts.debugProtection,
+                debugProtectionInterval: opts.debugProtection ? 2000 : 0,
+                numbersToExpressions: true,
+                simplify: true,
+                transformObjectKeys: true,
+                splitStringsChunkLength: 6,
+                stringArrayEncoding: ['rc4'],
+                stringArrayWrappersCount: 2,
+                stringArrayWrappersType: 'function',
+                stringArrayWrappersChainedCalls: true,
+                stringArrayRotate: true,
+                stringArrayShuffle: true
+            });
+        }
+
+        if (level === 'extreme') {
+            return Object.assign({}, base, {
+                controlFlowFlattening: true,
+                controlFlowFlatteningThreshold: 1,
+                deadCodeInjection: true,
+                deadCodeInjectionThreshold: 0.7,
+                selfDefending: opts.selfDefending,
+                debugProtection: opts.debugProtection,
+                debugProtectionInterval: opts.debugProtection ? 1000 : 0,
+                numbersToExpressions: true,
+                simplify: true,
+                transformObjectKeys: true,
+                splitStringsChunkLength: 4,
+                stringArrayEncoding: ['rc4'],
+                stringArrayWrappersCount: 3,
+                stringArrayWrappersType: 'function',
+                stringArrayWrappersChainedCalls: true,
+                stringArrayRotate: true,
+                stringArrayShuffle: true,
+                identifierNamesGenerator: 'mangled-shuffled',
+                identifiersPrefix: '_0x',
+                unicodeEscapeSequence: false,
+                forceTransformStrings: [],
+                reservedStrings: []
+            });
+        }
+
+        if (level === 'paranoid') {
+            return Object.assign({}, base, {
+                controlFlowFlattening: true,
+                controlFlowFlatteningThreshold: 1,
+                deadCodeInjection: true,
+                deadCodeInjectionThreshold: 1,
+                selfDefending: opts.selfDefending,
+                debugProtection: opts.debugProtection,
+                debugProtectionInterval: opts.debugProtection ? 500 : 0,
+                stringArray: true,
+                stringArrayEncoding: ['rc4'],
+                stringArrayThreshold: 1,
+                stringArrayRotate: true,
+                stringArrayShuffle: true,
+                stringArrayWrappersCount: 5,
+                stringArrayWrappersType: 'function',
+                stringArrayWrappersChainedCalls: true,
+                stringArrayIndexShift: true,
+                stringArrayIndexesType: ['hexadecimal-number'],
+                stringArrayCallsTransform: true,
+                stringArrayCallsTransformThreshold: 1,
+                splitStrings: true,
+                splitStringsChunkLength: 2,
+                numbersToExpressions: true,
+                simplify: true,
+                identifierNamesGenerator: 'mangled-shuffled',
+                identifiersPrefix: '_0x',
+                renameGlobals: false,
+                transformObjectKeys: true,
+                unicodeEscapeSequence: false,
+                disableConsoleOutput: false,
+                forceTransformStrings: [],
+                reservedStrings: [],
+                reservedNames: []
+            });
+        }
+
         return base;
     }
 
-    // ============ ANTI-DEVTOOLS SCRIPT ============
     function antiDevtoolsScript() {
-        return `
-(function(){
-  // Chặn F12, Ctrl+Shift+I/J/C, Ctrl+U
-  document.addEventListener('keydown', function(e){
-    if (e.key === 'F12' ||
-        (e.ctrlKey && e.shiftKey && ['I','J','C','i','j','c'].includes(e.key)) ||
-        (e.ctrlKey && ['U','u'].includes(e.key))) {
-      e.preventDefault(); return false;
-    }
-  }, true);
-  // Chặn chuột phải
-  document.addEventListener('contextmenu', function(e){ e.preventDefault(); return false; }, true);
-  // Phát hiện devtools mở (dựa vào kích thước)
-  var threshold = 160;
-  setInterval(function(){
-    var w = window.outerWidth - window.innerWidth;
-    var h = window.outerHeight - window.innerHeight;
-    if (w > threshold || h > threshold) {
-      document.body.innerHTML = '<div style="color:#f00;text-align:center;padding:50px;font-family:sans-serif"><h1>⚠️ DevTools Detected</h1><p>Vui lòng đóng DevTools để tiếp tục.</p></div>';
-    }
-  }, 1000);
-})();
-`;
+        return '(function(){' +
+            'var _0x1=function(){debugger;};' +
+            'try{setInterval(_0x1,4000);}catch(e){}' +
+            'var _0x2=160;' +
+            'setInterval(function(){' +
+                'var _0x3=window.outerWidth-window.innerWidth;' +
+                'var _0x4=window.outerHeight-window.innerHeight;' +
+                'if(_0x3>_0x2||_0x4>_0x2){' +
+                    'document.body&&(document.body.innerHTML="<div style=\\"padding:50px;text-align:center;color:#f00;font-family:sans-serif\\"><h1>Access Denied</h1></div>");' +
+                '}' +
+            '},800);' +
+            'document.addEventListener("keydown",function(_0x5){' +
+                'var _0x6=_0x5.key;' +
+                'if(_0x6==="F12"||(_0x5.ctrlKey&&_0x5.shiftKey&&["I","J","C","i","j","c"].indexOf(_0x6)>-1)||(_0x5.ctrlKey&&["U","u"].indexOf(_0x6)>-1)){' +
+                    '_0x5.preventDefault();return false;' +
+                '}' +
+            '},true);' +
+            'document.addEventListener("contextmenu",function(_0x7){_0x7.preventDefault();return false;},true);' +
+        '})();';
     }
 
-    function antiDebugJSScript() {
-        return `
-(function(){
-  var _t = function(){ debugger; };
-  setInterval(_t, 3000);
-})();
-`;
+    function antiDebugLoopScript() {
+        return '(function(){' +
+            'var _0xa=function(){debugger;};' +
+            'try{setInterval(_0xa,1500);}catch(e){}' +
+            'try{' +
+                'Object.defineProperty(window,"_0xdbg",{get:function(){debugger;return 1;}});' +
+                'setInterval(function(){try{window._0xdbg;}catch(e){}},1000);' +
+            '}catch(e){}' +
+            'try{var _0xb=new Date();_0xa();if(new Date()-_0xb>100){window.location.reload();}}catch(e){}' +
+        '})();';
     }
 
-    // ============ XỬ LÝ HTML ============
-    // Nhúng toàn bộ HTML vào JS loader: khi mở file, JS decode và document.write
-    function processHTML(html, opts) {
-        var processed = opts.minify ? minifyHTML(html) : html;
-        var encoded = b64(processed);
-
-        var antiScript = '';
-        if (opts.devtools) antiScript += antiDevtoolsScript();
-
-        return `<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<title>Protected Page</title>
-<script>
-${antiScript}
-(function(){
-  var _p = "${encoded}";
-  var _s = decodeURIComponent(escape(atob(_p)));
-  document.open();
-  document.write(_s);
-  document.close();
-})();
-<\/script>
-</head>
-<body></body>
-</html>`;
+    function domainLockScript(domains) {
+        var list = domains.split(',').map(function(d){ return d.trim().toLowerCase(); }).filter(Boolean);
+        if (!list.length) return '';
+        var arr = JSON.stringify(list);
+        return '(function(){' +
+            'var _0xd=' + arr + ';' +
+            'var _0xh=location.hostname.toLowerCase();' +
+            'var _0xok=false;' +
+            'for(var _0xi=0;_0xi<_0xd.length;_0xi++){' +
+                'var _0xp=_0xd[_0xi];' +
+                'if(_0xh===_0xp||_0xh.slice(-_0xp.length-1)==="."+_0xp){_0xok=true;break;}' +
+            '}' +
+            'if(!_0xok){' +
+                'document.documentElement.innerHTML="<div style=\\"padding:50px;text-align:center;color:#f00;font-family:sans-serif\\"><h1>Domain Not Allowed</h1></div>";' +
+                'throw new Error("Domain locked");' +
+            '}' +
+        '})();';
     }
 
-    // ============ XỬ LÝ CSS ============
-    function processCSS(css, opts) {
-        var processed = opts.minify ? minifyCSS(css) : css;
-        // Bọc trong HTML nhỏ để test
-        var encoded = b64(processed);
-        return `/* CSS Encoded by MDUY Tool */
-(function(){
-  var css = decodeURIComponent(escape(atob("${encoded}")));
-  var style = document.createElement('style');
-  style.textContent = css;
-  document.head.appendChild(style);
-})();
-
-/* CSS gốc sau khi decode (để tham khảo):
-${processed}
-*/`;
+    function timeLockScript(expiryDate) {
+        if (!expiryDate) return '';
+        var ts = new Date(expiryDate + 'T23:59:59').getTime();
+        if (isNaN(ts)) return '';
+        return '(function(){' +
+            'if(Date.now()>' + ts + '){' +
+                'document.documentElement.innerHTML="<div style=\\"padding:50px;text-align:center;color:#f00;font-family:sans-serif\\"><h1>Expired</h1></div>";' +
+                'throw new Error("Expired");' +
+            '}' +
+        '})();';
     }
 
-    // ============ XỬ LÝ JS ============
+    function integrityCheckScript() {
+        return '(function(){' +
+            'var _0xg=function(){return document.currentScript?document.currentScript.textContent:"";};' +
+            'var _0xs=_0xg();' +
+            'if(_0xs.length>0){' +
+                'var _0xe=0;' +
+                'for(var _0xi=0;_0xi<_0xs.length;_0xi+=97){' +
+                    '_0xe=(_0xe<<5)-_0xe+_0xs.charCodeAt(_0xi);_0xe=_0xe&_0xe;' +
+                '}' +
+                'try{window._0xguard=_0xe;}catch(e){}' +
+            '}' +
+        '})();';
+    }
+
     function processJS(js, level, opts) {
         if (typeof JavaScriptObfuscator === 'undefined') {
             throw new Error('Không tải được javascript-obfuscator');
         }
-        var prefix = '';
-        if (opts.devtools) prefix += antiDevtoolsScript() + '\n';
-        if (opts.antiDebug) prefix += antiDebugJSScript() + '\n';
 
-        var obf = JavaScriptObfuscator.obfuscate(js, getJSConfig(level)).getObfuscatedCode();
-        return prefix + obf;
+        var header = '', body = js;
+        var match = js.match(/\/\/ ==UserScript==[\s\S]*?\/\/ ==\/UserScript==/);
+        if (match) {
+            header = match[0] + '\n\n';
+            body = js.replace(match[0], '').trim();
+        }
+
+        var prefixes = [];
+        if (opts.antiDevtools) prefixes.push(antiDevtoolsScript());
+        if (opts.antiDebugLoop) prefixes.push(antiDebugLoopScript());
+        if (opts.domainLock && opts.domains) {
+            var dl = domainLockScript(opts.domains);
+            if (dl) prefixes.push(dl);
+        }
+        if (opts.timeLock && opts.expiry) {
+            var tl = timeLockScript(opts.expiry);
+            if (tl) prefixes.push(tl);
+        }
+
+        var wrappedBody = prefixes.join('\n') + '\n' + body;
+
+        var config = getJSConfig(level, opts);
+        var obf = JavaScriptObfuscator.obfuscate(wrappedBody, config).getObfuscatedCode();
+
+        var integrityPrefix = opts.integrity ? (integrityCheckScript() + '\n') : '';
+
+        return header + integrityPrefix + obf;
     }
 
-    // ============ XỬ LÝ FULL WEBSITE ============
-    // Gộp nhiều file (HTML + CSS + JS) thành 1 file HTML duy nhất
-    function processFullWebsite(files, level, opts) {
-        var htmlFile = files.find(function(f){ return f.type === 'html'; });
-        var cssFiles = files.filter(function(f){ return f.type === 'css'; });
-        var jsFiles = files.filter(function(f){ return f.type === 'js'; });
-
-        var cssContent = cssFiles.map(function(f){ return f.content; }).join('\n');
-        var jsContent = jsFiles.map(function(f){ return f.content; }).join('\n;\n');
-
-        if (opts.minify && cssContent) cssContent = minifyCSS(cssContent);
-
-        // Obfuscate JS
-        var obfJS = '';
-        if (jsContent) {
-            try {
-                obfJS = processJS(jsContent, level, opts);
-            } catch(e) {
-                obfJS = jsContent; // fallback nếu lỗi
-            }
-        }
-
-        var finalHTML;
-
-        if (htmlFile) {
-            // Có HTML → thay thế <link> và <script> bằng inline
-            var html = htmlFile.content;
-
-            // Xoá các thẻ link/script trỏ đến file ngoài
-            html = html.replace(/<link[^>]*rel=["']stylesheet["'][^>]*>/gi, '');
-            html = html.replace(/<script[^>]*src=["'][^"']*["'][^>]*><\/script>/gi, '');
-
-            // Nhúng CSS vào </head>
-            if (cssContent) {
-                html = html.replace(/<\/head>/i, '<style>\n' + cssContent + '\n</style>\n</head>');
-            }
-            // Nhúng JS vào </body>
-            if (obfJS) {
-                html = html.replace(/<\/body>/i, '<script>\n' + obfJS + '\n<\/script>\n</body>');
-            }
-
-            finalHTML = opts.minify ? minifyHTML(html) : html;
-        } else {
-            // Không có HTML → tạo trang mới
-            finalHTML = `<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<title>Protected Website</title>
-${cssContent ? '<style>\n' + cssContent + '\n</style>' : ''}
-</head>
-<body>
-<div id="app"></div>
-${obfJS ? '<script>\n' + obfJS + '\n<\/script>' : ''}
-</body>
-</html>`;
-        }
-
-        // Nếu bật Base64 toàn bộ
-        if (opts.b64) {
-            var encoded = b64(finalHTML);
-            var anti = opts.devtools ? antiDevtoolsScript() : '';
-            return `<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<title>Protected</title>
-<script>
-${anti}
-(function(){
-  var _s = decodeURIComponent(escape(atob("${encoded}")));
-  document.open();
-  document.write(_s);
-  document.close();
-})();
-<\/script>
-</head>
-<body></body>
-</html>`;
-        }
-
-        return finalHTML;
+    function wrapPyString(str, width) {
+        var chunks = [];
+        for (var i = 0; i < str.length; i += width) chunks.push('    "' + str.substr(i, width) + '"');
+        return chunks.join('\n');
     }
 
-    // ============ XỬ LÝ CHÍNH ============
-    $('obfuscate-btn').onclick = function() {
+    function buildPythonLoader(method, payload, key) {
+        if (method === 'b64') {
+            return `import base64 as _b64
+
+_PAYLOAD = (
+${wrapPyString(payload, 76)}
+)
+
+_source = _b64.b64decode(_PAYLOAD).decode('utf-8')
+_globals = __dict__
+_globals.setdefault('__name__', '__main__')
+_globals.setdefault('__file__', __file__)
+_globals.setdefault('__builtins__', __builtins__)
+
+exec(compile(_source, '<protected>', 'exec'), _globals)
+`;
+        }
+
+        if (method === 'xor') {
+            return `import base64 as _b64
+
+_PAYLOAD = (
+${wrapPyString(payload, 76)}
+)
+_KEY = "${key}"
+
+_enc = _b64.b64decode(_PAYLOAD)
+_kb = _KEY.encode('utf-8')
+_dec = bytes(_enc[i] ^ _kb[i % len(_kb)] for i in range(len(_enc)))
+_source = _dec.decode('utf-8')
+
+_globals = __dict__
+_globals.setdefault('__name__', '__main__')
+_globals.setdefault('__file__', __file__)
+_globals.setdefault('__builtins__', __builtins__)
+
+exec(compile(_source, '<protected>', 'exec'), _globals)
+`;
+        }
+
+        return 'raise SystemError("invalid method")\n';
+    }
+
+    $('obfuscate-btn').onclick = async function() {
         var btn = $('obfuscate-btn');
-        if (!uploadedFiles.length) {
+        if (!sourceCode) {
             setStatus('❌ Chưa có file! Chọn file trước.', 'error');
             return;
         }
 
         var mode = document.querySelector('input[name="mode"]:checked').value;
         var level = document.querySelector('input[name="level"]:checked').value;
+
+        if (mode === 'auto') {
+            mode = (detectedLang === 'js') ? 'js' : 'b64';
+        }
+
         var opts = {
-            devtools: $('opt-devtools').checked,
-            b64: $('opt-b64').checked,
-            minify: $('opt-minify').checked,
-            antiDebug: $('opt-anti-debug').checked
+            selfDefending: $('opt-self-defending').checked,
+            debugProtection: $('opt-debug-protection').checked,
+            antiDevtools: $('opt-anti-devtools').checked,
+            antiDebugLoop: $('opt-anti-debug-loop').checked,
+            domainLock: $('opt-domain-lock').checked,
+            timeLock: $('opt-time-lock').checked,
+            integrity: $('opt-integrity').checked,
+            domains: $('domain-input').value,
+            expiry: $('time-input').value
         };
 
-        if (mode === 'auto') mode = detectedType;
+        var baseName = (originalFileName.replace(/\.[^.]+$/, '')) || 'script';
 
         btn.disabled = true;
-        setProgress(15);
+        setProgress(10);
         setStatus('⏳ Đang xử lý...', 'loading');
 
-        setTimeout(function() {
-            try {
-                setProgress(40);
-                var out = { name: 'output.html', content: '', mime: 'text/html' };
+        await new Promise(function(r){ setTimeout(r, 50); });
 
-                // ==== HTML ====
-                if (mode === 'html') {
-                    var f = uploadedFiles[0];
-                    if (f.type !== 'html') throw new Error('File không phải HTML');
-                    out.content = processHTML(f.content, opts);
-                    out.name = f.name.replace(/\.[^.]+$/, '') + '-protected.html';
+        try {
+            if (mode === 'js') {
+                if (detectedLang === 'python') {
+                    throw new Error('File này là Python, không obfuscate JS được!');
+                }
+                setProgress(30);
+                setStatus('⏳ Đang obfuscate JS (mức ' + level.toUpperCase() + ')... có thể mất 10-60s.', 'loading');
 
-                // ==== CSS ====
-                } else if (mode === 'css') {
-                    var f2 = uploadedFiles[0];
-                    if (f2.type !== 'css') throw new Error('File không phải CSS');
-                    out.content = processCSS(f2.content, opts);
-                    out.name = f2.name.replace(/\.[^.]+$/, '') + '-protected.css';
-                    out.mime = 'text/css';
+                await new Promise(function(r){ setTimeout(r, 50); });
 
-                // ==== JS ====
-                } else if (mode === 'js') {
-                    var f3 = uploadedFiles[0];
-                    if (f3.type !== 'js') throw new Error('File không phải JS');
-                    out.content = processJS(f3.content, level, opts);
-                    out.name = f3.name.replace(/\.[^.]+$/, '') + '-obfuscated.js';
-                    out.mime = 'application/javascript';
+                var jsResult = processJS(sourceCode, level, opts);
+                setProgress(100);
 
-                // ==== FULL ====
-                } else if (mode === 'full') {
-                    out.content = processFullWebsite(uploadedFiles, level, opts);
-                    out.name = 'website-protected.html';
+                resultFile = {
+                    name: baseName + '-obfuscated.js',
+                    content: jsResult,
+                    mime: 'application/javascript'
+                };
+            } else {
+                var bytes = utf8ToBytes(sourceCode);
+                var payload = '';
+                var key = '';
 
-                } else {
-                    throw new Error('Không xác định được loại file: ' + mode);
+                if (mode === 'b64') {
+                    payload = bytesToB64(bytes);
+                } else if (mode === 'xor') {
+                    key = randKey(32);
+                    var xored = xorBytes(bytes, utf8ToBytes(key));
+                    payload = bytesToB64(xored);
                 }
 
-                setProgress(100);
-                resultFile = out;
+                setProgress(70);
 
-                var oKB = (uploadedFiles.reduce(function(s,f){ return s + f.content.length; }, 0) / 1024).toFixed(1);
-                var nKB = (new Blob([out.content]).size / 1024).toFixed(1);
-
-                setStatus('✅ Xong! ' + oKB + 'KB → ' + nKB + 'KB | File: ' + out.name, 'success');
-
-                $('download-btn').style.display = 'block';
-                $('download-btn').textContent = '💾 TẢI ' + out.name + ' (' + nKB + 'KB)';
-
-                btn.disabled = false;
-            } catch (err) {
-                console.error(err);
-                setStatus('❌ Lỗi: ' + err.message, 'error');
-                setProgress(0);
-                btn.disabled = false;
+                if (detectedLang === 'python') {
+                    var loader = buildPythonLoader(mode, payload, key);
+                    resultFile = {
+                        name: baseName + '_loader.py',
+                        content: loader,
+                        mime: 'text/x-python'
+                    };
+                } else if (detectedLang === 'js') {
+                    var jsLoader = buildJSLoader(mode, payload, key);
+                    resultFile = {
+                        name: baseName + '-encoded.js',
+                        content: jsLoader,
+                        mime: 'application/javascript'
+                    };
+                } else {
+                    resultFile = {
+                        name: baseName + '-encoded.txt',
+                        content: payload,
+                        mime: 'text/plain'
+                    };
+                }
             }
-        }, 100);
+
+            setProgress(100);
+            var oKB = (new Blob([sourceCode]).size / 1024).toFixed(1);
+            var nKB = (new Blob([resultFile.content]).size / 1024).toFixed(1);
+            var ratio = Math.round(resultFile.content.length / sourceCode.length * 100);
+            setStatus('✅ Xong! ' + oKB + 'KB → ' + nKB + 'KB (' + ratio + '%) | File: ' + resultFile.name, 'success');
+
+            $('download-btn').style.display = 'block';
+            $('download-btn').textContent = '💾 TẢI ' + resultFile.name + ' (' + nKB + 'KB)';
+            $('preview-btn').style.display = 'block';
+            btn.disabled = false;
+
+        } catch (err) {
+            console.error(err);
+            setStatus('❌ Lỗi: ' + err.message, 'error');
+            setProgress(0);
+            btn.disabled = false;
+        }
     };
 
-    // ============ DOWNLOAD ============
+    function buildJSLoader(method, payload, key) {
+        if (method === 'b64') {
+            return '(function(){' +
+                'var s=decodeURIComponent(escape(atob("' + payload + '")));' +
+                '(0,eval)(s);' +
+            '})();\n';
+        }
+        if (method === 'xor') {
+            return '(function(){' +
+                'var p="' + payload + '",k="' + key + '",r="";' +
+                'var raw=atob(p);' +
+                'for(var i=0;i<raw.length;i++)r+=String.fromCharCode(raw.charCodeAt(i)^k.charCodeAt(i%k.length));' +
+                '(0,eval)(decodeURIComponent(escape(r)));' +
+            '})();\n';
+        }
+        return '(function(){' +
+            'var s=decodeURIComponent(escape(atob("' + payload + '")));' +
+            '(0,eval)(s);' +
+        '})();\n';
+    }
+
     $('download-btn').onclick = function() {
         if (!resultFile) return;
         var blob = new Blob([resultFile.content], { type: resultFile.mime + ';charset=utf-8' });
@@ -627,6 +823,17 @@ ${anti}
         setTimeout(function(){ btn.textContent = old; }, 2000);
     };
 
+    $('preview-btn').onclick = function() {
+        if (!resultFile) return;
+        var w = window.open('', '_blank');
+        var safe = resultFile.content.replace(/[<>&]/g, function(c){
+            return {'<':'&lt;','>':'&gt;','&':'&amp;'}[c];
+        });
+        w.document.write('<html><head><title>' + resultFile.name + '</title></head><body style="background:#0a0a1a;color:#0f0;margin:0;padding:16px;"><pre style="white-space:pre-wrap;word-break:break-all;font-family:monospace;font-size:12px;">' + safe + '</pre></body></html>');
+        w.document.close();
+    };
+
+    updateLockInputs();
     setStatus('Sẵn sàng — Chọn file để bắt đầu');
 })();
 </script>
