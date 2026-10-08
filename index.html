@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🔓 Giải mã Tool</title>
+<title>🔐 Multi-Lang Obfuscate Tool - MDUY</title>
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body {
@@ -15,48 +15,41 @@ body {
 .container { max-width: 900px; width: 100%; }
 h1 {
     text-align: center; font-size: 22px; margin-bottom: 8px;
-    background: linear-gradient(135deg, #22c55e, #06b6d4);
+    background: linear-gradient(135deg, #a855f7, #ec4899);
     -webkit-background-clip: text; -webkit-text-fill-color: transparent;
     font-weight: 800;
 }
 .subtitle { text-align: center; font-size: 12px; color: #888; margin-bottom: 20px; }
 .card {
     background: rgba(255,255,255,0.03);
-    border: 1px solid rgba(34,197,94,0.3);
+    border: 1px solid rgba(168,85,247,0.3);
     border-radius: 14px; padding: 16px; margin-bottom: 14px;
 }
 .label {
-    font-size: 12px; font-weight: 700; color: #22c55e;
+    font-size: 12px; font-weight: 700; color: #a855f7;
     margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px;
 }
 .file-input-wrapper {
-    position: relative; display: block; width: 100%; padding: 20px;
-    background: rgba(0,0,0,0.3); border: 2px dashed rgba(34,197,94,0.5);
+    position: relative; display: block; width: 100%; padding: 24px;
+    background: rgba(0,0,0,0.3); border: 2px dashed rgba(168,85,247,0.5);
     border-radius: 12px; text-align: center; cursor: pointer;
     transition: all 0.2s; margin-bottom: 10px;
 }
-.file-input-wrapper:hover { border-color: #22c55e; background: rgba(34,197,94,0.05); }
+.file-input-wrapper:hover { border-color: #a855f7; background: rgba(168,85,247,0.05); }
 .file-input-wrapper.has-file { border-color: #22c55e; background: rgba(34,197,94,0.05); border-style: solid; }
 .file-input-wrapper input[type="file"] {
     position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer;
 }
-.file-icon { font-size: 32px; margin-bottom: 6px; }
-.file-text { font-size: 13px; color: #ccc; font-weight: 700; }
+.file-icon { font-size: 40px; margin-bottom: 8px; }
+.file-text { font-size: 14px; color: #ccc; font-weight: 700; }
 .file-sub { font-size: 11px; color: #888; margin-top: 4px; }
 .file-name { font-size: 12px; color: #22c55e; margin-top: 8px; font-weight: 700; word-break: break-all; }
-textarea {
-    width: 100%; min-height: 180px; background: rgba(0,0,0,0.5);
-    border: 1px solid rgba(34,197,94,0.4); border-radius: 10px; color: #fff;
-    padding: 12px; font-family: 'Courier New', monospace; font-size: 12px;
-    resize: vertical; outline: none; line-height: 1.5;
-}
-textarea:focus { border-color: #22c55e; box-shadow: 0 0 15px rgba(34,197,94,0.3); }
 button {
-    width: 100%; padding: 16px; background: linear-gradient(135deg, #22c55e, #06b6d4);
+    width: 100%; padding: 16px; background: linear-gradient(135deg, #a855f7, #ec4899);
     border: none; border-radius: 10px; color: #fff; font-weight: 800;
     font-size: 15px; cursor: pointer; transition: 0.2s; letter-spacing: 1px; margin-top: 8px;
 }
-button:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(34,197,94,0.4); }
+button:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(168,85,247,0.4); }
 button:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
 .status {
     font-size: 12px; text-align: center; padding: 12px;
@@ -65,73 +58,129 @@ button:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
 }
 .status.error { color: #ef4444; }
 .status.loading { color: #f59e0b; }
-.copy-btn {
-    background: rgba(59,130,246,0.2); border: 1px solid rgba(59,130,246,0.5);
-    color: #60a5fa; padding: 12px; margin-top: 8px; font-weight: 700;
-}
-.copy-btn:hover { background: rgba(59,130,246,0.3); }
 .download-btn {
     background: rgba(34,197,94,0.2); border: 1px solid rgba(34,197,94,0.5);
     color: #22c55e; padding: 14px; margin-top: 8px; font-weight: 800; font-size: 14px;
 }
 .download-btn:hover { background: rgba(34,197,94,0.3); }
+.options {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 12px 0;
+}
+.option {
+    display: flex; align-items: center; gap: 8px;
+    padding: 10px; background: rgba(0,0,0,0.3); border-radius: 8px;
+    font-size: 13px; cursor: pointer;
+    border: 1px solid rgba(168,85,247,0.2); transition: 0.2s;
+}
+.option:hover { border-color: rgba(168,85,247,0.5); }
+.option input { accent-color: #a855f7; }
 .hint {
     background: rgba(59,130,246,0.1); border: 1px solid rgba(59,130,246,0.4);
     border-radius: 10px; padding: 12px; font-size: 12px; color: #60a5fa;
     line-height: 1.6; margin-bottom: 14px;
 }
-.divider {
-    display: flex; align-items: center; gap: 10px; margin: 14px 0;
-    color: #666; font-size: 11px; font-weight: 700;
+.warn {
+    background: rgba(245,158,11,0.1); border: 1px solid rgba(245,158,11,0.4);
+    color: #fbbf24; border-radius: 10px; padding: 10px;
+    font-size: 11px; margin-top: 10px; line-height: 1.5;
 }
-.divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: rgba(34,197,94,0.2); }
+.progress-bar {
+    width: 100%; height: 6px; background: rgba(0,0,0,0.5);
+    border-radius: 3px; overflow: hidden; margin: 8px 0; display: none;
+}
+.progress-fill {
+    height: 100%; background: linear-gradient(90deg, #a855f7, #ec4899);
+    width: 0%; transition: width 0.3s;
+}
+.lang-badge {
+    display: inline-block; padding: 3px 10px; border-radius: 20px;
+    font-size: 11px; font-weight: 700; margin-left: 6px;
+}
+.lang-js { background: rgba(250,204,21,0.2); color: #facc15; }
+.lang-py { background: rgba(59,130,246,0.2); color: #60a5fa; }
+.lang-cpp { background: rgba(236,72,153,0.2); color: #f472b6; }
+.lang-generic { background: rgba(148,163,184,0.2); color: #94a3b8; }
 </style>
 </head>
 <body>
 
 <div class="container">
-    <h1>🔓 GIẢI MÃ TOOL</h1>
-    <div class="subtitle">Khôi phục code gốc từ file đã mã hoá</div>
+    <h1>🔐 MULTI-LANG OBFUSCATE</h1>
+    <div class="subtitle">Hỗ trợ JavaScript • Python • C++ • PHP • Universal</div>
 
     <div class="hint">
-        💡 <b>Cách dùng:</b> Kéo file đã mã hoá vào → Nhấn "GIẢI MÃ" → Copy hoặc tải code gốc về.
+        💡 <b>Cách dùng:</b> Kéo file code vào ô → Tool tự nhận diện ngôn ngữ → Nhấn "BẮT ĐẦU" → Tải về. <br>
+        ⚠️ <b>JS:</b> obfuscate thật (vẫn chạy). <b>Python/C++/PHP:</b> mã hoá Base64 + loader (cần chạy qua tool decode).
     </div>
 
     <div class="card">
-        <div class="label">📁 CHỌN FILE ĐÃ MÃ HOÁ</div>
+        <div class="label">📁 CHỌN FILE CODE</div>
         <label class="file-input-wrapper" id="file-wrapper">
-            <input type="file" id="file-input" accept=".txt,.js,.user.js,text/plain,application/javascript">
+            <input type="file" id="file-input">
             <div class="file-icon">📄</div>
             <div class="file-text">Nhấn hoặc kéo file vào đây</div>
-            <div class="file-sub">Hỗ trợ: .txt, .js, .user.js</div>
+            <div class="file-sub">Hỗ trợ: .js, .user.js, .py, .cpp, .c, .php, .java, .cs, .txt</div>
             <div class="file-name" id="file-name" style="display:none;"></div>
         </label>
+        <div id="detected-lang" style="text-align:center; margin-top:8px;"></div>
     </div>
-
-    <div class="divider">HOẶC</div>
 
     <div class="card">
-        <div class="label">📥 DÁN CODE ĐÃ MÃ HOÁ VÀO ĐÂY</div>
-        <textarea id="input" placeholder="Dán code đã mã hoá..." spellcheck="false"></textarea>
+        <div class="label">⚙️ CHẾ ĐỘ XỬ LÝ</div>
+        <div class="options">
+            <label class="option">
+                <input type="radio" name="mode" value="auto" checked>
+                <span>🤖 Tự động theo ngôn ngữ</span>
+            </label>
+            <label class="option">
+                <input type="radio" name="mode" value="js">
+                <span>🟨 Ép buộc JavaScript</span>
+            </label>
+            <label class="option">
+                <input type="radio" name="mode" value="encode">
+                <span>🔒 Mã hoá Base64 + Loader</span>
+            </label>
+            <label class="option">
+                <input type="radio" name="mode" value="xor">
+                <span>🧬 XOR + Base64 (mạnh hơn)</span>
+            </label>
+        </div>
+
+        <div class="label" style="margin-top:14px;">⚡ MỨC ĐỘ (chỉ áp dụng JS)</div>
+        <div class="options">
+            <label class="option"><input type="radio" name="level" value="low" checked><span>🟢 Nhẹ</span></label>
+            <label class="option"><input type="radio" name="level" value="medium"><span>🟡 Vừa</span></label>
+            <label class="option"><input type="radio" name="level" value="high"><span>🔴 Mạnh</span></label>
+            <label class="option"><input type="radio" name="level" value="extreme"><span>💀 Cực mạnh</span></label>
+        </div>
     </div>
 
-    <button id="decrypt-btn">🔓 GIẢI MÃ NGAY</button>
+    <button id="obfuscate-btn">🚀 BẮT ĐẦU XỬ LÝ</button>
 
-    <div class="status" id="status">Sẵn sàng — Chọn file hoặc dán code</div>
+    <div class="progress-bar" id="progress-bar">
+        <div class="progress-fill" id="progress-fill"></div>
+    </div>
 
-    <div class="card" id="output-card" style="display:none;">
-        <div class="label">✅ CODE GỐC ĐÃ KHÔI PHỤC</div>
-        <textarea id="output" readonly spellcheck="false"></textarea>
-        <button class="copy-btn" id="copy-btn">📋 COPY CODE</button>
-        <button class="download-btn" id="download-btn">💾 TẢI FILE .user.js</button>
+    <div class="status" id="status">Sẵn sàng — Chọn file để bắt đầu</div>
+
+    <button class="download-btn" id="download-btn" style="display:none;">💾 TẢI FILE KẾT QUẢ</button>
+
+    <div class="warn" id="warn-box" style="display:none;">
+        ⚠️ <b>Lưu ý:</b> Python/C++ không thể obfuscate thật trong browser.
+        File xuất ra sẽ được <b>mã hoá Base64/XOR</b> — cần chạy qua tool decode (hoặc loader đi kèm) để khôi phục.
     </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/javascript-obfuscator@4.1.0/dist/index.browser.js"></script>
 <script>
 (function() {
     'use strict';
 
     var $ = function(id) { return document.getElementById(id); };
+    var currentFile = null;
+    var sourceCode = null;
+    var resultCode = null;
+    var detectedLang = 'unknown';
 
     function setStatus(text, type) {
         var el = $('status');
@@ -139,27 +188,101 @@ button:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
         el.className = 'status' + (type ? ' ' + type : '');
     }
 
-    // ===== CHỌN FILE =====
-    $('file-input').addEventListener('change', function(e) {
-        var file = e.target.files[0];
-        if (!file) return;
+    function setProgress(percent) {
+        var bar = $('progress-bar'), fill = $('progress-fill');
+        if (percent > 0 && percent < 100) {
+            bar.style.display = 'block';
+            fill.style.width = percent + '%';
+        } else if (percent >= 100) {
+            setTimeout(function() { bar.style.display = 'none'; }, 500);
+        } else {
+            bar.style.display = 'none';
+        }
+    }
+
+    // ==== Nhận diện ngôn ngữ ====
+    function detectLanguage(fileName, code) {
+        var ext = (fileName.split('.').pop() || '').toLowerCase();
+
+        if (ext === 'js' || fileName.endsWith('.user.js')) return 'js';
+        if (ext === 'py' || ext === 'pyw') return 'python';
+        if (ext === 'cpp' || ext === 'cc' || ext === 'cxx' || ext === 'c' || ext === 'h' || ext === 'hpp') return 'cpp';
+        if (ext === 'php') return 'php';
+        if (ext === 'java') return 'java';
+        if (ext === 'cs') return 'csharp';
+        if (ext === 'rb') return 'ruby';
+        if (ext === 'go') return 'go';
+        if (ext === 'rs') return 'rust';
+
+        // Fallback: đoán theo nội dung
+        var head = code.slice(0, 2000);
+        if (/^\s*def\s+\w+|^\s*import\s+\w+|^\s*from\s+\w+\s+import/m.test(head)) return 'python';
+        if (/#include\s*<|using\s+namespace|int\s+main\s*\(/.test(head)) return 'cpp';
+        if (/<\?php/.test(head)) return 'php';
+        if (/public\s+(class|static)|import\s+java\./.test(head)) return 'java';
+        if (/using\s+System;|namespace\s+\w+\s*\{/.test(head)) return 'csharp';
+        if (/function\s+\w+|const\s+\w+|let\s+\w+|var\s+\w+/.test(head)) return 'js';
+
+        return 'generic';
+    }
+
+    function langLabel(lang) {
+        var map = {
+            js: '<span class="lang-badge lang-js">🟨 JavaScript</span>',
+            python: '<span class="lang-badge lang-py">🐍 Python</span>',
+            cpp: '<span class="lang-badge lang-cpp">⚙️ C/C++</span>',
+            php: '<span class="lang-badge lang-generic">🐘 PHP</span>',
+            java: '<span class="lang-badge lang-generic">☕ Java</span>',
+            csharp: '<span class="lang-badge lang-generic">🎯 C#</span>',
+            ruby: '<span class="lang-badge lang-generic">💎 Ruby</span>',
+            go: '<span class="lang-badge lang-generic">🐹 Go</span>',
+            rust: '<span class="lang-badge lang-generic">🦀 Rust</span>',
+            generic: '<span class="lang-badge lang-generic">📄 Không rõ</span>',
+            unknown: ''
+        };
+        return map[lang] || map.generic;
+    }
+
+    function isJsLike(lang) { return lang === 'js'; }
+
+    // ==== Xử lý file ====
+    function loadFile(file) {
+        currentFile = file;
+        resultCode = null;
+        $('download-btn').style.display = 'none';
         var reader = new FileReader();
         reader.onload = function(ev) {
-            $('input').value = ev.target.result;
+            sourceCode = ev.target.result;
+            detectedLang = detectLanguage(file.name, sourceCode);
             $('file-name').textContent = '✅ ' + file.name + ' (' + (file.size / 1024).toFixed(1) + 'KB)';
             $('file-name').style.display = 'block';
             $('file-wrapper').classList.add('has-file');
-            setStatus('✅ Đã đọc file: ' + file.name, 'success');
+            $('detected-lang').innerHTML = 'Ngôn ngữ: ' + langLabel(detectedLang);
+
+            var warn = $('warn-box');
+            if (isJsLike(detectedLang)) {
+                warn.style.display = 'none';
+                setStatus('✅ Đã đọc file JS. Sẽ obfuscate thật.', 'success');
+            } else {
+                warn.style.display = 'block';
+                setStatus('✅ Đã đọc file. Sẽ dùng mã hoá Base64/XOR (không obfuscate thật được cho ngôn ngữ này).', 'success');
+            }
         };
         reader.readAsText(file);
+    }
+
+    $('file-input').addEventListener('change', function(e) {
+        var file = e.target.files[0];
+        if (file) loadFile(file);
     });
 
-    // ===== KÉO THẢ =====
     var wrapper = $('file-wrapper');
-    wrapper.addEventListener('dragover', function(e) {
-        e.preventDefault();
-        wrapper.style.borderColor = '#22c55e';
-        wrapper.style.background = 'rgba(34,197,94,0.1)';
+    ['dragover', 'dragenter'].forEach(function(ev) {
+        wrapper.addEventListener(ev, function(e) {
+            e.preventDefault();
+            wrapper.style.borderColor = '#a855f7';
+            wrapper.style.background = 'rgba(168,85,247,0.1)';
+        });
     });
     wrapper.addEventListener('dragleave', function(e) {
         e.preventDefault();
@@ -171,168 +294,301 @@ button:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
         wrapper.style.borderColor = '';
         wrapper.style.background = '';
         var file = e.dataTransfer.files[0];
-        if (file) {
-            var reader = new FileReader();
-            reader.onload = function(ev) {
-                $('input').value = ev.target.result;
-                $('file-name').textContent = '✅ ' + file.name;
-                $('file-name').style.display = 'block';
-                wrapper.classList.add('has-file');
-                setStatus('✅ Đã đọc: ' + file.name, 'success');
-            };
-            reader.readAsText(file);
-        }
+        if (file) loadFile(file);
     });
 
-    // ===== GIẢI MÃ BASE64 =====
-    function decodeBase64(s) {
-        try {
-            var b = atob(s);
-            return decodeURIComponent(escape(b));
-        } catch(e) {
-            return "";
-        }
-    }
-
-    // ===== TÁCH HEADER =====
-    function extractHeader(code) {
-        var match = code.match(/\/\/ ==UserScript==[\s\S]*?\/\/ ==\/UserScript==/);
-        return match ? match[0] : '';
-    }
-
-    // ===== TÌM CHUNKS TRONG WRAPPER =====
-    function extractChunks(code) {
-        // Pattern 1: V3 - var _c = ['...','...'];
-        var match = code.match(/var\s+_c\s*=\s*\[([\s\S]*?)\]\s*;/);
-        if (match) {
-            var chunkStr = match[1];
-            var chunks = [];
-            var re = /'([^']*)'/g;
-            var m;
-            while ((m = re.exec(chunkStr)) !== null) {
-                chunks.push(m[1]);
-            }
-            if (chunks.length > 0) return chunks;
-        }
-
-        // Pattern 2: V1/V2 - chunks trong mảng khác
-        var match2 = code.match(/\[('(?:[^'\\]|\\.)*'(?:\s*,\s*'(?:[^'\\]|\\.)*')*)\]/);
-        if (match2) {
-            var chunks2 = [];
-            var re2 = /'([^']*)'/g;
-            var m2;
-            while ((m2 = re2.exec(match2[1])) !== null) {
-                chunks2.push(m2[1]);
-            }
-            if (chunks2.length > 0) return chunks2;
-        }
-
-        // Pattern 3: Fallback - tìm chuỗi Base64 dài
-        var match3 = code.match(/([A-Za-z0-9+/=]{200,})/g);
-        if (match3) {
-            return [match3.join('')];
-        }
-
-        return null;
-    }
-
-    // ===== GIẢI MÃ CHÍNH =====
-    $('decrypt-btn').onclick = function() {
-        var btn = $('decrypt-btn');
-        btn.disabled = true;
-        setStatus('🔍 Đang phân tích...', 'loading');
-
-        try {
-            var input = $('input').value.trim();
-
-            if (!input) {
-                setStatus('❌ Chưa có code!', 'error');
-                btn.disabled = false;
-                return;
-            }
-
-            // Lấy header
-            var header = extractHeader(input);
-
-            setStatus('📦 Đang tách chunks...', 'loading');
-
-            // Tìm chunks
-            var chunks = extractChunks(input);
-
-            if (!chunks || chunks.length === 0) {
-                setStatus('❌ Không tìm thấy dữ liệu mã hoá trong code!', 'error');
-                btn.disabled = false;
-                return;
-            }
-
-            setStatus('🔓 Đang giải mã ' + chunks.length + ' chunks...', 'loading');
-
-            // Ghép chunks lại thành chuỗi Base64
-            var b64 = chunks.join('');
-
-            // Giải mã
-            var decoded = decodeBase64(b64);
-
-            if (!decoded || decoded.length < 10) {
-                setStatus('❌ Không giải mã được! Code có thể đã bị sửa.', 'error');
-                btn.disabled = false;
-                return;
-            }
-
-            // Ghép header + code gốc
-            var outputCode = header ? header + '\n\n' + decoded : decoded;
-
-            $('output').value = outputCode;
-            $('output-card').style.display = 'block';
-
-            var encKB = (new Blob([input]).size / 1024).toFixed(1);
-            var decKB = (new Blob([outputCode]).size / 1024).toFixed(1);
-
-            setStatus('✅ Giải mã thành công! ' + encKB + 'KB → ' + decKB + 'KB', 'success');
-            btn.disabled = false;
-
-        } catch(err) {
-            console.error(err);
-            setStatus('❌ Lỗi: ' + err.message, 'error');
-            btn.disabled = false;
-        }
-    };
-
-    // ===== COPY =====
-    $('copy-btn').onclick = function() {
-        var ta = $('output');
-        ta.select();
-        ta.setSelectionRange(0, 999999);
-        try {
-            navigator.clipboard.writeText(ta.value).then(function() {
-                $('copy-btn').textContent = '✅ ĐÃ COPY!';
-                setTimeout(function() { $('copy-btn').textContent = '📋 COPY CODE'; }, 1500);
+    // ==== Config JS obfuscator ====
+    function getConfig(level) {
+        var base = {
+            compact: true,
+            identifierNamesGenerator: 'hexadecimal',
+            renameGlobals: false,
+            stringArray: true,
+            stringArrayThreshold: 0.75,
+            stringArrayEncoding: ['base64'],
+            rotateStringArray: true,
+            shuffleStringArray: true,
+            splitStrings: true,
+            splitStringsChunkLength: 10
+        };
+        if (level === 'low') return base;
+        if (level === 'medium') {
+            return Object.assign({}, base, {
+                controlFlowFlattening: true,
+                controlFlowFlatteningThreshold: 0.5,
+                deadCodeInjection: true,
+                deadCodeInjectionThreshold: 0.3,
+                numbersToExpressions: true,
+                simplify: true
             });
-        } catch(e) {
-            document.execCommand('copy');
-            $('copy-btn').textContent = '✅ ĐÃ COPY!';
-            setTimeout(function() { $('copy-btn').textContent = '📋 COPY CODE'; }, 1500);
         }
+        if (level === 'high') {
+            return Object.assign({}, base, {
+                controlFlowFlattening: true,
+                controlFlowFlatteningThreshold: 1,
+                deadCodeInjection: true,
+                deadCodeInjectionThreshold: 0.5,
+                selfDefending: true,
+                debugProtection: true,
+                debugProtectionInterval: 2000,
+                numbersToExpressions: true,
+                simplify: true,
+                transformObjectKeys: true,
+                splitStringsChunkLength: 5,
+                stringArrayEncoding: ['rc4']
+            });
+        }
+        if (level === 'extreme') {
+            return Object.assign({}, base, {
+                controlFlowFlattening: true,
+                controlFlowFlatteningThreshold: 1,
+                deadCodeInjection: true,
+                deadCodeInjectionThreshold: 1,
+                selfDefending: true,
+                debugProtection: true,
+                debugProtectionInterval: 1000,
+                numbersToExpressions: true,
+                simplify: true,
+                transformObjectKeys: true,
+                splitStringsChunkLength: 3,
+                stringArrayEncoding: ['rc4'],
+                stringArrayWrappersCount: 3,
+                stringArrayWrappersChainedCalls: true,
+                identifierNamesGenerator: 'mangled-shuffled',
+                identifiersPrefix: '_0x'
+            });
+        }
+        return base;
+    }
+
+    // ==== Mã hoá Base64 (an toàn UTF-8) ====
+    function b64encode(str) {
+        return btoa(unescape(encodeURIComponent(str)));
+    }
+
+    // ==== Mã hoá XOR + Base64 ====
+    function xorEncrypt(str, key) {
+        var out = '';
+        for (var i = 0; i < str.length; i++) {
+            out += String.fromCharCode(str.charCodeAt(i) ^ key.charCodeAt(i % key.length));
+        }
+        return out;
+    }
+
+    // ==== Tạo loader theo ngôn ngữ ====
+    function buildLoader(lang, payloadB64, mode, key) {
+        var note = '/* Encoded by MDUY Multi-Lang Tool | Mode: ' + mode + ' | Lang: ' + lang + ' */\n';
+
+        if (lang === 'python') {
+            if (mode === 'xor') {
+                return note +
+`# -*- coding: utf-8 -*-
+# Loader Python - chạy: python loader.py
+import base64
+_p = "${payloadB64}"
+_k = "${key}"
+_raw = base64.b64decode(_p)
+_src = bytes([_raw[i] ^ ord(_k[i % len(_k)]) for i in range(len(_raw))]).decode('utf-8')
+exec(_src)
+`;
+            }
+            return note +
+`# -*- coding: utf-8 -*-
+# Loader Python - chạy: python loader.py
+import base64
+_src = base64.b64decode("${payloadB64}").decode('utf-8')
+exec(_src)
+`;
+        }
+
+        if (lang === 'cpp') {
+            // C++ không có eval, chỉ có thể lưu payload để tự biên dịch lại
+            return note +
+`// ============================================================
+// File C/C++ gốc đã được mã hoá Base64${mode === 'xor' ? ' + XOR' : ''}.
+// C++ KHÔNG có cơ chế eval runtime -> không thể "chạy" payload này trực tiếp.
+// Cách dùng:
+//   1. Giải mã Base64 để lấy source gốc
+//   2. Biên dịch source đã giải mã
+// Payload Base64 dưới đây tương ứng với code gốc.
+// ============================================================
+/*
+${payloadB64}
+*/
+`;
+        }
+
+        if (lang === 'php') {
+            if (mode === 'xor') {
+                return note +
+`<?php
+$p = "${payloadB64}";
+$k = "${key}";
+$raw = base64_decode($p);
+$src = '';
+for ($i = 0; $i < strlen($raw); $i++) {
+    $src .= $raw[$i] ^ $k[$i % strlen($k)];
+}
+eval("?>".$src);
+?>
+`;
+            }
+            return note +
+`<?php
+$src = base64_decode("${payloadB64}");
+eval("?>".$src);
+?>
+`;
+        }
+
+        // Mặc định: JS-style loader
+        if (mode === 'xor') {
+            return note +
+`(function(){
+  var p="${payloadB64}", k="${key}", r="";
+  var raw=atob(p);
+  for(var i=0;i<raw.length;i++) r+=String.fromCharCode(raw.charCodeAt(i)^k.charCodeAt(i%k.length));
+  eval(decodeURIComponent(escape(r)));
+})();
+`;
+        }
+        return note +
+`(function(){
+  var s = decodeURIComponent(escape(atob("${payloadB64}")));
+  eval(s);
+})();
+`;
+    }
+
+    // ==== Sinh key ngẫu nhiên ====
+    function randKey(len) {
+        var chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        var s = '';
+        for (var i = 0; i < (len || 24); i++) s += chars[Math.floor(Math.random() * chars.length)];
+        return s;
+    }
+
+    // ==== Xử lý chính ====
+    $('obfuscate-btn').onclick = function() {
+        var btn = $('obfuscate-btn');
+        if (!sourceCode) {
+            setStatus('❌ Chưa có file! Chọn file trước.', 'error');
+            return;
+        }
+
+        var mode = document.querySelector('input[name="mode"]:checked').value;
+        var level = document.querySelector('input[name="level"]:checked').value;
+
+        // Quyết định ngôn ngữ đích
+        var targetLang = detectedLang;
+        if (mode === 'js') targetLang = 'js';
+        if (mode === 'encode' || mode === 'xor') {
+            // giữ nguyên targetLang đã detect
+        }
+        if (mode === 'auto') {
+            // dùng detect
+        }
+
+        btn.disabled = true;
+        setProgress(10);
+
+        setTimeout(function() {
+            try {
+                // ============ JS THẬT ============
+                if (isJsLike(targetLang) && mode !== 'encode' && mode !== 'xor') {
+                    if (typeof JavaScriptObfuscator === 'undefined') {
+                        setStatus('❌ Không tải được thư viện obfuscate. Kiểm tra mạng!', 'error');
+                        btn.disabled = false;
+                        return;
+                    }
+                    setStatus('⏳ Đang obfuscate JavaScript...', 'loading');
+                    setProgress(30);
+
+                    var header = '', body = sourceCode;
+                    var match = sourceCode.match(/\/\/ ==UserScript==[\s\S]*?\/\/ ==\/UserScript==/);
+                    if (match) {
+                        header = match[0] + '\n\n';
+                        body = sourceCode.replace(match[0], '').trim();
+                    }
+
+                    var obf = JavaScriptObfuscator.obfuscate(body, getConfig(level)).getObfuscatedCode();
+                    resultCode = header + obf;
+                    setProgress(100);
+
+                    var oKB = (new Blob([sourceCode]).size / 1024).toFixed(1);
+                    var nKB = (new Blob([resultCode]).size / 1024).toFixed(1);
+                    setStatus('✅ Xong! JS: ' + oKB + 'KB → ' + nKB + 'KB', 'success');
+                    showDownload();
+                    btn.disabled = false;
+                    return;
+                }
+
+                // ============ MÃ HOÁ BASE64 / XOR ============
+                setStatus('⏳ Đang mã hoá ' + targetLang + ' (' + mode + ')...', 'loading');
+                setProgress(40);
+
+                var payloadB64;
+                var key = '';
+
+                if (mode === 'xor') {
+                    key = randKey(24);
+                    var encrypted = xorEncrypt(sourceCode, key);
+                    payloadB64 = b64encode(encrypted);
+                } else {
+                    payloadB64 = b64encode(sourceCode);
+                }
+
+                setProgress(80);
+                resultCode = buildLoader(targetLang, payloadB64, mode === 'xor' ? 'xor' : 'b64', key);
+                setProgress(100);
+
+                var oKB2 = (new Blob([sourceCode]).size / 1024).toFixed(1);
+                var nKB2 = (new Blob([resultCode]).size / 1024).toFixed(1);
+                setStatus('✅ Xong! ' + targetLang.toUpperCase() + ' (' + mode + '): ' + oKB2 + 'KB → ' + nKB2 + 'KB', 'success');
+                showDownload();
+                btn.disabled = false;
+
+            } catch (err) {
+                console.error(err);
+                setStatus('❌ Lỗi: ' + err.message, 'error');
+                setProgress(0);
+                btn.disabled = false;
+            }
+        }, 100);
     };
 
-    // ===== TẢI FILE =====
+    function showDownload() {
+        var btn = $('download-btn');
+        var nKB = (new Blob([resultCode]).size / 1024).toFixed(1);
+        btn.style.display = 'block';
+        btn.textContent = '💾 TẢI FILE KẾT QUẢ (' + nKB + 'KB)';
+    }
+
+    // ==== Download ====
     $('download-btn').onclick = function() {
-        var content = $('output').value;
-        if (!content) return;
-        var blob = new Blob([content], { type: 'text/javascript' });
+        if (!resultCode) return;
+        var blob = new Blob([resultCode], { type: 'text/plain;charset=utf-8' });
         var url = URL.createObjectURL(blob);
         var a = document.createElement('a');
+        var baseName = currentFile ? currentFile.name.replace(/\.[^.]+$/, '') : 'tool';
+        var extMap = { js: '.js', python: '.py', cpp: '.cpp', php: '.php', java: '.java', csharp: '.cs', ruby: '.rb', go: '.go', rust: '.rs', generic: '.txt' };
+        var outExt = extMap[detectedLang] || '.txt';
+        // File loader cho JS vẫn là .js, còn lại là _loader.ext
+        var outName = baseName + '-encoded' + outExt;
+
         a.href = url;
-        a.download = 'tool-decoded-' + Date.now() + '.user.js';
+        a.download = outName;
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
-        $('download-btn').textContent = '✅ ĐÃ TẢI!';
-        setTimeout(function() { $('download-btn').textContent = '💾 TẢI FILE .user.js'; }, 2000);
+
+        var btn = $('download-btn');
+        btn.textContent = '✅ ĐÃ TẢI!';
+        setTimeout(function() { showDownload(); }, 2000);
     };
 
-    setStatus('Sẵn sàng — Chọn file hoặc dán code đã mã hoá');
+    setStatus('Sẵn sàng — Chọn file để bắt đầu');
 })();
 </script>
 
