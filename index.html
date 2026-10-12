@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>📱 MobileConfig Nâng Cao</title>
+<title>📱 Config WebClip Tự Do</title>
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 body {
@@ -73,7 +73,6 @@ h1 {
     letter-spacing: 0.5px;
 }
 .field input,
-.field select,
 .field textarea {
     width: 100%;
     background: rgba(0,0,0,0.4);
@@ -85,21 +84,15 @@ h1 {
     font-family: inherit;
     outline: none;
     transition: 0.2s;
-    -webkit-appearance: none;
 }
 .field textarea {
     resize: vertical;
-    min-height: 60px;
-    line-height: 1.5;
-}
-.field select {
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23a855f7' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 10px center;
-    padding-right: 30px;
+    min-height: 120px;
+    line-height: 1.6;
+    font-family: 'Courier New', monospace;
+    font-size: 12px;
 }
 .field input:focus,
-.field select:focus,
 .field textarea:focus {
     border-color: #a855f7;
     box-shadow: 0 0 15px rgba(168,85,247,0.3);
@@ -129,6 +122,7 @@ h1 {
     color: #888;
     margin-top: 2px;
     font-weight: 400;
+    line-height: 1.4;
 }
 .switch {
     position: relative;
@@ -159,82 +153,13 @@ h1 {
     border-radius: 50%;
 }
 input:checked + .slider {
-    background-color: rgba(239,68,68,0.2);
-    border-color: rgba(239,68,68,0.5);
+    background-color: rgba(239,68,68,0.3);
+    border-color: rgba(239,68,68,0.6);
 }
 input:checked + .slider:before {
     transform: translateX(20px);
     background-color: #ef4444;
     box-shadow: 0 0 10px #ef4444;
-}
-
-/* DANH SÁCH APP */
-.app-list { display: flex; flex-direction: column; gap: 8px; }
-
-.app-item {
-    background: rgba(0,0,0,0.3);
-    border: 1px solid rgba(168,85,247,0.25);
-    border-radius: 12px;
-    padding: 12px;
-    position: relative;
-    transition: 0.2s;
-}
-.app-item:hover { border-color: rgba(168,85,247,0.5); }
-
-.app-item-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 10px;
-}
-.app-number {
-    font-size: 11px;
-    font-weight: 800;
-    color: #a855f7;
-    background: rgba(168,85,247,0.15);
-    padding: 3px 8px;
-    border-radius: 6px;
-    letter-spacing: 0.5px;
-}
-.app-remove {
-    background: rgba(239,68,68,0.2);
-    border: 1px solid rgba(239,68,68,0.4);
-    color: #fca5a5;
-    width: 26px;
-    height: 26px;
-    border-radius: 50%;
-    cursor: pointer;
-    font-size: 14px;
-    font-weight: 700;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: 0.2s;
-}
-.app-remove:hover { background: rgba(239,68,68,0.4); }
-
-.app-row {
-    display: grid;
-    grid-template-columns: 1fr 100px;
-    gap: 8px;
-}
-
-.add-btn {
-    width: 100%;
-    padding: 12px;
-    background: rgba(34,197,94,0.15);
-    border: 2px dashed rgba(34,197,94,0.4);
-    border-radius: 12px;
-    color: #22c55e;
-    font-weight: 800;
-    font-size: 13px;
-    cursor: pointer;
-    transition: 0.2s;
-    margin-top: 8px;
-}
-.add-btn:hover {
-    background: rgba(34,197,94,0.25);
-    border-color: #22c55e;
 }
 
 /* NÚT CHÍNH */
@@ -259,7 +184,6 @@ button.download-btn {
     background: linear-gradient(135deg, #22c55e, #16a34a);
 }
 
-/* STATUS */
 .status {
     font-size: 12px;
     text-align: center;
@@ -275,7 +199,6 @@ button.download-btn {
 .status.loading { color: #f59e0b; }
 .status.info { color: #3b82f6; }
 
-/* HINT */
 .hint {
     background: rgba(59,130,246,0.1);
     border: 1px solid rgba(59,130,246,0.4);
@@ -287,48 +210,48 @@ button.download-btn {
     margin-bottom: 12px;
 }
 
-/* PREVIEW */
-.preview-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
-    gap: 10px;
-    padding: 10px;
-    background: rgba(0,0,0,0.3);
+/* PREVIEW BOX */
+.preview-frame {
+    width: 100%;
+    height: 250px;
     border-radius: 10px;
+    border: 1px solid rgba(168,85,247,0.3);
+    background: #fff;
+    overflow: hidden;
     margin-top: 8px;
 }
-.preview-icon {
-    text-align: center;
-    font-size: 10px;
-    color: #ddd;
-}
-.preview-icon .icon-box {
-    width: 55px;
-    height: 55px;
-    margin: 0 auto 4px;
-    border-radius: 12px;
-    background: linear-gradient(135deg, #a855f7, #ec4899);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 26px;
-    box-shadow: 0 4px 12px rgba(168,85,247,0.3);
-    overflow: hidden;
-}
-.preview-icon .icon-box img {
+.preview-frame iframe {
     width: 100%;
     height: 100%;
-    object-fit: cover;
-}
-.preview-icon .icon-name {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    font-size: 9px;
-    margin-top: 2px;
+    border: none;
 }
 
-/* GUIDE */
+/* TABS */
+.tabs {
+    display: flex;
+    background: rgba(0,0,0,0.3);
+    border-radius: 10px;
+    padding: 4px;
+    gap: 4px;
+    margin-bottom: 12px;
+}
+.tab {
+    flex: 1;
+    padding: 10px;
+    background: transparent;
+    border: none;
+    border-radius: 8px;
+    color: #999;
+    font-weight: 700;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.tab.active {
+    background: linear-gradient(135deg, #a855f7, #ec4899);
+    color: #fff;
+}
+
 .guide {
     font-size: 12px;
     line-height: 1.8;
@@ -342,7 +265,6 @@ button.download-btn {
     color: #d0b0ff;
 }
 
-/* WARNING BOX */
 .warning-box {
     background: rgba(239,68,68,0.1);
     border: 1px solid rgba(239,68,68,0.4);
@@ -353,86 +275,124 @@ button.download-btn {
     line-height: 1.6;
     margin-top: 8px;
 }
+
+.preset-row {
+    display: flex;
+    gap: 6px;
+    overflow-x: auto;
+    padding-bottom: 6px;
+    margin-bottom: 8px;
+    scrollbar-width: none;
+}
+.preset-row::-webkit-scrollbar { display: none; }
+.preset-btn {
+    flex-shrink: 0;
+    padding: 6px 12px;
+    background: rgba(168,85,247,0.15);
+    border: 1px solid rgba(168,85,247,0.3);
+    border-radius: 16px;
+    color: #c4b5fd;
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.2s;
+    white-space: nowrap;
+}
+.preset-btn:hover { background: rgba(168,85,247,0.3); color: #fff; }
 </style>
 </head>
 <body>
 
 <div class="container">
-    <h1>📱 MOBILECONFIG NÂNG CAO</h1>
-    <div class="subtitle">Tạo nhiều WebClip + STK ngân hàng trong 1 file</div>
+    <h1>📱 WEBCLIP TỰ DO</h1>
+    <div class="subtitle">Nhập nội dung bất kỳ → Tạo config → Cài vào iPhone thấy nội dung</div>
 
     <div class="hint">
-        💡 <b>Tính năng:</b><br>
-        • Nhập <b>số app</b> giống nhau (VD: 2 MB Bank với 2 STK khác nhau)<br>
-        • Chọn <b>ngân hàng</b> có sẵn → tự điền URL<br>
-        • Đặt <b>mô tả</b> tùy ý<br>
-        • <b>Thu hồi</b> config cũ khi cài file mới
+        💡 <b>Cách dùng:</b><br>
+        1. Nhập tên app + nội dung HTML hiển thị<br>
+        2. Nhấn <b>TẠO CONFIG</b><br>
+        3. Tải file <code>.mobileconfig</code> → cài vào iPhone<br>
+        4. Nhấn icon ngoài Home Screen → thấy nội dung
     </div>
 
     <div class="card">
-        <div class="label">
-            📱 DANH SÁCH APP
-            <small id="app-count">0 app</small>
+        <div class="label">📝 NỘI DUNG WEBCLIP</div>
+        
+        <div class="field">
+            <label>Tên app (hiện dưới icon)</label>
+            <input type="text" id="app-name" placeholder="VD: Thông tin của tôi" value="Thông tin" maxlength="20">
         </div>
-        <div class="app-list" id="app-list"></div>
-        <button class="add-btn" id="add-btn">➕ THÊM APP</button>
+        
+        <div class="field">
+            <label>Nội dung hiển thị (chấp nhận HTML)</label>
+            <div class="preset-row">
+                <button class="preset-btn" data-preset="text">📄 Text đơn giản</button>
+                <button class="preset-btn" data-preset="info">📋 Card thông tin</button>
+                <button class="preset-btn" data-preset="contact">📞 Liên hệ</button>
+                <button class="preset-btn" data-preset="warning">⚠️ Cảnh báo</button>
+                <button class="preset-btn" data-preset="empty">🗑️ Xoá</button>
+            </div>
+            <textarea id="app-content" placeholder="Nhập nội dung HTML...">Xin chào!
+Đây là nội dung WebClip của bạn.</textarea>
+        </div>
+        
+        <div class="field">
+            <label>Icon URL (tùy chọn — nhập link ảnh)</label>
+            <input type="text" id="app-icon" placeholder="https://example.com/icon.png">
+        </div>
     </div>
 
-    <div class="card">
-        <div class="label">👁️ XEM TRƯỚC ICON</div>
-        <div class="preview-grid" id="preview-grid"></div>
+    <div class="tabs">
+        <button class="tab active" data-tab="preview">👁️ XEM TRƯỚC</button>
+        <button class="tab" data-tab="html">💻 HTML GỐC</button>
+    </div>
+
+    <div id="tab-preview" class="card">
+        <div class="label">👁️ XEM TRƯỚC NỘI DUNG</div>
+        <div class="preview-frame">
+            <iframe id="preview-frame" sandbox="allow-same-origin"></iframe>
+        </div>
+    </div>
+
+    <div id="tab-html" class="card" style="display:none;">
+        <div class="label">💻 HTML ĐẦY ĐỦ (sẽ nhúng vào config)</div>
+        <textarea id="html-preview" readonly style="min-height: 200px;"></textarea>
     </div>
 
     <div class="card">
         <div class="label">⚙️ CẤU HÌNH PROFILE</div>
         <div class="field">
             <label>Tên Profile</label>
-            <input type="text" id="profile-name" value="Bộ WebClip của tôi" maxlength="50">
+            <input type="text" id="profile-name" value="WebClip của tôi" maxlength="40">
         </div>
         <div class="field">
-            <label>Mô tả Profile (tự do sửa)</label>
-            <textarea id="profile-desc" placeholder="VD: Bộ config chứa các app ngân hàng của MDUY">Bộ config WebClip của MDUY</textarea>
+            <label>Mô tả Profile</label>
+            <input type="text" id="profile-desc" value="WebClip tạo bởi MDUY" maxlength="80">
         </div>
         <div class="field">
-            <label>Identifier</label>
-            <input type="text" id="profile-id" value="com.mduy.webclips">
+            <label>Tên miền (Identifier)</label>
+            <input type="text" id="profile-id" value="com.mduy.webclip">
         </div>
-        <div class="field">
-            <label>Tổ chức / Tác giả</label>
-            <input type="text" id="profile-org" value="MDUY" maxlength="30">
-        </div>
-    </div>
-
-    <div class="card">
-        <div class="label">🚨 TÙY CHỌN NÂNG CAO</div>
+        
         <label class="switch-row">
             <span class="switch-label">
-                🔄 Thu hồi config cũ khi cài
-                <small>Xóa tất cả config WebClip cũ trên máy</small>
+                🔒 Không cho xoá config
+                <small>Khi user xoá app, iPhone tự cài lại</small>
             </span>
             <label class="switch">
-                <input type="checkbox" id="opt-revoke">
+                <input type="checkbox" id="opt-noremove" checked>
                 <span class="slider"></span>
             </label>
         </label>
-        <label class="switch-row">
-            <span class="switch-label">
-                🔒 Không cho xóa profile
-                <small>Người dùng không thể xóa config này</small>
-            </span>
-            <label class="switch">
-                <input type="checkbox" id="opt-noremove">
-                <span class="slider"></span>
-            </label>
-        </label>
-        <div id="revoke-warning" class="warning-box" style="display:none;">
-            ⚠️ <b>Lưu ý:</b> Khi bật "Thu hồi config cũ", cài file này sẽ <b>XÓA TẤT CẢ</b> config cũ trên máy (bao gồm config do người khác tạo). Chỉ bật nếu bạn chắc chắn!
+        
+        <div id="noremove-warning" class="warning-box">
+            ⚠️ <b>Lưu ý:</b> Khi bật "Không cho xoá", user không thể xoá app/config qua Settings. Muốn gỡ phải cài file mới không có khoá.
         </div>
     </div>
 
-    <button class="main-btn" id="create-btn" disabled>🚀 TẠO MOBILECONFIG</button>
+    <button class="main-btn" id="create-btn">🚀 TẠO CONFIG</button>
 
-    <div class="status" id="status">Sẵn sàng — Thêm app để bắt đầu</div>
+    <div class="status" id="status">Sẵn sàng</div>
 
     <button class="main-btn download-btn" id="download-btn" style="display:none;">💾 TẢI FILE .MOBILECONFIG</button>
 
@@ -443,7 +403,8 @@ button.download-btn {
             <b>2.</b> Mở file → iPhone báo "Profile Downloaded"<br>
             <b>3.</b> Settings → <b>Profile Downloaded</b> → <b>Install</b><br>
             <b>4.</b> Nhập mật khẩu → <b>Install</b> → <b>Install</b><br>
-            <b>5.</b> Các icon app xuất hiện ngoài Home Screen ✅
+            <b>5.</b> Icon app xuất hiện ngoài Home Screen ✅<br>
+            <b>6.</b> Nhấn icon → thấy nội dung bạn đã nhập
         </div>
     </div>
 </div>
@@ -454,294 +415,156 @@ button.download-btn {
 
     var $ = function(id) { return document.getElementById(id); };
     var configFile = null;
-    var appId = 0;
 
     // ═══════════════════════════════════════════════
-    // DANH SÁCH NGÂN HÀNG
+    // PRESET NỘI DUNG
     // ═══════════════════════════════════════════════
-    var BANKS = [
-        { id: '', name: '— Không chọn —', icon: '🏦', color: '#888', url: '' },
-        { id: 'vcb', name: 'Vietcombank', icon: '💚', color: '#16a34a', url: 'https://www.vietcombank.com.vn' },
-        { id: 'tcb', name: 'Techcombank', icon: '🔴', color: '#dc2626', url: 'https://www.techcombank.com.vn' },
-        { id: 'mb', name: 'MB Bank', icon: '🔵', color: '#2563eb', url: 'https://www.mbbank.com.vn' },
-        { id: 'bidv', name: 'BIDV', icon: '🟢', color: '#059669', url: 'https://www.bidv.com.vn' },
-        { id: 'vtb', name: 'Viettinbank', icon: '🔵', color: '#1e40af', url: 'https://www.vietinbank.vn' },
-        { id: 'acb', name: 'ACB', icon: '🔵', color: '#0891b2', url: 'https://www.acb.com.vn' },
-        { id: 'tp', name: 'TPBank', icon: '💜', color: '#7c3aed', url: 'https://tpb.vn' },
-        { id: 'vp', name: 'VPBank', icon: '🟢', color: '#10b981', url: 'https://www.vpbank.com.vn' },
-        { id: 'agri', name: 'Agribank', icon: '🟢', color: '#15803d', url: 'https://www.agribank.com.vn' },
-        { id: 'sacom', name: 'Sacombank', icon: '🔵', color: '#0369a1', url: 'https://www.sacombank.com.vn' },
-        { id: 'shb', name: 'SHB', icon: '🟠', color: '#ea580c', url: 'https://www.shb.com.vn' },
-        { id: 'momo', name: 'Ví MoMo', icon: '💜', color: '#a21caf', url: 'https://momo.vn' },
-        { id: 'zalo', name: 'ZaloPay', icon: '🔵', color: '#1e40af', url: 'https://zalopay.vn' },
-        { id: 'viettel', name: 'ViettelMoney', icon: '🟢', color: '#15803d', url: 'https://viettelmoney.vn' }
-    ];
-
-    // ═══════════════════════════════════════════════
-    // TẠO APP ITEM
-    // ═══════════════════════════════════════════════
-    function createAppItem(name, url, iconUrl, bank, count, stk) {
-        appId++;
-        var id = appId;
-
-        var item = document.createElement('div');
-        item.className = 'app-item';
-        item.setAttribute('data-id', id);
-
-        var bankOptions = BANKS.map(function(b) {
-            return '<option value="' + b.id + '"' + (bank === b.id ? ' selected' : '') + '>' +
-                   b.icon + ' ' + b.name + '</option>';
-        }).join('');
-
-        item.innerHTML = [
-            '<div class="app-item-header">',
-                '<span class="app-number">APP #' + id + '</span>',
-                '<button class="app-remove" data-remove="' + id + '">×</button>',
-            '</div>',
-            '<div class="field">',
-                '<label>Chọn ngân hàng / App có sẵn</label>',
-                '<select class="app-bank">' + bankOptions + '</select>',
-            '</div>',
-            '<div class="app-row">',
-                '<div class="field">',
-                    '<label>Tên icon</label>',
-                    '<input type="text" class="app-name" placeholder="VD: MB Bank" value="' + (name || '') + '" maxlength="15">',
-                '</div>',
-                '<div class="field">',
-                    '<label>Số app giống</label>',
-                    '<input type="number" class="app-count" value="' + (count || 1) + '" min="1" max="20">',
-                '</div>',
-            '</div>',
-            '<div class="field">',
-                '<label>URL web</label>',
-                '<input type="text" class="app-url" placeholder="https://example.com" value="' + (url || '') + '">',
-            '</div>',
-            '<div class="field">',
-                '<label>Số tài khoản / Thông tin (dùng cho app copy)</label>',
-                '<input type="text" class="app-stk" placeholder="VD: 0123456789" value="' + (stk || '') + '">',
-            '</div>',
-            '<div class="field">',
-                '<label>Icon URL (tùy chọn — nhập link ảnh PNG/JPG)</label>',
-                '<input type="text" class="app-icon" placeholder="https://example.com/icon.png" value="' + (iconUrl || '') + '">',
-            '</div>'
-        ].join('');
-
-        return item;
-    }
-
-    function addApp(name, url, iconUrl, bank, count, stk) {
-        var item = createAppItem(name, url, iconUrl, bank, count, stk);
-        $('app-list').appendChild(item);
-        bindAppEvents(item);
-        updatePreview();
-        updateCount();
-        updateCreateBtn();
-    }
-
-    function bindAppEvents(item) {
-        var removeBtn = item.querySelector('[data-remove]');
-        removeBtn.onclick = function() {
-            item.style.opacity = '0';
-            item.style.transform = 'scale(0.9)';
-            setTimeout(function() {
-                item.remove();
-                updatePreview();
-                updateCount();
-                updateCreateBtn();
-            }, 200);
-        };
-
-        var bankSelect = item.querySelector('.app-bank');
-        var nameInput = item.querySelector('.app-name');
-        var urlInput = item.querySelector('.app-url');
-        var countInput = item.querySelector('.app-count');
-        var stkInput = item.querySelector('.app-stk');
-
-        bankSelect.onchange = function() {
-            var bankId = bankSelect.value;
-            var bank = BANKS.find(function(b) { return b.id === bankId; });
-            if (bank && bank.id) {
-                if (!nameInput.value.trim()) nameInput.value = bank.name;
-                if (!urlInput.value.trim() && bank.url) urlInput.value = bank.url;
-            }
-            updatePreview();
-            updateCreateBtn();
-        };
-
-        [nameInput, urlInput, item.querySelector('.app-icon'), countInput, stkInput].forEach(function(el) {
-            el.addEventListener('input', function() {
-                updatePreview();
-                updateCreateBtn();
-            });
-        });
-    }
-
-    function updateCount() {
-        var count = document.querySelectorAll('.app-item').length;
-        var total = 0;
-        document.querySelectorAll('.app-count').forEach(function(el) {
-            total += parseInt(el.value) || 1;
-        });
-        $('app-count').textContent = count + ' mẫu (' + total + ' icon)';
-    }
-
-    function updatePreview() {
-        var grid = $('preview-grid');
-        grid.innerHTML = '';
-        var hasAny = false;
-
-        document.querySelectorAll('.app-item').forEach(function(item) {
-            var name = item.querySelector('.app-name').value.trim() || 'App';
-            var iconUrl = item.querySelector('.app-icon').value.trim();
-            var bankId = item.querySelector('.app-bank').value;
-            var count = parseInt(item.querySelector('.app-count').value) || 1;
-            var stk = item.querySelector('.app-stk').value.trim();
-            var bank = BANKS.find(function(b) { return b.id === bankId; });
-
-            for (var i = 0; i < count; i++) {
-                hasAny = true;
-
-                var iconBox;
-                if (iconUrl) {
-                    iconBox = '<img src="' + escapeHtml(iconUrl) + '" onerror="this.style.display=\'none\';this.parentNode.innerHTML=\'' + (bank ? bank.icon : '🌐') + '\'" />';
-                } else if (bank && bank.id) {
-                    iconBox = bank.icon;
-                } else {
-                    iconBox = '🌐';
-                }
-
-                var displayName = name;
-                if (count > 1) displayName = name + ' ' + (i + 1);
-                if (stk && i === 0 && count > 1) displayName = name + ' 1';
-
-                var html = '<div class="preview-icon">';
-                html += '<div class="icon-box" style="background:' + (bank && bank.id ? bank.color : 'linear-gradient(135deg, #a855f7, #ec4899)') + '">' + iconBox + '</div>';
-                html += '<div class="icon-name">' + escapeHtml(displayName) + '</div>';
-                html += '</div>';
-                grid.innerHTML += html;
-            }
-        });
-
-        if (!hasAny) {
-            grid.innerHTML = '<div style="color:#666;font-size:11px;text-align:center;padding:20px;grid-column:1/-1;">Chưa có app nào — Nhấn "➕ THÊM APP"</div>';
-        }
-
-        updateCount();
-    }
-
-    function updateCreateBtn() {
-        var count = document.querySelectorAll('.app-item').length;
-        $('create-btn').disabled = count === 0;
-    }
-
-    $('add-btn').onclick = function() {
-        addApp('', '', '', '', 1, '');
+    var PRESETS = {
+        text: 'Xin chào!\nĐây là nội dung WebClip của bạn.\n\nBạn có thể chỉnh sửa nội dung này tùy ý.',
+        info: '<div style="padding:20px;font-family:sans-serif;">\n  <h1 style="color:#a855f7;">👤 Thông tin</h1>\n  <p><b>Tên:</b> Nguyễn Văn A</p>\n  <p><b>SĐT:</b> 0328033706</p>\n  <p><b>Email:</b> example@email.com</p>\n</div>',
+        contact: '<div style="padding:20px;font-family:sans-serif;text-align:center;">\n  <h1 style="color:#22c55e;">📞 Liên hệ</h1>\n  <p style="font-size:18px;">Zalo: <b>0328033706</b></p>\n  <p style="font-size:18px;">Telegram: <b>@mduyk</b></p>\n</div>',
+        warning: '<div style="padding:20px;font-family:sans-serif;background:#fee;border:2px solid #f00;border-radius:10px;margin:20px;">\n  <h1 style="color:#f00;">⚠️ CẢNH BÁO</h1>\n  <p>Đây là nội dung cảnh báo quan trọng!</p>\n</div>',
+        empty: ''
     };
 
-    // ═══════════════════════════════════════════════
-    // SWITCH EVENTS
-    // ═══════════════════════════════════════════════
-    $('opt-revoke').addEventListener('change', function() {
-        $('revoke-warning').style.display = this.checked ? 'block' : 'none';
+    document.querySelectorAll('.preset-btn').forEach(function(btn) {
+        btn.onclick = function() {
+            var preset = btn.getAttribute('data-preset');
+            $('app-content').value = PRESETS[preset] || '';
+            updatePreview();
+        };
     });
 
     // ═══════════════════════════════════════════════
-    // TẠO MOBILECONFIG
+    // TABS
+    // ═══════════════════════════════════════════════
+    document.querySelectorAll('.tab').forEach(function(tab) {
+        tab.onclick = function() {
+            document.querySelectorAll('.tab').forEach(function(t) { t.classList.remove('active'); });
+            tab.classList.add('active');
+            var tabName = tab.getAttribute('data-tab');
+            $('tab-preview').style.display = tabName === 'preview' ? 'block' : 'none';
+            $('tab-html').style.display = tabName === 'html' ? 'block' : 'none';
+        };
+    });
+
+    // ═══════════════════════════════════════════════
+    // PREVIEW
+    // ═══════════════════════════════════════════════
+    function buildHtml() {
+        var content = $('app-content').value;
+        var name = $('app-name').value || 'WebClip';
+        
+        // Nếu content là HTML → dùng trực tiếp
+        // Nếu là text thuần → wrap trong <pre>
+        var bodyContent;
+        if (/<[a-z][\s\S]*>/i.test(content)) {
+            // Có HTML tag
+            bodyContent = content;
+        } else {
+            // Text thuần
+            bodyContent = '<pre style="white-space:pre-wrap;word-break:break-word;">' + escapeHtml(content) + '</pre>';
+        }
+        
+        return '<!DOCTYPE html>\n' +
+            '<html>\n' +
+            '<head>\n' +
+            '<meta charset="UTF-8">\n' +
+            '<meta name="viewport" content="width=device-width, initial-scale=1.0">\n' +
+            '<title>' + escapeHtml(name) + '</title>\n' +
+            '<style>\n' +
+            '* { box-sizing: border-box; }\n' +
+            'body { font-family: -apple-system, sans-serif; background: #fff; color: #333; padding: 20px; margin: 0; }\n' +
+            '</style>\n' +
+            '</head>\n' +
+            '<body>\n' +
+            bodyContent + '\n' +
+            '</body>\n' +
+            '</html>';
+    }
+
+    function updatePreview() {
+        var html = buildHtml();
+        $('preview-frame').srcdoc = html;
+        $('html-preview').value = html;
+    }
+
+    ['app-content', 'app-name'].forEach(function(id) {
+        $(id).addEventListener('input', updatePreview);
+    });
+
+    // ═══════════════════════════════════════════════
+    // TẠO CONFIG
     // ═══════════════════════════════════════════════
     $('create-btn').onclick = function() {
         var btn = $('create-btn');
         btn.disabled = true;
-        setStatus('⏳ Đang tạo mobileconfig...', 'loading');
+        setStatus('⏳ Đang tạo config...', 'loading');
 
         try {
-            var profileName = $('profile-name').value.trim() || 'Bộ WebClip';
-            var profileDesc = $('profile-desc').value.trim() || 'Bộ config WebClip';
-            var profileId = $('profile-id').value.trim() || 'com.mduy.webclips';
-            var profileOrg = $('profile-org').value.trim() || 'MDUY';
-            var revokeOld = $('opt-revoke').checked;
+            var appName = $('app-name').value.trim() || 'WebClip';
+            var profileName = $('profile-name').value.trim() || 'WebClip của tôi';
+            var profileDesc = $('profile-desc').value.trim() || 'WebClip';
+            var profileId = $('profile-id').value.trim() || 'com.mduy.webclip';
+            var appIcon = $('app-icon').value.trim();
             var noRemove = $('opt-noremove').checked;
+            var content = $('app-content').value;
 
-            var payloads = [];
-            var appIndex = 0;
+            // Tạo HTML đầy đủ
+            var html = buildHtml();
 
-            document.querySelectorAll('.app-item').forEach(function(item) {
-                var name = item.querySelector('.app-name').value.trim() || 'App';
-                var url = item.querySelector('.app-url').value.trim() || 'https://example.com';
-                var icon = item.querySelector('.app-icon').value.trim();
-                var bankId = item.querySelector('.app-bank').value;
-                var count = parseInt(item.querySelector('.app-count').value) || 1;
-                var stk = item.querySelector('.app-stk').value.trim();
+            // Encode HTML thành base64 data URI
+            // iOS WebClip chấp nhận data: URI cho URL
+            var base64Html = btoa(unescape(encodeURIComponent(html)));
+            var dataUri = 'data:text/html;charset=utf-8;base64,' + base64Html;
 
-                if (!url.match(/^https?:\/\//i)) url = 'https://' + url;
-
-                // Tạo N app giống nhau
-                for (var i = 0; i < count; i++) {
-                    var displayName = name;
-                    if (count > 1) displayName = name + ' ' + (i + 1);
-
-                    // Nếu có STK, thêm vào label
-                    if (stk && count > 1) {
-                        displayName = name + ' ' + (i + 1);
-                    }
-
-                    payloads.push(generateWebClipPayload(
-                        displayName,
-                        url,
-                        icon,
-                        profileId,
-                        appIndex,
-                        bankId,
-                        i
-                    ));
-                    appIndex++;
-                }
-            });
-
-            if (payloads.length === 0) {
-                throw new Error('Chưa có app nào!');
+            // Tạo payload
+            var payloadUUID = generateUUID();
+            
+            var iconXml = '';
+            if (appIcon) {
+                iconXml = '            <key>Icon</key>\n' +
+                          '            <string>' + escapeXml(appIcon) + '</string>\n';
             }
 
-            // Tạo cấu hình revoke (nếu bật)
-            var revokePayload = '';
-            if (revokeOld) {
-                revokePayload = [
-                    '        <dict>',
-                    '            <key>PayloadDescription</key>',
-                    '            <string>Thu hồi các WebClip cũ</string>',
-                    '            <key>PayloadDisplayName</key>',
-                    '            <string>Revoke Old WebClips</string>',
-                    '            <key>PayloadIdentifier</key>',
-                    '            <string>' + escapeXml(profileId) + '.revoke</string>',
-                    '            <key>PayloadOrganization</key>',
-                    '            <string>' + escapeXml(profileOrg) + '</string>',
-                    '            <key>PayloadType</key>',
-                    '            <string>com.apple.webClip.managed</string>',
-                    '            <key>PayloadUUID</key>',
-                    '            <string>' + generateUUID() + '</string>',
-                    '            <key>PayloadVersion</key>',
-                    '            <integer>1</integer>',
-                    '            <key>URL</key>',
-                    '            <string>https://example.com/revoke</string>',
-                    '            <key>Label</key>',
-                    '            <string>Revoke</string>',
-                    '            <key>IsRemovable</key>',
-                    '            <true/>',
-                    '            <key>FullScreen</key>',
-                    '            <false/>',
-                    '        </dict>'
-                ].join('\n');
-            }
+            var payload = [
+                '        <dict>',
+                '            <key>FullScreen</key>',
+                '            <true/>',
+                '            <key>IgnoreManifestScope</key>',
+                '            <false/>',
+                '            <key>IsRemovable</key>',
+                '            <true/>',
+                '            <key>Label</key>',
+                '            <string>' + escapeXml(appName) + '</string>',
+                '            <key>Precomposed</key>',
+                '            <true/>',
+                '            <key>PayloadDescription</key>',
+                '            <string>' + escapeXml(appName) + '</string>',
+                '            <key>PayloadDisplayName</key>',
+                '            <string>' + escapeXml(appName) + '</string>',
+                '            <key>PayloadIdentifier</key>',
+                '            <string>' + escapeXml(profileId) + '.webclip</string>',
+                '            <key>PayloadOrganization</key>',
+                '            <string>MDUY</string>',
+                '            <key>PayloadType</key>',
+                '            <string>com.apple.webClip.managed</string>',
+                '            <key>PayloadUUID</key>',
+                '            <string>' + payloadUUID + '</string>',
+                '            <key>PayloadVersion</key>',
+                '            <integer>1</integer>',
+                '            <key>URL</key>',
+                '            <string>' + escapeXml(dataUri) + '</string>',
+                iconXml + '        </dict>'
+            ].join('\n');
 
-            var allPayloads = payloads.join('\n') + (revokePayload ? '\n' + revokePayload : '');
-
-            // Tạo file mobileconfig
             var config = '<?xml version="1.0" encoding="UTF-8"?>\n' +
                 '<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">\n' +
                 '<plist version="1.0">\n' +
                 '<dict>\n' +
                 '    <key>PayloadContent</key>\n' +
                 '    <array>\n' +
-                allPayloads + '\n' +
+                payload + '\n' +
                 '    </array>\n' +
                 '    <key>PayloadDescription</key>\n' +
                 '    <string>' + escapeXml(profileDesc) + '</string>\n' +
@@ -750,7 +573,7 @@ button.download-btn {
                 '    <key>PayloadIdentifier</key>\n' +
                 '    <string>' + escapeXml(profileId) + '</string>\n' +
                 '    <key>PayloadOrganization</key>\n' +
-                '    <string>' + escapeXml(profileOrg) + '</string>\n' +
+                '    <string>MDUY</string>\n' +
                 '    <key>PayloadRemovalDisallowed</key>\n' +
                 '    <' + (noRemove ? 'true' : 'false') + '/>\n' +
                 '    <key>PayloadType</key>\n' +
@@ -763,12 +586,11 @@ button.download-btn {
                 '</plist>';
 
             configFile = {
-                name: profileName.replace(/\s+/g, '-').toLowerCase() + '.mobileconfig',
-                content: config,
-                count: payloads.length
+                name: appName.replace(/\s+/g, '-').toLowerCase() + '.mobileconfig',
+                content: config
             };
 
-            setStatus('✅ Đã tạo ' + payloads.length + ' WebClip! Nhấn "TẢI FILE" để tải về.', 'success');
+            setStatus('✅ Đã tạo config! Nhấn "TẢI FILE" để tải về.', 'success');
             $('download-btn').style.display = 'block';
             $('guide-card').style.display = 'block';
             btn.disabled = false;
@@ -779,51 +601,6 @@ button.download-btn {
             btn.disabled = false;
         }
     };
-
-    function generateWebClipPayload(name, url, icon, profileId, idx, bankId, copyIdx) {
-        var uuid = generateUUID();
-        var labelName = name;
-
-        // Nếu có STK và đang copy, thêm STK vào tên
-        var bank = BANKS.find(function(b) { return b.id === bankId; });
-
-        var iconXml = '';
-        if (icon) {
-            iconXml = '            <key>Icon</key>\n' +
-                      '            <string>' + escapeXml(icon) + '</string>\n';
-        }
-
-        return [
-            '        <dict>',
-            '            <key>FullScreen</key>',
-            '            <true/>',
-            '            <key>IgnoreManifestScope</key>',
-            '            <false/>',
-            '            <key>IsRemovable</key>',
-            '            <true/>',
-            '            <key>Label</key>',
-            '            <string>' + escapeXml(labelName) + '</string>',
-            '            <key>Precomposed</key>',
-            '            <true/>',
-            '            <key>PayloadDescription</key>',
-            '            <string>WebClip: ' + escapeXml(labelName) + '</string>',
-            '            <key>PayloadDisplayName</key>',
-            '            <string>' + escapeXml(labelName) + '</string>',
-            '            <key>PayloadIdentifier</key>',
-            '            <string>' + escapeXml(profileId) + '.webclip.' + idx + '</string>',
-            '            <key>PayloadOrganization</key>',
-            '            <string>MDUY</string>',
-            '            <key>PayloadType</key>',
-            '            <string>com.apple.webClip.managed</string>',
-            '            <key>PayloadUUID</key>',
-            '            <string>' + uuid + '</string>',
-            '            <key>PayloadVersion</key>',
-            '            <integer>1</integer>',
-            '            <key>URL</key>',
-            '            <string>' + escapeXml(url) + '</string>',
-            iconXml + '        </dict>'
-        ].join('\n');
-    }
 
     // ═══════════════════════════════════════════════
     // TẢI FILE
@@ -880,13 +657,9 @@ button.download-btn {
     // ═══════════════════════════════════════════════
     // INIT
     // ═══════════════════════════════════════════════
-    // Thêm sẵn mẫu
-    addApp('MB Bank', 'https://www.mbbank.com.vn', '', 'mb', 2, '0123456789');
-
     updatePreview();
-    updateCount();
 
-    console.log('%c📱 MobileConfig Nâng Cao đã sẵn sàng!', 'color: #a855f7; font-size: 14px; font-weight: bold;');
+    console.log('%c📱 WebClip Tự Do đã sẵn sàng!', 'color: #a855f7; font-size: 14px; font-weight: bold;');
 })();
 </script>
 
