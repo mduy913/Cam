@@ -17,7 +17,6 @@ body {
     align-items: center;
 }
 .container { max-width: 600px; width: 100%; }
-
 h1 {
     text-align: center;
     font-size: 22px;
@@ -27,14 +26,7 @@ h1 {
     -webkit-text-fill-color: transparent;
     font-weight: 900;
 }
-.subtitle {
-    text-align: center;
-    font-size: 12px;
-    color: #888;
-    margin-bottom: 18px;
-    line-height: 1.5;
-}
-
+.subtitle { text-align: center; font-size: 12px; color: #888; margin-bottom: 18px; line-height: 1.5; }
 .card {
     background: rgba(255,255,255,0.03);
     border: 1px solid rgba(168,85,247,0.3);
@@ -53,14 +45,7 @@ h1 {
     justify-content: space-between;
     align-items: center;
 }
-.label small {
-    font-size: 10px;
-    color: #888;
-    font-weight: 600;
-    text-transform: none;
-    letter-spacing: 0;
-}
-
+.label small { font-size: 10px; color: #888; font-weight: 600; text-transform: none; letter-spacing: 0; }
 .field { margin-bottom: 10px; }
 .field:last-child { margin-bottom: 0; }
 .field label {
@@ -72,8 +57,7 @@ h1 {
     text-transform: uppercase;
     letter-spacing: 0.5px;
 }
-.field input,
-.field textarea {
+.field input, .field textarea {
     width: 100%;
     background: rgba(0,0,0,0.4);
     border: 1px solid rgba(168,85,247,0.3);
@@ -85,24 +69,9 @@ h1 {
     outline: none;
     transition: 0.2s;
 }
-.field textarea {
-    resize: vertical;
-    min-height: 100px;
-    line-height: 1.6;
-    font-family: 'Courier New', monospace;
-    font-size: 12px;
-}
-.field input:focus,
-.field textarea:focus {
-    border-color: #a855f7;
-    box-shadow: 0 0 15px rgba(168,85,247,0.3);
-}
-
-.count-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr;
-    gap: 6px;
-}
+.field textarea { resize: vertical; min-height: 100px; line-height: 1.6; font-family: 'Courier New', monospace; font-size: 12px; }
+.field input:focus, .field textarea:focus { border-color: #a855f7; box-shadow: 0 0 15px rgba(168,85,247,0.3); }
+.count-row { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 6px; }
 .count-btn {
     padding: 10px;
     background: rgba(0,0,0,0.3);
@@ -115,23 +84,9 @@ h1 {
     transition: 0.2s;
     text-align: center;
 }
-.count-btn.active {
-    background: linear-gradient(135deg, #a855f7, #ec4899);
-    border-color: transparent;
-    color: #fff;
-    box-shadow: 0 4px 15px rgba(168,85,247,0.4);
-}
-
-.custom-count-row {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-top: 8px;
-}
-.custom-count-row input {
-    flex: 1;
-    text-align: center;
-}
+.count-btn.active { background: linear-gradient(135deg, #a855f7, #ec4899); border-color: transparent; color: #fff; box-shadow: 0 4px 15px rgba(168,85,247,0.4); }
+.custom-count-row { display: flex; align-items: center; gap: 8px; margin-top: 8px; }
+.custom-count-row input { flex: 1; text-align: center; }
 .custom-count-row button {
     padding: 10px 14px;
     background: rgba(34,197,94,0.2);
@@ -143,7 +98,6 @@ h1 {
     cursor: pointer;
     white-space: nowrap;
 }
-
 .switch-row {
     display: flex;
     justify-content: space-between;
@@ -155,27 +109,9 @@ h1 {
     cursor: pointer;
     border: 1px solid rgba(255,255,255,0.05);
 }
-.switch-label {
-    font-size: 12px;
-    font-weight: 600;
-    color: #ddd;
-    padding-right: 10px;
-}
-.switch-label small {
-    display: block;
-    font-size: 10px;
-    color: #888;
-    margin-top: 2px;
-    font-weight: 400;
-    line-height: 1.4;
-}
-.switch {
-    position: relative;
-    display: inline-block;
-    width: 44px;
-    height: 24px;
-    flex-shrink: 0;
-}
+.switch-label { font-size: 12px; font-weight: 600; color: #ddd; padding-right: 10px; }
+.switch-label small { display: block; font-size: 10px; color: #888; margin-top: 2px; font-weight: 400; line-height: 1.4; }
+.switch { position: relative; display: inline-block; width: 44px; height: 24px; flex-shrink: 0; }
 .switch input { opacity: 0; width: 0; height: 0; }
 .slider {
     position: absolute;
@@ -197,16 +133,8 @@ h1 {
     transition: .3s;
     border-radius: 50%;
 }
-input:checked + .slider {
-    background-color: rgba(239,68,68,0.3);
-    border-color: rgba(239,68,68,0.6);
-}
-input:checked + .slider:before {
-    transform: translateX(20px);
-    background-color: #ef4444;
-    box-shadow: 0 0 10px #ef4444;
-}
-
+input:checked + .slider { background-color: rgba(239,68,68,0.3); border-color: rgba(239,68,68,0.6); }
+input:checked + .slider:before { transform: translateX(20px); background-color: #ef4444; box-shadow: 0 0 10px #ef4444; }
 button.main-btn {
     width: 100%;
     padding: 16px;
@@ -221,16 +149,8 @@ button.main-btn {
     letter-spacing: 1px;
     margin-top: 8px;
 }
-button.main-btn:hover { transform: translateY(-2px); box-shadow: 0 12px 30px rgba(168,85,247,0.5); }
 button.main-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
-
-.download-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
-    margin-top: 12px;
-}
-
+.download-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; }
 button.install-btn {
     padding: 16px 8px;
     background: linear-gradient(135deg, #22c55e, #16a34a);
@@ -248,13 +168,7 @@ button.install-btn {
     justify-content: center;
     gap: 2px;
 }
-button.install-btn:hover { transform: translateY(-2px); box-shadow: 0 12px 30px rgba(34,197,94,0.4); }
-button.install-btn small {
-    font-size: 9px;
-    opacity: 0.8;
-    font-weight: 600;
-}
-
+button.install-btn small { font-size: 9px; opacity: 0.8; font-weight: 600; }
 button.save-btn {
     padding: 16px 8px;
     background: linear-gradient(135deg, #3b82f6, #1d4ed8);
@@ -272,13 +186,7 @@ button.save-btn {
     justify-content: center;
     gap: 2px;
 }
-button.save-btn:hover { transform: translateY(-2px); box-shadow: 0 12px 30px rgba(59,130,246,0.4); }
-button.save-btn small {
-    font-size: 9px;
-    opacity: 0.8;
-    font-weight: 600;
-}
-
+button.save-btn small { font-size: 9px; opacity: 0.8; font-weight: 600; }
 .status {
     font-size: 12px;
     text-align: center;
@@ -293,7 +201,6 @@ button.save-btn small {
 .status.error { color: #ef4444; }
 .status.loading { color: #f59e0b; }
 .status.info { color: #3b82f6; }
-
 .hint {
     background: rgba(59,130,246,0.1);
     border: 1px solid rgba(59,130,246,0.4);
@@ -304,7 +211,6 @@ button.save-btn small {
     line-height: 1.6;
     margin-bottom: 12px;
 }
-
 .preview-frame {
     width: 100%;
     height: 200px;
@@ -314,12 +220,7 @@ button.save-btn small {
     overflow: hidden;
     margin-top: 8px;
 }
-.preview-frame iframe {
-    width: 100%;
-    height: 100%;
-    border: none;
-}
-
+.preview-frame iframe { width: 100%; height: 100%; border: none; }
 .icon-preview-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
@@ -329,11 +230,7 @@ button.save-btn small {
     border-radius: 10px;
     margin-top: 8px;
 }
-.icon-item {
-    text-align: center;
-    font-size: 9px;
-    color: #ddd;
-}
+.icon-item { text-align: center; font-size: 9px; color: #ddd; }
 .icon-item .icon-box {
     width: 50px;
     height: 50px;
@@ -347,12 +244,7 @@ button.save-btn small {
     box-shadow: 0 4px 12px rgba(168,85,247,0.3);
     overflow: hidden;
 }
-.icon-item .icon-box img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
+.icon-item .icon-box img { width: 100%; height: 100%; object-fit: cover; }
 .tabs {
     display: flex;
     background: rgba(0,0,0,0.3);
@@ -373,24 +265,9 @@ button.save-btn small {
     cursor: pointer;
     transition: all 0.2s;
 }
-.tab.active {
-    background: linear-gradient(135deg, #a855f7, #ec4899);
-    color: #fff;
-}
-
-.guide {
-    font-size: 12px;
-    line-height: 1.8;
-    color: #ddd;
-}
-.guide code {
-    background: rgba(168,85,247,0.2);
-    padding: 2px 6px;
-    border-radius: 4px;
-    font-size: 11px;
-    color: #d0b0ff;
-}
-
+.tab.active { background: linear-gradient(135deg, #a855f7, #ec4899); color: #fff; }
+.guide { font-size: 12px; line-height: 1.8; color: #ddd; }
+.guide code { background: rgba(168,85,247,0.2); padding: 2px 6px; border-radius: 4px; font-size: 11px; color: #d0b0ff; }
 .warning-box {
     background: rgba(239,68,68,0.1);
     border: 1px solid rgba(239,68,68,0.4);
@@ -401,15 +278,7 @@ button.save-btn small {
     line-height: 1.6;
     margin-top: 8px;
 }
-
-.preset-row {
-    display: flex;
-    gap: 6px;
-    overflow-x: auto;
-    padding-bottom: 6px;
-    margin-bottom: 8px;
-    scrollbar-width: none;
-}
+.preset-row { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 6px; margin-bottom: 8px; scrollbar-width: none; }
 .preset-row::-webkit-scrollbar { display: none; }
 .preset-btn {
     flex-shrink: 0;
@@ -425,59 +294,15 @@ button.save-btn small {
     white-space: nowrap;
 }
 .preset-btn:hover { background: rgba(168,85,247,0.3); color: #fff; }
-
-.icon-picker {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 10px;
-    background: rgba(0,0,0,0.3);
+.notice-box {
+    background: rgba(245,158,11,0.1);
+    border: 1px solid rgba(245,158,11,0.4);
     border-radius: 10px;
-    border: 1px dashed rgba(168,85,247,0.4);
-    cursor: pointer;
-    transition: 0.2s;
-    position: relative;
-}
-.icon-picker:hover {
-    border-color: #a855f7;
-    background: rgba(168,85,247,0.05);
-}
-.icon-picker input[type="file"] {
-    position: absolute;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    opacity: 0;
-    cursor: pointer;
-}
-.icon-picker-preview {
-    width: 50px;
-    height: 50px;
-    border-radius: 12px;
-    background: rgba(168,85,247,0.15);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 24px;
-    overflow: hidden;
-    flex-shrink: 0;
-    border: 1px solid rgba(168,85,247,0.3);
-}
-.icon-picker-preview img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-.icon-picker-info {
-    flex: 1;
+    padding: 10px 12px;
     font-size: 11px;
-    color: #888;
-    line-height: 1.4;
-}
-.icon-picker-info b {
-    color: #ddd;
-    font-size: 12px;
-    display: block;
-    margin-bottom: 2px;
+    color: #fbbf24;
+    line-height: 1.6;
+    margin-top: 8px;
 }
 </style>
 </head>
@@ -485,13 +310,13 @@ button.save-btn small {
 
 <div class="container">
     <h1>WEBCLIP ĐA ICON</h1>
-    <div class="subtitle">Tạo config nhiều icon, 2 chế độ tải</div>
+    <div class="subtitle">Tạo config nhiều icon — chỉ dùng URL ảnh https</div>
 
     <div class="hint">
         1. Chọn số WebClip cần tạo<br>
         2. Nhập nội dung hiển thị<br>
-        3. Chọn icon từ máy (hoặc URL)<br>
-        4. Nhấn TẠO CONFIG → chọn CÀI NGAY hoặc LƯU TỆP
+        3. Nhập URL ảnh icon (https)<br>
+        4. Nhấn TẠO CONFIG → CÀI NGAY hoặc LƯU TỆP
     </div>
 
     <div class="card">
@@ -523,7 +348,6 @@ button.save-btn small {
         <div class="field">
             <label>Tên app (hiện dưới icon)</label>
             <input type="text" id="app-name" placeholder="VD: Thông tin" value="Thông tin" maxlength="20">
-            <div style="font-size: 10px; color: #888; margin-top: 4px;">Nếu tạo nhiều icon, tên sẽ thành: Thông tin 1, Thông tin 2...</div>
         </div>
         
         <div class="field">
@@ -540,21 +364,14 @@ button.save-btn small {
         </div>
         
         <div class="field">
-            <label>ICON</label>
-            <label class="icon-picker">
-                <input type="file" id="icon-file" accept="image/*">
-                <div class="icon-picker-preview" id="icon-preview-box">🌐</div>
-                <div class="icon-picker-info">
-                    <b id="icon-info-title">Chọn ảnh từ máy</b>
-                    <span id="icon-info-sub">Nhấn để chọn ảnh PNG/JPG</span>
-                </div>
-            </label>
-            <button id="icon-clear" style="width:100%;padding:8px;margin-top:6px;background:rgba(239,68,68,0.15);border:1px solid rgba(239,68,68,0.4);border-radius:8px;color:#fca5a5;font-weight:700;font-size:11px;cursor:pointer;display:none;">Xoá ảnh đã chọn</button>
+            <label>URL ảnh icon (BẮT BUỘC https)</label>
+            <input type="text" id="app-icon-url" placeholder="https://i.imgur.com/xxxxx.png">
         </div>
         
-        <div class="field">
-            <label>Hoặc nhập URL ảnh</label>
-            <input type="text" id="app-icon-url" placeholder="https://example.com/icon.png">
+        <div class="notice-box">
+            <b>Lưu ý:</b> iOS không chấp nhận icon dạng data URL. Phải là link https.<br>
+            Cách lấy link: Upload ảnh lên <b>imgur.com</b> → chuột phải → Copy image address → dán vào ô trên.<br>
+            Nếu để trống → icon dùng mặc định của iOS.
         </div>
     </div>
 
@@ -642,11 +459,10 @@ button.save-btn small {
     var configFile = null;
     var configBlobUrl = null;
     var currentCount = 2;
-    var uploadedIconData = '';
 
     var PRESETS = {
         text: 'Xin chào!\nĐây là nội dung WebClip của bạn.\n\nBạn có thể chỉnh sửa nội dung này tùy ý.',
-        info: '<div style="padding:20px;font-family:sans-serif;">\n  <h1 style="color:#a855f7;">Thông tin</h1>\n  <p><b>Tên:</b> Nguyễn Văn A</p>\n  <p><b>SĐT:</b> 0328033706</p>\n  <p><b>Email:</b> example@email.com</p>\n</div>',
+        info: '<div style="padding:20px;font-family:sans-serif;">\n  <h1 style="color:#a855f7;">Thông tin</h1>\n  <p><b>Tên:</b> Nguyễn Văn A</p>\n  <p><b>SĐT:</b> 0328033706</p>\n</div>',
         contact: '<div style="padding:20px;font-family:sans-serif;text-align:center;">\n  <h1 style="color:#22c55e;">Liên hệ</h1>\n  <p style="font-size:18px;">Zalo: <b>0328033706</b></p>\n  <p style="font-size:18px;">Telegram: <b>@mduyk</b></p>\n</div>',
         warning: '<div style="padding:20px;font-family:sans-serif;background:#fee;border:2px solid #f00;border-radius:10px;margin:20px;">\n  <h1 style="color:#f00;">CẢNH BÁO</h1>\n  <p>Đây là nội dung cảnh báo quan trọng!</p>\n</div>',
         empty: ''
@@ -663,7 +479,6 @@ button.save-btn small {
     document.querySelectorAll('.count-btn').forEach(function(btn) {
         btn.onclick = function() {
             var count = parseInt(btn.getAttribute('data-count'));
-            
             if (count === 0) {
                 $('custom-row').style.display = 'flex';
                 document.querySelectorAll('.count-btn').forEach(function(b) { b.classList.remove('active'); });
@@ -717,29 +532,20 @@ button.save-btn small {
     function buildHtml() {
         var content = $('app-content').value;
         var name = $('app-name').value || 'WebClip';
-        
         var bodyContent;
         if (/<[a-z][\s\S]*>/i.test(content)) {
             bodyContent = content;
         } else {
             bodyContent = '<pre style="white-space:pre-wrap;word-break:break-word;">' + escapeHtml(content) + '</pre>';
         }
-        
         return '<!DOCTYPE html>\n' +
             '<html>\n' +
             '<head>\n' +
             '<meta charset="UTF-8">\n' +
             '<meta name="viewport" content="width=device-width, initial-scale=1.0">\n' +
             '<title>' + escapeHtml(name) + '</title>\n' +
-            '<style>\n' +
-            '* { box-sizing: border-box; }\n' +
-            'body { font-family: -apple-system, sans-serif; background: #fff; color: #333; padding: 20px; margin: 0; }\n' +
-            '</style>\n' +
-            '</head>\n' +
-            '<body>\n' +
-            bodyContent + '\n' +
-            '</body>\n' +
-            '</html>';
+            '<style>*{box-sizing:border-box;}body{font-family:-apple-system,sans-serif;background:#fff;color:#333;padding:20px;margin:0;}</style>\n' +
+            '</head>\n<body>\n' + bodyContent + '\n</body>\n</html>';
     }
 
     function updatePreview() {
@@ -749,28 +555,21 @@ button.save-btn small {
     function updateIconPreview() {
         var grid = $('icon-preview');
         grid.innerHTML = '';
-        
         var name = $('app-name').value.trim() || 'App';
-        var iconUrl = uploadedIconData || $('app-icon-url').value.trim();
+        var iconUrl = $('app-icon-url').value.trim();
         
         for (var i = 0; i < currentCount; i++) {
             var displayName = name;
-            if (currentCount > 1) {
-                displayName = name + ' ' + (i + 1);
-            }
+            if (currentCount > 1) displayName = name + ' ' + (i + 1);
             
             var iconBox;
-            if (iconUrl) {
+            if (iconUrl && iconUrl.indexOf('http') === 0) {
                 iconBox = '<img src="' + escapeHtml(iconUrl) + '" onerror="this.style.display=\'none\';this.parentNode.innerHTML=\'🌐\'" />';
             } else {
                 iconBox = '🌐';
             }
             
-            var html = '<div class="icon-item">';
-            html += '<div class="icon-box">' + iconBox + '</div>';
-            html += '<div>' + escapeHtml(displayName) + '</div>';
-            html += '</div>';
-            grid.innerHTML += html;
+            grid.innerHTML += '<div class="icon-item"><div class="icon-box">' + iconBox + '</div><div>' + escapeHtml(displayName) + '</div></div>';
         }
     }
 
@@ -780,62 +579,6 @@ button.save-btn small {
             updateIconPreview();
         });
     });
-
-    $('icon-file').addEventListener('change', function(e) {
-        var file = e.target.files[0];
-        if (!file) return;
-        
-        if (file.size > 2 * 1024 * 1024) {
-            setStatus('Ảnh quá lớn! Chọn ảnh dưới 2MB', 'error');
-            return;
-        }
-        
-        var reader = new FileReader();
-        reader.onload = function(ev) {
-            var img = new Image();
-            img.onload = function() {
-                var maxSize = 512;
-                var w = img.width;
-                var h = img.height;
-                
-                if (w > maxSize || h > maxSize) {
-                    if (w > h) { h = Math.round(h * maxSize / w); w = maxSize; }
-                    else { w = Math.round(w * maxSize / h); h = maxSize; }
-                }
-                
-                var canvas = document.createElement('canvas');
-                canvas.width = w;
-                canvas.height = h;
-                var ctx = canvas.getContext('2d');
-                ctx.drawImage(img, 0, 0, w, h);
-                
-                var dataUrl = canvas.toDataURL('image/png');
-                uploadedIconData = dataUrl;
-                
-                $('icon-preview-box').innerHTML = '<img src="' + dataUrl + '">';
-                $('icon-info-title').textContent = 'Đã chọn: ' + file.name;
-                $('icon-info-sub').textContent = Math.round(file.size / 1024) + 'KB → ' + w + 'x' + h;
-                $('icon-clear').style.display = 'block';
-                $('app-icon-url').value = '';
-                
-                updateIconPreview();
-                setStatus('Đã chọn icon!', 'success');
-            };
-            img.src = ev.target.result;
-        };
-        reader.readAsDataURL(file);
-        e.target.value = '';
-    });
-
-    $('icon-clear').onclick = function() {
-        uploadedIconData = '';
-        $('icon-preview-box').innerHTML = '🌐';
-        $('icon-info-title').textContent = 'Chọn ảnh từ máy';
-        $('icon-info-sub').textContent = 'Nhấn để chọn ảnh PNG/JPG';
-        $('icon-clear').style.display = 'none';
-        $('icon-file').value = '';
-        updateIconPreview();
-    };
 
     $('create-btn').onclick = function() {
         var btn = $('create-btn');
@@ -847,8 +590,14 @@ button.save-btn small {
             var profileName = $('profile-name').value.trim() || 'WebClip của tôi';
             var profileDesc = $('profile-desc').value.trim() || 'WebClip';
             var profileId = $('profile-id').value.trim() || 'com.mduy.webclip';
-            var iconUrl = uploadedIconData || $('app-icon-url').value.trim();
+            var iconUrl = $('app-icon-url').value.trim();
             var noRemove = $('opt-noremove').checked;
+
+            if (iconUrl && iconUrl.indexOf('http') !== 0) {
+                setStatus('URL icon phải bắt đầu bằng http:// hoặc https://', 'error');
+                btn.disabled = false;
+                return;
+            }
 
             var html = buildHtml();
             var base64Html = btoa(unescape(encodeURIComponent(html)));
@@ -857,47 +606,27 @@ button.save-btn small {
             var payloads = [];
             for (var i = 0; i < currentCount; i++) {
                 var displayName = appName;
-                if (currentCount > 1) {
-                    displayName = appName + ' ' + (i + 1);
-                }
+                if (currentCount > 1) displayName = appName + ' ' + (i + 1);
                 
-                payloads.push(generateWebClipPayload(
-                    displayName,
-                    dataUri,
-                    iconUrl,
-                    profileId,
-                    i
-                ));
+                payloads.push(generateWebClipPayload(displayName, dataUri, iconUrl, profileId, i));
             }
 
             var allPayloads = payloads.join('\n');
 
             var config = '<?xml version="1.0" encoding="UTF-8"?>\n' +
                 '<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">\n' +
-                '<plist version="1.0">\n' +
-                '<dict>\n' +
-                '    <key>PayloadContent</key>\n' +
-                '    <array>\n' +
-                allPayloads + '\n' +
-                '    </array>\n' +
-                '    <key>PayloadDescription</key>\n' +
-                '    <string>' + escapeXml(profileDesc) + '</string>\n' +
-                '    <key>PayloadDisplayName</key>\n' +
-                '    <string>' + escapeXml(profileName) + '</string>\n' +
-                '    <key>PayloadIdentifier</key>\n' +
-                '    <string>' + escapeXml(profileId) + '</string>\n' +
-                '    <key>PayloadOrganization</key>\n' +
-                '    <string>MDUY</string>\n' +
-                '    <key>PayloadRemovalDisallowed</key>\n' +
-                '    <' + (noRemove ? 'true' : 'false') + '/>\n' +
-                '    <key>PayloadType</key>\n' +
-                '    <string>Configuration</string>\n' +
-                '    <key>PayloadUUID</key>\n' +
-                '    <string>' + generateUUID() + '</string>\n' +
-                '    <key>PayloadVersion</key>\n' +
-                '    <integer>1</integer>\n' +
-                '</dict>\n' +
-                '</plist>';
+                '<plist version="1.0">\n<dict>\n' +
+                '    <key>PayloadContent</key>\n    <array>\n' +
+                allPayloads + '\n    </array>\n' +
+                '    <key>PayloadDescription</key>\n    <string>' + escapeXml(profileDesc) + '</string>\n' +
+                '    <key>PayloadDisplayName</key>\n    <string>' + escapeXml(profileName) + '</string>\n' +
+                '    <key>PayloadIdentifier</key>\n    <string>' + escapeXml(profileId) + '</string>\n' +
+                '    <key>PayloadOrganization</key>\n    <string>MDUY</string>\n' +
+                '    <key>PayloadRemovalDisallowed</key>\n    <' + (noRemove ? 'true' : 'false') + '/>\n' +
+                '    <key>PayloadType</key>\n    <string>Configuration</string>\n' +
+                '    <key>PayloadUUID</key>\n    <string>' + generateUUID() + '</string>\n' +
+                '    <key>PayloadVersion</key>\n    <integer>1</integer>\n' +
+                '</dict>\n</plist>';
 
             if (configBlobUrl) URL.revokeObjectURL(configBlobUrl);
             
@@ -906,9 +635,8 @@ button.save-btn small {
             
             configFile = {
                 name: appName.replace(/\s+/g, '-').toLowerCase() + '-' + currentCount + 'icons.mobileconfig',
-                content: config,
-                count: currentCount,
-                blobUrl: configBlobUrl
+                blobUrl: configBlobUrl,
+                count: currentCount
             };
 
             setStatus('Đã tạo ' + currentCount + ' WebClip! Chọn CÀI NGAY hoặc LƯU TỆP.', 'success');
@@ -925,42 +653,33 @@ button.save-btn small {
 
     $('install-btn').onclick = function() {
         if (!configFile) return;
-        
         try {
             if (isMobileSafari()) {
                 window.location.href = configFile.blobUrl;
-                setStatus('Đang mở cài đặt... Nếu không hiện, thử "LƯU TỆP"', 'info');
+                setStatus('Đang mở cài đặt...', 'info');
             } else {
-                var a = document.createElement('a');
-                a.href = configFile.blobUrl;
-                a.download = configFile.name;
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
+                downloadConfig();
                 setStatus('Đã tải file. Mở file để cài đặt.', 'info');
             }
         } catch(err) {
-            console.error(err);
             setStatus('Lỗi: ' + err.message, 'error');
         }
     };
 
     $('save-btn').onclick = function() {
         if (!configFile) return;
-        
-        try {
-            var a = document.createElement('a');
-            a.href = configFile.blobUrl;
-            a.download = configFile.name;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            setStatus('Đã lưu file ' + configFile.name, 'info');
-        } catch(err) {
-            console.error(err);
-            setStatus('Lỗi: ' + err.message, 'error');
-        }
+        downloadConfig();
+        setStatus('Đã lưu file ' + configFile.name, 'info');
     };
+
+    function downloadConfig() {
+        var a = document.createElement('a');
+        a.href = configFile.blobUrl;
+        a.download = configFile.name;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+    }
 
     function isMobileSafari() {
         var ua = navigator.userAgent;
@@ -971,7 +690,7 @@ button.save-btn small {
         var uuid = generateUUID();
         
         var iconXml = '';
-        if (icon) {
+        if (icon && icon.indexOf('http') === 0) {
             iconXml = '            <key>Icon</key>\n' +
                       '            <string>' + escapeXml(icon) + '</string>\n';
         }
