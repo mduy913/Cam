@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Config WebClip Đa Icon</title>
+<title>Config WebClip Max 900K</title>
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 body {
@@ -79,14 +79,14 @@ h1 {
     border-radius: 9px;
     color: #ccc;
     font-weight: 800;
-    font-size: 14px;
+    font-size: 13px;
     cursor: pointer;
     transition: 0.2s;
     text-align: center;
 }
 .count-btn.active { background: linear-gradient(135deg, #a855f7, #ec4899); border-color: transparent; color: #fff; box-shadow: 0 4px 15px rgba(168,85,247,0.4); }
 .custom-count-row { display: flex; align-items: center; gap: 8px; margin-top: 8px; }
-.custom-count-row input { flex: 1; text-align: center; }
+.custom-count-row input { flex: 1; text-align: center; font-size: 15px; font-weight: 700; }
 .custom-count-row button {
     padding: 10px 14px;
     background: rgba(34,197,94,0.2);
@@ -97,6 +97,36 @@ h1 {
     font-size: 12px;
     cursor: pointer;
     white-space: nowrap;
+}
+.slider-count {
+    width: 100%;
+    margin-top: 10px;
+    height: 6px;
+    -webkit-appearance: none;
+    appearance: none;
+    background: rgba(168,85,247,0.2);
+    border-radius: 3px;
+    outline: none;
+}
+.slider-count::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 22px;
+    height: 22px;
+    background: linear-gradient(135deg, #a855f7, #ec4899);
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 0 10px rgba(168,85,247,0.5);
+    border: 2px solid #fff;
+}
+.slider-count::-moz-range-thumb {
+    width: 22px;
+    height: 22px;
+    background: linear-gradient(135deg, #a855f7, #ec4899);
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 0 10px rgba(168,85,247,0.5);
+    border: 2px solid #fff;
 }
 .switch-row {
     display: flex;
@@ -201,6 +231,7 @@ button.save-btn small { font-size: 9px; opacity: 0.8; font-weight: 600; }
 .status.error { color: #ef4444; }
 .status.loading { color: #f59e0b; }
 .status.info { color: #3b82f6; }
+.status.warning { color: #fbbf24; }
 .hint {
     background: rgba(59,130,246,0.1);
     border: 1px solid rgba(59,130,246,0.4);
@@ -229,6 +260,8 @@ button.save-btn small { font-size: 9px; opacity: 0.8; font-weight: 600; }
     background: rgba(0,0,0,0.3);
     border-radius: 10px;
     margin-top: 8px;
+    max-height: 400px;
+    overflow-y: auto;
 }
 .icon-item { text-align: center; font-size: 9px; color: #ddd; }
 .icon-item .icon-box {
@@ -278,6 +311,16 @@ button.save-btn small { font-size: 9px; opacity: 0.8; font-weight: 600; }
     line-height: 1.6;
     margin-top: 8px;
 }
+.notice-box {
+    background: rgba(245,158,11,0.1);
+    border: 1px solid rgba(245,158,11,0.4);
+    border-radius: 10px;
+    padding: 10px 12px;
+    font-size: 11px;
+    color: #fbbf24;
+    line-height: 1.6;
+    margin-top: 8px;
+}
 .preset-row { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 6px; margin-bottom: 8px; scrollbar-width: none; }
 .preset-row::-webkit-scrollbar { display: none; }
 .preset-btn {
@@ -294,26 +337,27 @@ button.save-btn small { font-size: 9px; opacity: 0.8; font-weight: 600; }
     white-space: nowrap;
 }
 .preset-btn:hover { background: rgba(168,85,247,0.3); color: #fff; }
-.notice-box {
-    background: rgba(245,158,11,0.1);
-    border: 1px solid rgba(245,158,11,0.4);
+.estimate-box {
+    background: rgba(139,92,246,0.1);
+    border: 1px solid rgba(139,92,246,0.4);
     border-radius: 10px;
     padding: 10px 12px;
     font-size: 11px;
-    color: #fbbf24;
+    color: #c4b5fd;
     line-height: 1.6;
     margin-top: 8px;
 }
+.estimate-box b { color: #a855f7; }
 </style>
 </head>
 <body>
 
 <div class="container">
-    <h1>WEBCLIP ĐA ICON</h1>
-    <div class="subtitle">Tạo config nhiều icon — chỉ dùng URL ảnh https</div>
+    <h1>WEBCLIP MAX 900K</h1>
+    <div class="subtitle">Tạo tối đa 900,000 WebClip trong 1 config</div>
 
     <div class="hint">
-        1. Chọn số WebClip cần tạo<br>
+        1. Chọn số WebClip (kéo slider hoặc nhập tay)<br>
         2. Nhập nội dung hiển thị<br>
         3. Nhập URL ảnh icon (https)<br>
         4. Nhấn TẠO CONFIG → CÀI NGAY hoặc LƯU TỆP
@@ -327,18 +371,24 @@ button.save-btn small { font-size: 9px; opacity: 0.8; font-weight: 600; }
         <div class="count-row">
             <button class="count-btn" data-count="1">1</button>
             <button class="count-btn active" data-count="2">2</button>
-            <button class="count-btn" data-count="3">3</button>
-            <button class="count-btn" data-count="5">5</button>
+            <button class="count-btn" data-count="10">10</button>
+            <button class="count-btn" data-count="100">100</button>
         </div>
         <div class="count-row" style="margin-top: 6px;">
-            <button class="count-btn" data-count="10">10</button>
-            <button class="count-btn" data-count="15">15</button>
-            <button class="count-btn" data-count="20">20</button>
-            <button class="count-btn" data-count="0">Tùy chỉnh</button>
+            <button class="count-btn" data-count="1000">1K</button>
+            <button class="count-btn" data-count="10000">10K</button>
+            <button class="count-btn" data-count="100000">100K</button>
+            <button class="count-btn" data-count="900000">900K</button>
         </div>
+        <input type="range" id="count-slider" class="slider-count" min="1" max="900000" value="2" step="1">
         <div class="custom-count-row" id="custom-row" style="display:none;">
-            <input type="number" id="custom-count" min="1" max="50" value="8">
+            <input type="number" id="custom-count" min="1" max="900000" value="1000">
             <button id="custom-apply">ÁP DỤNG</button>
+        </div>
+        <button class="count-btn" id="custom-btn" style="width:100%; margin-top:8px;">Nhập số chính xác</button>
+        
+        <div class="estimate-box" id="estimate-box">
+            Ước tính: <b>~2 KB</b> config
         </div>
     </div>
 
@@ -370,7 +420,6 @@ button.save-btn small { font-size: 9px; opacity: 0.8; font-weight: 600; }
         
         <div class="notice-box">
             <b>Lưu ý:</b> iOS không chấp nhận icon dạng data URL. Phải là link https.<br>
-            Cách lấy link: Upload ảnh lên <b>imgur.com</b> → chuột phải → Copy image address → dán vào ô trên.<br>
             Nếu để trống → icon dùng mặc định của iOS.
         </div>
     </div>
@@ -459,9 +508,10 @@ button.save-btn small { font-size: 9px; opacity: 0.8; font-weight: 600; }
     var configFile = null;
     var configBlobUrl = null;
     var currentCount = 2;
+    var MAX = 900000;
 
     var PRESETS = {
-        text: 'Xin chào!\nĐây là nội dung WebClip của bạn.\n\nBạn có thể chỉnh sửa nội dung này tùy ý.',
+        text: 'Xin chào!\nĐây là nội dung WebClip của bạn.',
         info: '<div style="padding:20px;font-family:sans-serif;">\n  <h1 style="color:#a855f7;">Thông tin</h1>\n  <p><b>Tên:</b> Nguyễn Văn A</p>\n  <p><b>SĐT:</b> 0328033706</p>\n</div>',
         contact: '<div style="padding:20px;font-family:sans-serif;text-align:center;">\n  <h1 style="color:#22c55e;">Liên hệ</h1>\n  <p style="font-size:18px;">Zalo: <b>0328033706</b></p>\n  <p style="font-size:18px;">Telegram: <b>@mduyk</b></p>\n</div>',
         warning: '<div style="padding:20px;font-family:sans-serif;background:#fee;border:2px solid #f00;border-radius:10px;margin:20px;">\n  <h1 style="color:#f00;">CẢNH BÁO</h1>\n  <p>Đây là nội dung cảnh báo quan trọng!</p>\n</div>',
@@ -477,45 +527,88 @@ button.save-btn small { font-size: 9px; opacity: 0.8; font-weight: 600; }
     });
 
     document.querySelectorAll('.count-btn').forEach(function(btn) {
+        if (btn.id === 'custom-btn') return;
         btn.onclick = function() {
             var count = parseInt(btn.getAttribute('data-count'));
-            if (count === 0) {
-                $('custom-row').style.display = 'flex';
-                document.querySelectorAll('.count-btn').forEach(function(b) { b.classList.remove('active'); });
-                btn.classList.add('active');
-                $('custom-count').focus();
-            } else {
-                currentCount = count;
-                $('custom-row').style.display = 'none';
-                document.querySelectorAll('.count-btn').forEach(function(b) { b.classList.remove('active'); });
-                btn.classList.add('active');
-                updateCountDisplay();
-                updateIconPreview();
-            }
+            setCount(count);
+            document.querySelectorAll('.count-btn').forEach(function(b) { 
+                if (b.id !== 'custom-btn') b.classList.remove('active'); 
+            });
+            btn.classList.add('active');
+            $('custom-row').style.display = 'none';
+            $('count-slider').value = Math.min(count, MAX);
         };
+    });
+
+    $('custom-btn').onclick = function() {
+        var isHidden = $('custom-row').style.display === 'none' || !$('custom-row').style.display;
+        $('custom-row').style.display = isHidden ? 'flex' : 'none';
+        if (isHidden) $('custom-count').focus();
+    };
+
+    $('count-slider').addEventListener('input', function() {
+        var val = parseInt(this.value);
+        setCount(val);
+        document.querySelectorAll('.count-btn').forEach(function(b) { 
+            if (b.id !== 'custom-btn') b.classList.remove('active'); 
+        });
+        $('custom-row').style.display = 'none';
     });
 
     $('custom-apply').onclick = function() {
         var val = parseInt($('custom-count').value);
         if (val < 1) val = 1;
-        if (val > 50) val = 50;
-        currentCount = val;
+        if (val > MAX) val = MAX;
         $('custom-count').value = val;
-        updateCountDisplay();
-        updateIconPreview();
+        setCount(val);
+        $('count-slider').value = Math.min(val, MAX);
     };
 
     $('custom-count').addEventListener('input', function() {
-        var val = parseInt($('custom-count').value) || 1;
+        var val = parseInt(this.value) || 1;
         if (val < 1) val = 1;
-        if (val > 50) val = 50;
-        currentCount = val;
-        updateCountDisplay();
-        updateIconPreview();
+        if (val > MAX) val = MAX;
+        setCount(val);
     });
 
+    function setCount(val) {
+        currentCount = val;
+        updateCountDisplay();
+        updateEstimate();
+        if (val <= 200) {
+            updateIconPreview();
+        } else {
+            $('icon-preview').innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:20px;color:#888;font-size:11px;">Preview bị tắt do quá nhiều icon (' + formatNumber(val) + ').</div>';
+        }
+    }
+
+    function formatNumber(n) {
+        return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    }
+
     function updateCountDisplay() {
-        $('count-display').textContent = currentCount + ' icon';
+        $('count-display').textContent = formatNumber(currentCount) + ' icon';
+    }
+
+    function updateEstimate() {
+        var kb = Math.round(currentCount * 0.5);
+        var sizeText;
+        if (kb < 1024) {
+            sizeText = kb + ' KB';
+        } else if (kb < 1024 * 1024) {
+            sizeText = (kb / 1024).toFixed(1) + ' MB';
+        } else {
+            sizeText = (kb / 1024 / 1024).toFixed(2) + ' GB';
+        }
+        
+        var warn = '';
+        if (kb > 10 * 1024) {
+            warn = ' <span style="color:#ef4444;">⚠ iOS thường giới hạn 10MB/profile</span>';
+        } else if (kb > 5 * 1024) {
+            warn = ' <span style="color:#fbbf24;">⚠ File khá lớn</span>';
+        }
+        
+        $('estimate-box').innerHTML = 'Ước tính: <b>' + sizeText + '</b>' + warn;
     }
 
     document.querySelectorAll('.tab').forEach(function(tab) {
@@ -525,7 +618,7 @@ button.save-btn small { font-size: 9px; opacity: 0.8; font-weight: 600; }
             var tabName = tab.getAttribute('data-tab');
             $('tab-preview').style.display = tabName === 'preview' ? 'block' : 'none';
             $('tab-icons').style.display = tabName === 'icons' ? 'block' : 'none';
-            if (tabName === 'icons') updateIconPreview();
+            if (tabName === 'icons' && currentCount <= 200) updateIconPreview();
         };
     });
 
@@ -558,7 +651,9 @@ button.save-btn small { font-size: 9px; opacity: 0.8; font-weight: 600; }
         var name = $('app-name').value.trim() || 'App';
         var iconUrl = $('app-icon-url').value.trim();
         
-        for (var i = 0; i < currentCount; i++) {
+        var previewLimit = Math.min(currentCount, 200);
+        
+        for (var i = 0; i < previewLimit; i++) {
             var displayName = name;
             if (currentCount > 1) displayName = name + ' ' + (i + 1);
             
@@ -571,85 +666,145 @@ button.save-btn small { font-size: 9px; opacity: 0.8; font-weight: 600; }
             
             grid.innerHTML += '<div class="icon-item"><div class="icon-box">' + iconBox + '</div><div>' + escapeHtml(displayName) + '</div></div>';
         }
+        
+        if (currentCount > previewLimit) {
+            grid.innerHTML += '<div style="grid-column:1/-1;text-align:center;padding:10px;color:#888;font-size:11px;">... và ' + formatNumber(currentCount - previewLimit) + ' icon nữa</div>';
+        }
     }
 
     ['app-content', 'app-name', 'app-icon-url'].forEach(function(id) {
         $(id).addEventListener('input', function() {
             updatePreview();
-            updateIconPreview();
+            if (currentCount <= 200) updateIconPreview();
         });
     });
 
     $('create-btn').onclick = function() {
         var btn = $('create-btn');
         btn.disabled = true;
-        setStatus('Đang tạo ' + currentCount + ' WebClip...', 'loading');
+        setStatus('Đang tạo ' + formatNumber(currentCount) + ' WebClip... Vui lòng đợi', 'loading');
 
-        try {
-            var appName = $('app-name').value.trim() || 'WebClip';
-            var profileName = $('profile-name').value.trim() || 'WebClip của tôi';
-            var profileDesc = $('profile-desc').value.trim() || 'WebClip';
-            var profileId = $('profile-id').value.trim() || 'com.mduy.webclip';
-            var iconUrl = $('app-icon-url').value.trim();
-            var noRemove = $('opt-noremove').checked;
+        setTimeout(function() {
+            try {
+                var appName = $('app-name').value.trim() || 'WebClip';
+                var profileName = $('profile-name').value.trim() || 'WebClip của tôi';
+                var profileDesc = $('profile-desc').value.trim() || 'WebClip';
+                var profileId = $('profile-id').value.trim() || 'com.mduy.webclip';
+                var iconUrl = $('app-icon-url').value.trim();
+                var noRemove = $('opt-noremove').checked;
 
-            if (iconUrl && iconUrl.indexOf('http') !== 0) {
-                setStatus('URL icon phải bắt đầu bằng http:// hoặc https://', 'error');
-                btn.disabled = false;
-                return;
-            }
+                if (iconUrl && iconUrl.indexOf('http') !== 0) {
+                    setStatus('URL icon phải bắt đầu bằng http:// hoặc https://', 'error');
+                    btn.disabled = false;
+                    return;
+                }
 
-            var html = buildHtml();
-            var base64Html = btoa(unescape(encodeURIComponent(html)));
-            var dataUri = 'data:text/html;charset=utf-8;base64,' + base64Html;
+                var html = buildHtml();
+                var base64Html = btoa(unescape(encodeURIComponent(html)));
+                var dataUri = 'data:text/html;charset=utf-8;base64,' + base64Html;
 
-            var payloads = [];
-            for (var i = 0; i < currentCount; i++) {
-                var displayName = appName;
-                if (currentCount > 1) displayName = appName + ' ' + (i + 1);
+                var payloadTemplate = buildPayloadTemplate(dataUri, iconUrl, profileId);
+                var payloadParts = [];
                 
-                payloads.push(generateWebClipPayload(displayName, dataUri, iconUrl, profileId, i));
+                for (var i = 0; i < currentCount; i++) {
+                    var displayName = appName;
+                    if (currentCount > 1) displayName = appName + ' ' + (i + 1);
+                    
+                    payloadParts.push(payloadTemplate(displayName, i));
+                }
+
+                var allPayloads = payloadParts.join('\n');
+                var noRemoveStr = noRemove ? 'true' : 'false';
+
+                var config = '<?xml version="1.0" encoding="UTF-8"?>\n' +
+                    '<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">\n' +
+                    '<plist version="1.0">\n<dict>\n' +
+                    '    <key>PayloadContent</key>\n    <array>\n' +
+                    allPayloads + '\n    </array>\n' +
+                    '    <key>PayloadDescription</key>\n    <string>' + escapeXml(profileDesc) + '</string>\n' +
+                    '    <key>PayloadDisplayName</key>\n    <string>' + escapeXml(profileName) + '</string>\n' +
+                    '    <key>PayloadIdentifier</key>\n    <string>' + escapeXml(profileId) + '</string>\n' +
+                    '    <key>PayloadOrganization</key>\n    <string>MDUY</string>\n' +
+                    '    <key>PayloadRemovalDisallowed</key>\n    <' + noRemoveStr + '/>\n' +
+                    '    <key>PayloadType</key>\n    <string>Configuration</string>\n' +
+                    '    <key>PayloadUUID</key>\n    <string>' + generateUUID() + '</string>\n' +
+                    '    <key>PayloadVersion</key>\n    <integer>1</integer>\n' +
+                    '</dict>\n</plist>';
+
+                if (configBlobUrl) URL.revokeObjectURL(configBlobUrl);
+                
+                var blob = new Blob([config], { type: 'application/x-apple-aspen-config' });
+                configBlobUrl = URL.createObjectURL(blob);
+                
+                configFile = {
+                    name: appName.replace(/\s+/g, '-').toLowerCase() + '-' + currentCount + 'icons.mobileconfig',
+                    blobUrl: configBlobUrl,
+                    count: currentCount
+                };
+
+                var sizeKB = Math.round(blob.size / 1024);
+                var sizeText = sizeKB < 1024 ? sizeKB + 'KB' : (sizeKB / 1024).toFixed(2) + 'MB';
+                
+                if (sizeKB > 10 * 1024) {
+                    setStatus('⚠ File ' + sizeText + ' — iOS có thể từ chối. Nên giảm số icon!', 'warning');
+                } else {
+                    setStatus('Đã tạo ' + formatNumber(currentCount) + ' WebClip (' + sizeText + ')!', 'success');
+                }
+                
+                $('download-row').style.display = 'grid';
+                $('guide-card').style.display = 'block';
+                btn.disabled = false;
+
+            } catch(err) {
+                console.error(err);
+                setStatus('Lỗi: ' + err.message, 'error');
+                btn.disabled = false;
+            }
+        }, 100);
+    };
+
+    function buildPayloadTemplate(url, icon, profileId) {
+        return function(name, idx) {
+            var uuid = generateUUID();
+            
+            var iconXml = '';
+            if (icon && icon.indexOf('http') === 0) {
+                iconXml = '            <key>Icon</key>\n' +
+                          '            <string>' + escapeXml(icon) + '</string>\n';
             }
 
-            var allPayloads = payloads.join('\n');
-
-            var config = '<?xml version="1.0" encoding="UTF-8"?>\n' +
-                '<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">\n' +
-                '<plist version="1.0">\n<dict>\n' +
-                '    <key>PayloadContent</key>\n    <array>\n' +
-                allPayloads + '\n    </array>\n' +
-                '    <key>PayloadDescription</key>\n    <string>' + escapeXml(profileDesc) + '</string>\n' +
-                '    <key>PayloadDisplayName</key>\n    <string>' + escapeXml(profileName) + '</string>\n' +
-                '    <key>PayloadIdentifier</key>\n    <string>' + escapeXml(profileId) + '</string>\n' +
-                '    <key>PayloadOrganization</key>\n    <string>MDUY</string>\n' +
-                '    <key>PayloadRemovalDisallowed</key>\n    <' + (noRemove ? 'true' : 'false') + '/>\n' +
-                '    <key>PayloadType</key>\n    <string>Configuration</string>\n' +
-                '    <key>PayloadUUID</key>\n    <string>' + generateUUID() + '</string>\n' +
-                '    <key>PayloadVersion</key>\n    <integer>1</integer>\n' +
-                '</dict>\n</plist>';
-
-            if (configBlobUrl) URL.revokeObjectURL(configBlobUrl);
-            
-            var blob = new Blob([config], { type: 'application/x-apple-aspen-config' });
-            configBlobUrl = URL.createObjectURL(blob);
-            
-            configFile = {
-                name: appName.replace(/\s+/g, '-').toLowerCase() + '-' + currentCount + 'icons.mobileconfig',
-                blobUrl: configBlobUrl,
-                count: currentCount
-            };
-
-            setStatus('Đã tạo ' + currentCount + ' WebClip! Chọn CÀI NGAY hoặc LƯU TỆP.', 'success');
-            $('download-row').style.display = 'grid';
-            $('guide-card').style.display = 'block';
-            btn.disabled = false;
-
-        } catch(err) {
-            console.error(err);
-            setStatus('Lỗi: ' + err.message, 'error');
-            btn.disabled = false;
-        }
-    };
+            return [
+                '        <dict>',
+                '            <key>FullScreen</key>',
+                '            <true/>',
+                '            <key>IgnoreManifestScope</key>',
+                '            <false/>',
+                '            <key>IsRemovable</key>',
+                '            <true/>',
+                '            <key>Label</key>',
+                '            <string>' + escapeXml(name) + '</string>',
+                '            <key>Precomposed</key>',
+                '            <true/>',
+                '            <key>PayloadDescription</key>',
+                '            <string>' + escapeXml(name) + '</string>',
+                '            <key>PayloadDisplayName</key>',
+                '            <string>' + escapeXml(name) + '</string>',
+                '            <key>PayloadIdentifier</key>',
+                '            <string>' + escapeXml(profileId) + '.webclip.' + idx + '</string>',
+                '            <key>PayloadOrganization</key>',
+                '            <string>MDUY</string>',
+                '            <key>PayloadType</key>',
+                '            <string>com.apple.webClip.managed</string>',
+                '            <key>PayloadUUID</key>',
+                '            <string>' + uuid + '</string>',
+                '            <key>PayloadVersion</key>',
+                '            <integer>1</integer>',
+                '            <key>URL</key>',
+                '            <string>' + escapeXml(url) + '</string>',
+                iconXml + '        </dict>'
+            ].join('\n');
+        };
+    }
 
     $('install-btn').onclick = function() {
         if (!configFile) return;
@@ -686,54 +841,15 @@ button.save-btn small { font-size: 9px; opacity: 0.8; font-weight: 600; }
         return /iPhone|iPad|iPod/i.test(ua) && /Safari/i.test(ua) && !/CriOS|FxiOS|EdgiOS/i.test(ua);
     }
 
-    function generateWebClipPayload(name, url, icon, profileId, idx) {
-        var uuid = generateUUID();
-        
-        var iconXml = '';
-        if (icon && icon.indexOf('http') === 0) {
-            iconXml = '            <key>Icon</key>\n' +
-                      '            <string>' + escapeXml(icon) + '</string>\n';
-        }
-
-        return [
-            '        <dict>',
-            '            <key>FullScreen</key>',
-            '            <true/>',
-            '            <key>IgnoreManifestScope</key>',
-            '            <false/>',
-            '            <key>IsRemovable</key>',
-            '            <true/>',
-            '            <key>Label</key>',
-            '            <string>' + escapeXml(name) + '</string>',
-            '            <key>Precomposed</key>',
-            '            <true/>',
-            '            <key>PayloadDescription</key>',
-            '            <string>' + escapeXml(name) + '</string>',
-            '            <key>PayloadDisplayName</key>',
-            '            <string>' + escapeXml(name) + '</string>',
-            '            <key>PayloadIdentifier</key>',
-            '            <string>' + escapeXml(profileId) + '.webclip.' + idx + '</string>',
-            '            <key>PayloadOrganization</key>',
-            '            <string>MDUY</string>',
-            '            <key>PayloadType</key>',
-            '            <string>com.apple.webClip.managed</string>',
-            '            <key>PayloadUUID</key>',
-            '            <string>' + uuid + '</string>',
-            '            <key>PayloadVersion</key>',
-            '            <integer>1</integer>',
-            '            <key>URL</key>',
-            '            <string>' + escapeXml(url) + '</string>',
-            iconXml + '        </dict>'
-        ].join('\n');
-    }
-
     function setStatus(text, type) {
         var el = $('status');
         el.textContent = text;
         el.className = 'status' + (type ? ' ' + type : '');
     }
 
+    var uuidCounter = 0;
     function generateUUID() {
+        uuidCounter++;
         return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
             var r = Math.random() * 16 | 0;
             var v = c === 'x' ? r : (r & 0x3 | 0x8);
@@ -761,8 +877,9 @@ button.save-btn small { font-size: 9px; opacity: 0.8; font-weight: 600; }
 
     updatePreview();
     updateIconPreview();
+    updateEstimate();
 
-    console.log('WebClip Đa Icon đã sẵn sàng');
+    console.log('WebClip Max 900K đã sẵn sàng');
 })();
 </script>
 
