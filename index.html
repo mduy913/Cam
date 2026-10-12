@@ -4,9 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Mẫu CK">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#0a0a1a">
-<title>💳 Mẫu CK - WebClip</title>
+<link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💳</text></svg>">
+<title>💳 Mẫu CK</title>
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 html, body {
@@ -18,7 +20,7 @@ html, body {
 }
 body {
     padding: 14px;
-    padding-bottom: 90px;
+    padding-bottom: 100px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -28,7 +30,7 @@ body {
     width: 100%;
     max-width: 500px;
     text-align: center;
-    margin-bottom: 16px;
+    margin-bottom: 14px;
 }
 .header h1 {
     font-size: 22px;
@@ -42,10 +44,9 @@ body {
 .header p {
     font-size: 11px;
     color: #888;
-    margin-top: 4px;
+    margin-top: 3px;
 }
 
-/* DANH SÁCH MẪU */
 .templates {
     width: 100%;
     max-width: 500px;
@@ -53,7 +54,7 @@ body {
     gap: 6px;
     overflow-x: auto;
     padding-bottom: 8px;
-    margin-bottom: 12px;
+    margin-bottom: 10px;
     scrollbar-width: none;
 }
 .templates::-webkit-scrollbar { display: none; }
@@ -71,7 +72,6 @@ body {
     white-space: nowrap;
     transition: 0.2s;
 }
-.tpl-chip:hover { border-color: #a855f7; color: #fff; }
 .tpl-chip.active {
     background: linear-gradient(135deg, #a855f7, #ec4899);
     border-color: transparent;
@@ -79,7 +79,6 @@ body {
     box-shadow: 0 4px 15px rgba(168,85,247,0.4);
 }
 
-/* CARD */
 .card {
     width: 100%;
     max-width: 500px;
@@ -91,7 +90,6 @@ body {
     backdrop-filter: blur(10px);
 }
 
-/* FORM */
 .field { margin-bottom: 12px; }
 .field:last-child { margin-bottom: 0; }
 
@@ -123,16 +121,14 @@ body {
 .field textarea:focus {
     border-color: #a855f7;
     box-shadow: 0 0 15px rgba(168,85,247,0.3);
-    background: rgba(0,0,0,0.6);
 }
 .field textarea {
     resize: vertical;
-    min-height: 60px;
+    min-height: 55px;
     font-size: 13px;
     line-height: 1.5;
 }
 
-/* PREVIEW */
 .preview {
     width: 100%;
     max-width: 500px;
@@ -164,17 +160,9 @@ body {
     word-break: break-word;
     min-height: 60px;
 }
+.preview-content .highlight { color: #fbbf24; font-weight: 800; }
+.preview-content .key { color: #a855f7; font-weight: 700; }
 
-.preview-content .highlight {
-    color: #fbbf24;
-    font-weight: 800;
-}
-.preview-content .key {
-    color: #a855f7;
-    font-weight: 700;
-}
-
-/* BOTTOM ACTIONS */
 .actions {
     position: fixed;
     bottom: 0;
@@ -183,7 +171,7 @@ body {
     padding: 10px 14px;
     background: linear-gradient(0deg, #0a0a1a 70%, transparent);
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr;
     gap: 8px;
     z-index: 100;
     max-width: 500px;
@@ -212,18 +200,41 @@ body {
     color: #fff;
     box-shadow: 0 4px 15px rgba(34,197,94,0.3);
 }
-.btn-save {
-    background: linear-gradient(135deg, #3b82f6, #1d4ed8);
-    color: #fff;
-    box-shadow: 0 4px 15px rgba(59,130,246,0.3);
-}
 .btn-share {
     background: linear-gradient(135deg, #a855f7, #ec4899);
     color: #fff;
     box-shadow: 0 4px 15px rgba(168,85,247,0.3);
 }
 
-/* TOAST */
+/* CONFIG BUTTONS */
+.config-row {
+    width: 100%;
+    max-width: 500px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+.btn-save-config {
+    background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+    color: #fff;
+    box-shadow: 0 4px 15px rgba(59,130,246,0.3);
+    padding: 12px 8px;
+    font-size: 12px;
+}
+.btn-load-config {
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+    color: #fff;
+    box-shadow: 0 4px 15px rgba(245,158,11,0.3);
+    padding: 12px 8px;
+    font-size: 12px;
+}
+
+/* HIDDEN INPUT */
+#config-file {
+    display: none;
+}
+
 .toast {
     position: fixed;
     top: 20px;
@@ -242,47 +253,20 @@ body {
 }
 .toast.show { transform: translateX(-50%) translateY(0); }
 .toast.error { background: #ef4444; box-shadow: 0 8px 24px rgba(239,68,68,0.4); }
+.toast.info { background: #3b82f6; box-shadow: 0 8px 24px rgba(59,130,246,0.4); }
 
-/* QR MODAL */
-.modal {
-    position: fixed;
-    top: 0; left: 0;
-    width: 100vw; height: 100vh;
-    background: rgba(0,0,0,0.85);
-    backdrop-filter: blur(8px);
-    display: none;
-    align-items: center;
-    justify-content: center;
-    z-index: 9998;
-    padding: 20px;
-}
-.modal.show { display: flex; }
-.modal-content {
-    background: #0a0a1a;
-    border: 2px solid #a855f7;
-    border-radius: 16px;
-    padding: 20px;
-    text-align: center;
-    max-width: 320px;
+/* INFO */
+.info-box {
     width: 100%;
-}
-.modal-content img {
-    width: 100%;
+    max-width: 500px;
+    background: rgba(59,130,246,0.1);
+    border: 1px solid rgba(59,130,246,0.4);
     border-radius: 10px;
+    padding: 10px 12px;
+    font-size: 11px;
+    color: #93c5fd;
+    line-height: 1.6;
     margin-bottom: 12px;
-    background: #fff;
-    padding: 10px;
-}
-.modal-content button {
-    width: 100%;
-    padding: 12px;
-    background: linear-gradient(135deg, #a855f7, #ec4899);
-    border: none;
-    border-radius: 10px;
-    color: #fff;
-    font-weight: 800;
-    font-size: 14px;
-    cursor: pointer;
 }
 </style>
 </head>
@@ -293,67 +277,57 @@ body {
     <p>Chọn mẫu → Điền → Copy & Gửi</p>
 </div>
 
-<!-- CHIP CHỌN MẪU -->
+<div class="info-box">
+    💡 <b>Config file:</b> Lưu tất cả mẫu + thông tin hiện tại vào file <code>.json</code> để dùng lại sau hoặc chia sẻ cho người khác.
+</div>
+
 <div class="templates" id="templates"></div>
 
-<!-- FORM -->
+<!-- NÚT CONFIG -->
+<div class="config-row">
+    <button class="btn btn-save-config" id="save-config-btn">💾 LƯU CONFIG</button>
+    <button class="btn btn-load-config" id="load-config-btn">📂 NẠP CONFIG</button>
+</div>
+<input type="file" id="config-file" accept=".json,application/json">
+
 <div class="card">
     <div class="field">
         <label>💰 Số tiền</label>
         <input type="text" id="amount" placeholder="VD: 500.000" inputmode="numeric">
     </div>
-    
     <div class="field">
         <label>📝 Nội dung chuyển khoản</label>
         <input type="text" id="content" placeholder="VD: Tra tien hang thang 10">
     </div>
-    
     <div class="field">
         <label>🏦 Ngân hàng</label>
         <input type="text" id="bank" placeholder="VD: Vietcombank">
     </div>
-    
     <div class="field">
         <label>👤 Số tài khoản / Tên</label>
         <input type="text" id="account" placeholder="VD: 0123456789 - NGUYEN VAN A">
     </div>
-    
     <div class="field">
         <label>📱 Số điện thoại / STK nhận</label>
         <input type="text" id="phone" placeholder="VD: 0328033706">
     </div>
-    
     <div class="field">
         <label>📌 Ghi chú thêm</label>
         <textarea id="note" placeholder="Ghi chú..."></textarea>
     </div>
 </div>
 
-<!-- PREVIEW -->
 <div class="preview">
     <div class="preview-title">👁️ XEM TRƯỚC NỘI DUNG</div>
     <div class="preview-content" id="preview">Chọn mẫu và điền thông tin...</div>
 </div>
 
-<!-- ACTIONS -->
 <div class="actions">
     <button class="btn btn-copy" id="copy-btn">📋 COPY</button>
-    <button class="btn btn-save" id="save-btn">💾 LƯU</button>
     <button class="btn btn-share" id="share-btn">📤 SHARE</button>
 </div>
 
-<!-- TOAST -->
 <div class="toast" id="toast">Đã copy!</div>
-
-<!-- QR MODAL -->
-<div class="modal" id="qr-modal">
-    <div class="modal-content">
-        <div style="font-size: 40px; margin-bottom: 8px;">📱</div>
-        <div style="font-size: 14px; font-weight: 800; color: #a855f7; margin-bottom: 12px;">QR CHUYỂN KHOẢN</div>
-        <img id="qr-img" src="" alt="QR">
-        <button onclick="document.getElementById('qr-modal').classList.remove('show')">ĐÓNG</button>
-    </div>
-</div>
 
 <script>
 (function() {
@@ -362,14 +336,16 @@ body {
     var $ = function(id) { return document.getElementById(id); };
 
     // ═══════════════════════════════════════════════
-    // CONFIG — CÁC MẪU CHUYỂN KHOẢN
+    // CONFIG MẶC ĐỊNH
     // ═══════════════════════════════════════════════
-    var CONFIG = {
+    var DEFAULT_CONFIG = {
+        version: '1.0',
+        savedAt: new Date().toISOString(),
+        currentTpl: 'default',
         templates: [
             {
                 id: 'default',
-                name: '📋 Mẫu cơ bản',
-                icon: '💳',
+                name: '📋 Cơ bản',
                 amount: '500.000',
                 content: 'Chuyen tien',
                 bank: 'Vietcombank',
@@ -380,7 +356,6 @@ body {
             {
                 id: 'shop',
                 name: '🛍️ Trả tiền hàng',
-                icon: '🛍️',
                 amount: '200.000',
                 content: 'Tra tien don hang',
                 bank: 'Techcombank',
@@ -390,8 +365,7 @@ body {
             },
             {
                 id: 'service',
-                name: '🔧 Thanh toán dịch vụ',
-                icon: '🔧',
+                name: '🔧 Dịch vụ',
                 amount: '1.000.000',
                 content: 'Thanh toan dich vu thang',
                 bank: 'VPBank',
@@ -402,7 +376,6 @@ body {
             {
                 id: 'salary',
                 name: '💼 Trả lương',
-                icon: '💼',
                 amount: '5.000.000',
                 content: 'Luong thang 10',
                 bank: 'BIDV',
@@ -412,8 +385,7 @@ body {
             },
             {
                 id: 'personal',
-                name: '👨‍👩‍👧 Cá nhân',
-                icon: '❤️',
+                name: '❤️ Cá nhân',
                 amount: '100.000',
                 content: 'Chuyen tien ca nhan',
                 bank: 'Viettinbank',
@@ -423,8 +395,7 @@ body {
             },
             {
                 id: 'momo',
-                name: '💜 Ví MoMo',
-                icon: '💜',
+                name: '💜 MoMo',
                 amount: '50.000',
                 content: 'Chuyen tien MoMo',
                 bank: 'Ví MoMo',
@@ -432,9 +403,10 @@ body {
                 phone: '0328033706',
                 note: ''
             }
-        ],
-        currentTpl: 'default'
+        ]
     };
+
+    var CONFIG = JSON.parse(JSON.stringify(DEFAULT_CONFIG));
 
     // ═══════════════════════════════════════════════
     // RENDER TEMPLATES
@@ -502,7 +474,7 @@ body {
     }
 
     // ═══════════════════════════════════════════════
-    // SAVE / LOAD LOCAL
+    // LOCAL STORAGE
     // ═══════════════════════════════════════════════
     function saveToLocal() {
         try {
@@ -515,13 +487,13 @@ body {
                 phone: $('phone').value,
                 note: $('note').value
             };
-            localStorage.setItem('ck_webclip_data', JSON.stringify(data));
+            localStorage.setItem('ck_data', JSON.stringify(data));
         } catch(e) {}
     }
 
     function loadFromLocal() {
         try {
-            var raw = localStorage.getItem('ck_webclip_data');
+            var raw = localStorage.getItem('ck_data');
             if (!raw) return false;
             var data = JSON.parse(raw);
             CONFIG.currentTpl = data.currentTpl || 'default';
@@ -539,18 +511,18 @@ body {
     // TOAST
     // ═══════════════════════════════════════════════
     var toastTimer = null;
-    function toast(text, isError) {
+    function toast(text, type) {
         var el = $('toast');
         el.textContent = text;
-        el.className = 'toast' + (isError ? ' error' : '') + ' show';
+        el.className = 'toast' + (type ? ' ' + type : '') + ' show';
         if (toastTimer) clearTimeout(toastTimer);
         toastTimer = setTimeout(function() {
             el.classList.remove('show');
-        }, 2000);
+        }, 2200);
     }
 
     // ═══════════════════════════════════════════════
-    // COPY
+    // GET PLAIN TEXT
     // ═══════════════════════════════════════════════
     function getPlainText() {
         var amount = $('amount').value || '—';
@@ -574,6 +546,9 @@ body {
         return text;
     }
 
+    // ═══════════════════════════════════════════════
+    // COPY
+    // ═══════════════════════════════════════════════
     $('copy-btn').onclick = function() {
         var text = getPlainText();
         if (navigator.clipboard && navigator.clipboard.writeText) {
@@ -598,27 +573,10 @@ body {
             document.execCommand('copy');
             toast('✅ Đã copy!');
         } catch(e) {
-            toast('❌ Không copy được', true);
+            toast('❌ Không copy được', 'error');
         }
         document.body.removeChild(ta);
     }
-
-    // ═══════════════════════════════════════════════
-    // SAVE FILE
-    // ═══════════════════════════════════════════════
-    $('save-btn').onclick = function() {
-        var text = getPlainText();
-        var blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
-        var url = URL.createObjectURL(blob);
-        var a = document.createElement('a');
-        a.href = url;
-        a.download = 'chuyen-khoan-' + Date.now() + '.txt';
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-        toast('💾 Đã lưu file!');
-    };
 
     // ═══════════════════════════════════════════════
     // SHARE
@@ -634,12 +592,119 @@ body {
             }).catch(function() {});
         } else {
             fallbackCopy(text);
-            toast('📋 Đã copy (không hỗ trợ share)');
         }
     };
 
     // ═══════════════════════════════════════════════
-    // AUTO SAVE KHI NHẬP
+    // 💾 LƯU CONFIG (JSON)
+    // ═══════════════════════════════════════════════
+    $('save-config-btn').onclick = function() {
+        try {
+            // Lấy dữ liệu hiện tại + templates
+            var configToSave = {
+                version: '1.0',
+                savedAt: new Date().toISOString(),
+                currentTpl: CONFIG.currentTpl,
+                templates: CONFIG.templates,
+                // Lưu thêm giá trị hiện tại đang điền
+                currentValues: {
+                    amount: $('amount').value,
+                    content: $('content').value,
+                    bank: $('bank').value,
+                    account: $('account').value,
+                    phone: $('phone').value,
+                    note: $('note').value
+                }
+            };
+
+            // Cập nhật template hiện tại với giá trị đang điền
+            var currentTpl = configToSave.templates.find(function(t) {
+                return t.id === CONFIG.currentTpl;
+            });
+            if (currentTpl) {
+                currentTpl.amount = $('amount').value;
+                currentTpl.content = $('content').value;
+                currentTpl.bank = $('bank').value;
+                currentTpl.account = $('account').value;
+                currentTpl.phone = $('phone').value;
+                currentTpl.note = $('note').value;
+            }
+
+            var json = JSON.stringify(configToSave, null, 2);
+            var blob = new Blob([json], { type: 'application/json;charset=utf-8' });
+            var url = URL.createObjectURL(blob);
+            var a = document.createElement('a');
+            a.href = url;
+            a.download = 'mau-ck-config-' + Date.now() + '.json';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+
+            toast('💾 Đã lưu file config!', 'info');
+        } catch(err) {
+            console.error(err);
+            toast('❌ Lỗi lưu config!', 'error');
+        }
+    };
+
+    // ═══════════════════════════════════════════════
+    // 📂 NẠP CONFIG (JSON)
+    // ═══════════════════════════════════════════════
+    $('load-config-btn').onclick = function() {
+        $('config-file').click();
+    };
+
+    $('config-file').addEventListener('change', function(e) {
+        var file = e.target.files[0];
+        if (!file) return;
+
+        var reader = new FileReader();
+        reader.onload = function(ev) {
+            try {
+                var data = JSON.parse(ev.target.result);
+
+                // Kiểm tra cấu trúc
+                if (!data.templates || !Array.isArray(data.templates)) {
+                    throw new Error('File config không hợp lệ!');
+                }
+
+                // Load templates
+                CONFIG.templates = data.templates;
+                CONFIG.currentTpl = data.currentTpl || data.templates[0].id;
+
+                // Load giá trị đang điền (nếu có)
+                if (data.currentValues) {
+                    $('amount').value = data.currentValues.amount || '';
+                    $('content').value = data.currentValues.content || '';
+                    $('bank').value = data.currentValues.bank || '';
+                    $('account').value = data.currentValues.account || '';
+                    $('phone').value = data.currentValues.phone || '';
+                    $('note').value = data.currentValues.note || '';
+                } else {
+                    // Load từ template hiện tại
+                    loadTemplate(CONFIG.currentTpl);
+                }
+
+                renderTemplates();
+                updatePreview();
+                saveToLocal();
+
+                toast('✅ Đã nạp ' + data.templates.length + ' mẫu!', 'info');
+
+            } catch(err) {
+                console.error(err);
+                toast('❌ Lỗi: ' + err.message, 'error');
+            }
+        };
+        reader.readAsText(file);
+
+        // Reset input để có thể chọn lại cùng file
+        e.target.value = '';
+    });
+
+    // ═══════════════════════════════════════════════
+    // AUTO SAVE
     // ═══════════════════════════════════════════════
     ['amount', 'content', 'bank', 'account', 'phone', 'note'].forEach(function(id) {
         var el = $(id);
@@ -655,21 +720,18 @@ body {
     // INIT
     // ═══════════════════════════════════════════════
     renderTemplates();
-
-    // Load từ localStorage hoặc template mặc định
     if (!loadFromLocal()) {
         loadTemplate('default');
     } else {
-        // Update chip active
         document.querySelectorAll('.tpl-chip').forEach(function(c) {
             c.classList.toggle('active', c.getAttribute('data-id') === CONFIG.currentTpl);
         });
     }
     updatePreview();
 
-    console.log('%c💳 WebClip Chuyển Khoản đã sẵn sàng!', 'color: #22c55e; font-size: 14px; font-weight: bold;');
-    console.log('📋 Có ' + CONFIG.templates.length + ' mẫu sẵn sàng');
-
+    console.log('%c💳 Web Mẫu CK V2 đã sẵn sàng!', 'color: #22c55e; font-size: 14px; font-weight: bold;');
+    console.log('💾 LƯU CONFIG — xuất file .json');
+    console.log('📂 NẠP CONFIG — import file .json');
 })();
 </script>
 
