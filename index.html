@@ -354,13 +354,13 @@ button.save-btn small { font-size: 9px; opacity: 0.8; font-weight: 600; }
 
 <div class="container">
     <h1>WEBCLIP MAX 900K</h1>
-    <div class="subtitle">Tạo tối đa 900,000 WebClip trong 1 config</div>
+    <div class="subtitle">Tạo tối đa 900,000 WebClip — 2 chế độ tải riêng</div>
 
     <div class="hint">
-        1. Chọn số WebClip (kéo slider hoặc nhập tay)<br>
-        2. Nhập nội dung hiển thị<br>
-        3. Nhập URL ảnh icon (https)<br>
-        4. Nhấn TẠO CONFIG → CÀI NGAY hoặc LƯU TỆP
+        1. Chọn số WebClip<br>
+        2. Nhập nội dung + URL icon<br>
+        3. Nhấn TẠO CONFIG<br>
+        4. <b>CÀI NGAY</b> = tự mở cài đặt | <b>LƯU TỆP</b> = tải file về máy
     </div>
 
     <div class="card">
@@ -505,8 +505,7 @@ button.save-btn small { font-size: 9px; opacity: 0.8; font-weight: 600; }
     'use strict';
 
     var $ = function(id) { return document.getElementById(id); };
-    var configFile = null;
-    var configBlobUrl = null;
+    var configData = null;
     var currentCount = 2;
     var MAX = 900000;
 
@@ -703,18 +702,53 @@ button.save-btn small { font-size: 9px; opacity: 0.8; font-weight: 600; }
                 var base64Html = btoa(unescape(encodeURIComponent(html)));
                 var dataUri = 'data:text/html;charset=utf-8;base64,' + base64Html;
 
-                var payloadTemplate = buildPayloadTemplate(dataUri, iconUrl, profileId);
                 var payloadParts = [];
+                var noRemoveStr = noRemove ? 'true' : 'false';
                 
                 for (var i = 0; i < currentCount; i++) {
                     var displayName = appName;
                     if (currentCount > 1) displayName = appName + ' ' + (i + 1);
                     
-                    payloadParts.push(payloadTemplate(displayName, i));
+                    var uuid = generateUUID();
+                    var iconXml = '';
+                    if (iconUrl && iconUrl.indexOf('http') === 0) {
+                        iconXml = '            <key>Icon</key>\n' +
+                                  '            <string>' + escapeXml(iconUrl) + '</string>\n';
+                    }
+                    
+                    payloadParts.push([
+                        '        <dict>',
+                        '            <key>FullScreen</key>',
+                        '            <true/>',
+                        '            <key>IgnoreManifestScope</key>',
+                        '            <false/>',
+                        '            <key>IsRemovable</key>',
+                        '            <true/>',
+                        '            <key>Label</key>',
+                        '            <string>' + escapeXml(displayName) + '</string>',
+                        '            <key>Precomposed</key>',
+                        '            <true/>',
+                        '            <key>PayloadDescription</key>',
+                        '            <string>' + escapeXml(displayName) + '</string>',
+                        '            <key>PayloadDisplayName</key>',
+                        '            <string>' + escapeXml(displayName) + '</string>',
+                        '            <key>PayloadIdentifier</key>',
+                        '            <string>' + escapeXml(profileId) + '.webclip.' + i + '</string>',
+                        '            <key>PayloadOrganization</key>',
+                        '            <string>MDUY</string>',
+                        '            <key>PayloadType</key>',
+                        '            <string>com.apple.webClip.managed</string>',
+                        '            <key>PayloadUUID</key>',
+                        '            <string>' + uuid + '</string>',
+                        '            <key>PayloadVersion</key>',
+                        '            <integer>1</integer>',
+                        '            <key>URL</key>',
+                        '            <string>' + escapeXml(dataUri) + '</string>',
+                        iconXml + '        </dict>'
+                    ].join('\n'));
                 }
 
                 var allPayloads = payloadParts.join('\n');
-                var noRemoveStr = noRemove ? 'true' : 'false';
 
                 var config = '<?xml version="1.0" encoding="UTF-8"?>\n' +
                     '<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">\n' +
@@ -731,18 +765,13 @@ button.save-btn small { font-size: 9px; opacity: 0.8; font-weight: 600; }
                     '    <key>PayloadVersion</key>\n    <integer>1</integer>\n' +
                     '</dict>\n</plist>';
 
-                if (configBlobUrl) URL.revokeObjectURL(configBlobUrl);
-                
-                var blob = new Blob([config], { type: 'application/x-apple-aspen-config' });
-                configBlobUrl = URL.createObjectURL(blob);
-                
-                configFile = {
+                configData = {
                     name: appName.replace(/\s+/g, '-').toLowerCase() + '-' + currentCount + 'icons.mobileconfig',
-                    blobUrl: configBlobUrl,
+                    content: config,
                     count: currentCount
                 };
 
-                var sizeKB = Math.round(blob.size / 1024);
+                var sizeKB = Math.round(config.length / 1024);
                 var sizeText = sizeKB < 1024 ? sizeKB + 'KB' : (sizeKB / 1024).toFixed(2) + 'MB';
                 
                 if (sizeKB > 10 * 1024) {
@@ -763,57 +792,24 @@ button.save-btn small { font-size: 9px; opacity: 0.8; font-weight: 600; }
         }, 100);
     };
 
-    function buildPayloadTemplate(url, icon, profileId) {
-        return function(name, idx) {
-            var uuid = generateUUID();
-            
-            var iconXml = '';
-            if (icon && icon.indexOf('http') === 0) {
-                iconXml = '            <key>Icon</key>\n' +
-                          '            <string>' + escapeXml(icon) + '</string>\n';
-            }
-
-            return [
-                '        <dict>',
-                '            <key>FullScreen</key>',
-                '            <true/>',
-                '            <key>IgnoreManifestScope</key>',
-                '            <false/>',
-                '            <key>IsRemovable</key>',
-                '            <true/>',
-                '            <key>Label</key>',
-                '            <string>' + escapeXml(name) + '</string>',
-                '            <key>Precomposed</key>',
-                '            <true/>',
-                '            <key>PayloadDescription</key>',
-                '            <string>' + escapeXml(name) + '</string>',
-                '            <key>PayloadDisplayName</key>',
-                '            <string>' + escapeXml(name) + '</string>',
-                '            <key>PayloadIdentifier</key>',
-                '            <string>' + escapeXml(profileId) + '.webclip.' + idx + '</string>',
-                '            <key>PayloadOrganization</key>',
-                '            <string>MDUY</string>',
-                '            <key>PayloadType</key>',
-                '            <string>com.apple.webClip.managed</string>',
-                '            <key>PayloadUUID</key>',
-                '            <string>' + uuid + '</string>',
-                '            <key>PayloadVersion</key>',
-                '            <integer>1</integer>',
-                '            <key>URL</key>',
-                '            <string>' + escapeXml(url) + '</string>',
-                iconXml + '        </dict>'
-            ].join('\n');
-        };
-    }
-
     $('install-btn').onclick = function() {
-        if (!configFile) return;
+        if (!configData) return;
+        
         try {
+            var base64 = btoa(unescape(encodeURIComponent(configData.content)));
+            var dataUri = 'data:application/x-apple-aspen-config;base64,' + base64;
+            
             if (isMobileSafari()) {
-                window.location.href = configFile.blobUrl;
+                window.location.href = dataUri;
                 setStatus('Đang mở cài đặt...', 'info');
             } else {
-                downloadConfig();
+                var a = document.createElement('a');
+                a.href = dataUri;
+                a.download = configData.name;
+                a.style.display = 'none';
+                document.body.appendChild(a);
+                a.click();
+                setTimeout(function() { document.body.removeChild(a); }, 100);
                 setStatus('Đã tải file. Mở file để cài đặt.', 'info');
             }
         } catch(err) {
@@ -822,19 +818,24 @@ button.save-btn small { font-size: 9px; opacity: 0.8; font-weight: 600; }
     };
 
     $('save-btn').onclick = function() {
-        if (!configFile) return;
-        downloadConfig();
-        setStatus('Đã lưu file ' + configFile.name, 'info');
+        if (!configData) return;
+        
+        try {
+            var base64 = btoa(unescape(encodeURIComponent(configData.content)));
+            var dataUri = 'data:application/x-apple-aspen-config;base64,' + base64;
+            
+            var a = document.createElement('a');
+            a.href = dataUri;
+            a.download = configData.name;
+            a.style.display = 'none';
+            document.body.appendChild(a);
+            a.click();
+            setTimeout(function() { document.body.removeChild(a); }, 100);
+            setStatus('Đã tải file ' + configData.name, 'info');
+        } catch(err) {
+            setStatus('Lỗi: ' + err.message, 'error');
+        }
     };
-
-    function downloadConfig() {
-        var a = document.createElement('a');
-        a.href = configFile.blobUrl;
-        a.download = configFile.name;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-    }
 
     function isMobileSafari() {
         var ua = navigator.userAgent;
@@ -847,9 +848,7 @@ button.save-btn small { font-size: 9px; opacity: 0.8; font-weight: 600; }
         el.className = 'status' + (type ? ' ' + type : '');
     }
 
-    var uuidCounter = 0;
     function generateUUID() {
-        uuidCounter++;
         return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
             var r = Math.random() * 16 | 0;
             var v = c === 'x' ? r : (r & 0x3 | 0x8);
