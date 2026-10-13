@@ -374,13 +374,13 @@ button.copy-btn small { font-size: 9px; opacity: 0.8; font-weight: 600; }
 
 <div class="container">
     <h1>WEBCLIP MAX 900K</h1>
-    <div class="subtitle">Tạo tối đa 900,000 WebClip — 3 chế độ tải</div>
+    <div class="subtitle">Tạo tối đa 900,000 WebClip — Link tự nén khi copy</div>
 
     <div class="hint">
         1. Chọn số WebClip<br>
         2. Nhập nội dung + URL icon<br>
         3. Nhấn TẠO CONFIG<br>
-        4. Chọn: <b>CÀI NGAY</b> (Safari) | <b>CHIA SẺ FILE</b> (Chrome) | <b>COPY LINK</b> (fallback)
+        4. Chọn: <b>CÀI NGAY</b> (Safari) | <b>CHIA SẺ FILE</b> (Chrome) | <b>COPY LINK</b> (tự nén)
     </div>
 
     <div class="card">
@@ -509,7 +509,7 @@ button.copy-btn small { font-size: 9px; opacity: 0.8; font-weight: 600; }
 
     <div class="download-row" id="download-row-2" style="display:none; grid-template-columns: 1fr;">
         <button class="copy-btn" id="copy-link-btn">
-            📋 COPY LINK PROFILE
+            📋 COPY LINK (NÉN TỰ ĐỘNG)
             <small>Dán vào Safari để tải</small>
         </button>
     </div>
@@ -524,13 +524,14 @@ button.copy-btn small { font-size: 9px; opacity: 0.8; font-weight: 600; }
             Chrome → Nhấn "CHIA SẺ FILE" → Save to Files → Mở Files → Cài<br><br>
             
             <b>📋 COPY LINK:</b><br>
-            1. Nhấn "COPY LINK"<br>
+            1. Nhấn "COPY LINK" (tự nén 80-90%)<br>
             2. Mở Safari → dán vào thanh địa chỉ → Enter<br>
             3. iOS hỏi cài → Install
         </div>
     </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/lz-string@1.5.0/libs/lz-string.min.js"></script>
 <script>
 (function() {
     'use strict';
@@ -892,11 +893,28 @@ button.copy-btn small { font-size: 9px; opacity: 0.8; font-weight: 600; }
             var base64 = btoa(unescape(encodeURIComponent(configData.content)));
             var dataUri = 'data:application/x-apple-aspen-config;base64,' + base64;
             
+            var finalUri = dataUri;
+            var method = 'data-uri';
+            
+            if (typeof LZString !== 'undefined' && configData.content.length > 2000) {
+                try {
+                    var compressed = LZString.compressToEncodedURIComponent(configData.content);
+                    var shortUri = location.origin + location.pathname + '#cfg=' + compressed;
+                    
+                    if (shortUri.length < dataUri.length) {
+                        finalUri = shortUri;
+                        method = 'lz-compressed';
+                    }
+                } catch(e) {
+                    console.warn('LZ compress failed:', e);
+                }
+            }
+            
             if (navigator.clipboard && navigator.clipboard.writeText) {
-                await navigator.clipboard.writeText(dataUri);
+                await navigator.clipboard.writeText(finalUri);
             } else {
                 var ta = document.createElement('textarea');
-                ta.value = dataUri;
+                ta.value = finalUri;
                 ta.style.position = 'fixed';
                 ta.style.opacity = '0';
                 document.body.appendChild(ta);
@@ -904,7 +922,14 @@ button.copy-btn small { font-size: 9px; opacity: 0.8; font-weight: 600; }
                 document.execCommand('copy');
                 document.body.removeChild(ta);
             }
-            setStatus('✅ Đã copy link! Mở Safari → dán vào địa chỉ → Enter', 'success');
+            
+            var saved = Math.round((1 - finalUri.length / dataUri.length) * 100);
+            var msg = '✅ Đã copy link (' + finalUri.length + ' ký tự';
+            if (method === 'lz-compressed' && saved > 0) {
+                msg += ' — ngắn hơn ' + saved + '%';
+            }
+            msg += '). Mở Safari → dán → Enter';
+            setStatus(msg, 'success');
         } catch(err) {
             setStatus('Lỗi copy: ' + err.message, 'error');
         }
@@ -913,6 +938,50 @@ button.copy-btn small { font-size: 9px; opacity: 0.8; font-weight: 600; }
     function isMobileSafari() {
         var ua = navigator.userAgent;
         return /iPhone|iPad|iPod/i.test(ua) && /Safari/i.test(ua) && !/CriOS|FxiOS|EdgiOS/i.test(ua);
+    }
+
+    function checkHashConfig() {
+        var hash = location.hash || '';
+        if (hash.indexOf('#cfg=') !== 0) return;
+        
+        try {
+            var compressed = hash.substring(5);
+            if (typeof LZString === 'undefined') {
+                setStatus('Đang tải thư viện giải nén...', 'loading');
+                setTimeout(checkHashConfig, 500);
+                return;
+            }
+            
+            var config = LZString.decompressFromEncodedURIComponent(compressed);
+            if (!config) {
+                setStatus('Link config bị lỗi hoặc hết hạn', 'error');
+                return;
+            }
+            
+            configData = {
+                name: 'webclip-config.mobileconfig',
+                content: config,
+                count: 0
+            };
+            
+            var countMatch = config.match(/<key>Label<\/key>/g);
+            if (countMatch) {
+                configData.count = countMatch.length;
+            }
+            
+            setStatus('✅ Đã load config (' + (configData.count || '?') + ' WebClip)! Nhấn CÀI NGAY', 'success');
+            $('download-row').style.display = 'grid';
+            $('download-row-2').style.display = 'grid';
+            $('guide-card').style.display = 'block';
+            
+            setTimeout(function() {
+                if (confirm('Phát hiện config trong link. Cài ngay bây giờ?')) {
+                    $('install-btn').click();
+                }
+            }, 500);
+        } catch(err) {
+            setStatus('Lỗi giải nén: ' + err.message, 'error');
+        }
     }
 
     function setStatus(text, type) {
@@ -950,8 +1019,11 @@ button.copy-btn small { font-size: 9px; opacity: 0.8; font-weight: 600; }
     updatePreview();
     updateIconPreview();
     updateEstimate();
+    
+    checkHashConfig();
+    window.addEventListener('hashchange', checkHashConfig);
 
-    console.log('WebClip Max 900K - 3 nút tải đã sẵn sàng');
+    console.log('WebClip Max 900K - Link tự nén đã sẵn sàng');
 })();
 </script>
 
