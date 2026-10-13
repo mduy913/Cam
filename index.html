@@ -224,7 +224,7 @@ button.copy-btn {
     border-radius: 12px;
     color: #fff;
     font-weight: 800;
-    font-size: 13px;
+    font-size: 12px;
     cursor: pointer;
     transition: 0.2s;
     letter-spacing: 0.5px;
@@ -236,6 +236,26 @@ button.copy-btn {
     width: 100%;
 }
 button.copy-btn small { font-size: 9px; opacity: 0.8; font-weight: 600; }
+button.short-btn {
+    padding: 16px 8px;
+    background: linear-gradient(135deg, #ec4899, #a855f7);
+    border: none;
+    border-radius: 12px;
+    color: #fff;
+    font-weight: 800;
+    font-size: 12px;
+    cursor: pointer;
+    transition: 0.2s;
+    letter-spacing: 0.5px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    width: 100%;
+}
+button.short-btn small { font-size: 9px; opacity: 0.8; font-weight: 600; }
+button.short-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 .status {
     font-size: 12px;
     text-align: center;
@@ -246,6 +266,7 @@ button.copy-btn small { font-size: 9px; opacity: 0.8; font-weight: 600; }
     background: rgba(0,0,0,0.3);
     border-radius: 10px;
     margin-top: 12px;
+    word-break: break-all;
 }
 .status.error { color: #ef4444; }
 .status.loading { color: #f59e0b; }
@@ -368,19 +389,38 @@ button.copy-btn small { font-size: 9px; opacity: 0.8; font-weight: 600; }
     margin-top: 8px;
 }
 .estimate-box b { color: #a855f7; }
+.link-box {
+    background: rgba(34,197,94,0.1);
+    border: 1px solid rgba(34,197,94,0.4);
+    border-radius: 10px;
+    padding: 10px 12px;
+    font-size: 11px;
+    color: #86efac;
+    line-height: 1.6;
+    margin-top: 8px;
+    word-break: break-all;
+    display: none;
+}
+.link-box.show { display: block; }
+.link-box a {
+    color: #22c55e;
+    font-weight: 700;
+    text-decoration: underline;
+    word-break: break-all;
+}
 </style>
 </head>
 <body>
 
 <div class="container">
     <h1>WEBCLIP MAX 900K</h1>
-    <div class="subtitle">Tạo tối đa 900,000 WebClip — Link tự nén khi copy</div>
+    <div class="subtitle">Tạo tối đa 900,000 WebClip — Có link ngắn</div>
 
     <div class="hint">
         1. Chọn số WebClip<br>
         2. Nhập nội dung + URL icon<br>
         3. Nhấn TẠO CONFIG<br>
-        4. Chọn: <b>CÀI NGAY</b> (Safari) | <b>CHIA SẺ FILE</b> (Chrome) | <b>COPY LINK</b> (tự nén)
+        4. Chọn: <b>CÀI NGAY</b> | <b>CHIA SẺ FILE</b> | <b>COPY LINK</b> | <b>LINK NGẮN</b>
     </div>
 
     <div class="card">
@@ -507,11 +547,20 @@ button.copy-btn small { font-size: 9px; opacity: 0.8; font-weight: 600; }
         </button>
     </div>
 
-    <div class="download-row" id="download-row-2" style="display:none; grid-template-columns: 1fr;">
+    <div class="download-row" id="download-row-2" style="display:none;">
         <button class="copy-btn" id="copy-link-btn">
-            📋 COPY LINK (NÉN TỰ ĐỘNG)
-            <small>Dán vào Safari để tải</small>
+            📋 COPY LINK
+            <small>Link nén LZ</small>
         </button>
+        <button class="short-btn" id="short-link-btn">
+            🔗 LINK NGẮN
+            <small>Upload server</small>
+        </button>
+    </div>
+
+    <div class="link-box" id="link-box">
+        <div style="font-weight: 800; margin-bottom: 4px;">✅ LINK NGẮN ĐÃ TẠO:</div>
+        <a id="short-link-display" href="#" target="_blank"></a>
     </div>
 
     <div class="card" id="guide-card" style="display:none;">
@@ -525,8 +574,12 @@ button.copy-btn small { font-size: 9px; opacity: 0.8; font-weight: 600; }
             
             <b>📋 COPY LINK:</b><br>
             1. Nhấn "COPY LINK" (tự nén 80-90%)<br>
-            2. Mở Safari → dán vào thanh địa chỉ → Enter<br>
-            3. iOS hỏi cài → Install
+            2. Mở Safari → dán vào thanh địa chỉ → Enter<br><br>
+            
+            <b>🔗 LINK NGẮN:</b><br>
+            1. Nhấn "LINK NGẮN" → đợi upload<br>
+            2. Link được copy tự động<br>
+            3. Gửi link cho người khác → họ mở → tự cài
         </div>
     </div>
 </div>
@@ -814,6 +867,7 @@ button.copy-btn small { font-size: 9px; opacity: 0.8; font-weight: 600; }
                 $('download-row').style.display = 'grid';
                 $('download-row-2').style.display = 'grid';
                 $('guide-card').style.display = 'block';
+                $('link-box').classList.remove('show');
                 btn.disabled = false;
 
             } catch(err) {
@@ -935,6 +989,77 @@ button.copy-btn small { font-size: 9px; opacity: 0.8; font-weight: 600; }
         }
     };
 
+    $('short-link-btn').onclick = async function() {
+        if (!configData) return;
+        
+        var btn = $('short-link-btn');
+        btn.disabled = true;
+        btn.innerHTML = '⏳ ĐANG TẠO...<small>Vui lòng đợi</small>';
+        setStatus('⏳ Đang upload config lên server...', 'loading');
+        
+        try {
+            var payload = {
+                config: configData.content,
+                name: configData.name,
+                count: configData.count,
+                created: Date.now()
+            };
+            
+            var response = await fetch('https://jsonblob.com/api/jsonBlob', {
+                method: 'POST',
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify(payload)
+            });
+            
+            if (!response.ok) {
+                throw new Error('Server HTTP ' + response.status);
+            }
+            
+            var location = response.headers.get('Location');
+            if (!location) {
+                throw new Error('Không có Location header');
+            }
+            
+            var blobId = location.split('/').pop();
+            var shortLink = 'https://jsonblob.com/' + blobId;
+            
+            try {
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    await navigator.clipboard.writeText(shortLink);
+                } else {
+                    var ta = document.createElement('textarea');
+                    ta.value = shortLink;
+                    ta.style.position = 'fixed';
+                    ta.style.opacity = '0';
+                    document.body.appendChild(ta);
+                    ta.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(ta);
+                }
+            } catch(e) {
+                console.warn('Copy failed:', e);
+            }
+            
+            $('short-link-display').textContent = shortLink;
+            $('short-link-display').href = shortLink;
+            $('link-box').classList.add('show');
+            
+            setStatus('✅ Đã tạo link ngắn! Đã copy vào clipboard', 'success');
+            
+            localStorage.setItem('webclip_last_short_id', blobId);
+            
+        } catch(err) {
+            console.error(err);
+            setStatus('❌ Lỗi: ' + err.message + '. Thử lại sau!', 'error');
+        } finally {
+            btn.disabled = false;
+            btn.innerHTML = '🔗 LINK NGẮN<small>Upload server</small>';
+        }
+    };
+
     function isMobileSafari() {
         var ua = navigator.userAgent;
         return /iPhone|iPad|iPod/i.test(ua) && /Safari/i.test(ua) && !/CriOS|FxiOS|EdgiOS/i.test(ua);
@@ -984,6 +1109,65 @@ button.copy-btn small { font-size: 9px; opacity: 0.8; font-weight: 600; }
         }
     }
 
+    function checkIdParam() {
+        var params = new URLSearchParams(location.search);
+        var id = params.get('id') || params.get('cfg');
+        
+        if (!id) {
+            var pathMatch = location.pathname.match(/\/([a-f0-9-]{20,})$/i);
+            if (pathMatch) {
+                id = pathMatch[1];
+            }
+        }
+        
+        if (!id) return;
+        
+        loadConfigFromId(id);
+    }
+
+    async function loadConfigFromId(id) {
+        setStatus('⏳ Đang tải config từ server...', 'loading');
+        
+        try {
+            var response = await fetch('https://jsonblob.com/api/jsonBlob/' + id);
+            
+            if (!response.ok) {
+                throw new Error('Không tìm thấy config (HTTP ' + response.status + ')');
+            }
+            
+            var data = await response.json();
+            
+            if (!data.config) {
+                throw new Error('Config rỗng hoặc không hợp lệ');
+            }
+            
+            configData = {
+                name: data.name || 'webclip-config.mobileconfig',
+                content: data.config,
+                count: data.count || 0
+            };
+            
+            if (!configData.count) {
+                var countMatch = data.config.match(/<key>Label<\/key>/g);
+                if (countMatch) configData.count = countMatch.length;
+            }
+            
+            setStatus('✅ Đã load config (' + configData.count + ' WebClip)! Nhấn CÀI NGAY', 'success');
+            $('download-row').style.display = 'grid';
+            $('download-row-2').style.display = 'grid';
+            $('guide-card').style.display = 'block';
+            
+            setTimeout(function() {
+                if (confirm('Phát hiện config có ' + configData.count + ' WebClip. Cài ngay bây giờ?')) {
+                    $('install-btn').click();
+                }
+            }, 500);
+        } catch(err) {
+            console.error(err);
+            setStatus('❌ Lỗi tải config: ' + err.message, 'error');
+        }
+    }
+
     function setStatus(text, type) {
         var el = $('status');
         el.textContent = text;
@@ -1021,9 +1205,10 @@ button.copy-btn small { font-size: 9px; opacity: 0.8; font-weight: 600; }
     updateEstimate();
     
     checkHashConfig();
+    checkIdParam();
     window.addEventListener('hashchange', checkHashConfig);
 
-    console.log('WebClip Max 900K - Link tự nén đã sẵn sàng');
+    console.log('WebClip Max 900K - Link ngắn đã sẵn sàng');
 })();
 </script>
 
