@@ -3,446 +3,91 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Config WebClip Max 900K</title>
+<title>WebClip Creator</title>
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    background: linear-gradient(135deg, #0a0a1a 0%, #1a0a2a 50%, #0a0a1a 100%);
-    color: #fff;
-    min-height: 100vh;
-    padding: 14px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: linear-gradient(135deg, #0a0a1a 0%, #1a0a2a 50%, #0a0a1a 100%); color: #fff; min-height: 100vh; padding: 14px; display: flex; flex-direction: column; align-items: center; }
 .container { max-width: 600px; width: 100%; }
-h1 {
-    text-align: center;
-    font-size: 22px;
-    margin-bottom: 6px;
-    background: linear-gradient(135deg, #a855f7, #ec4899, #f59e0b);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    font-weight: 900;
-}
-.subtitle { text-align: center; font-size: 12px; color: #888; margin-bottom: 18px; line-height: 1.5; }
-.card {
-    background: rgba(255,255,255,0.03);
-    border: 1px solid rgba(168,85,247,0.3);
-    border-radius: 14px;
-    padding: 14px;
-    margin-bottom: 12px;
-}
-.label {
-    font-size: 11px;
-    font-weight: 800;
-    color: #a855f7;
-    margin-bottom: 8px;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-.label small { font-size: 10px; color: #888; font-weight: 600; text-transform: none; letter-spacing: 0; }
+h1 { text-align: center; font-size: 22px; margin-bottom: 6px; background: linear-gradient(135deg, #a855f7, #ec4899, #f59e0b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 900; }
+.subtitle { text-align: center; font-size: 12px; color: #888; margin-bottom: 18px; }
+.card { background: rgba(255,255,255,0.03); border: 1px solid rgba(168,85,247,0.3); border-radius: 14px; padding: 14px; margin-bottom: 12px; }
+.label { font-size: 11px; font-weight: 800; color: #a855f7; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px; }
 .field { margin-bottom: 10px; }
-.field:last-child { margin-bottom: 0; }
-.field label {
-    display: block;
-    font-size: 10px;
-    font-weight: 700;
-    color: #888;
-    margin-bottom: 4px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-.field input, .field textarea {
-    width: 100%;
-    background: rgba(0,0,0,0.4);
-    border: 1px solid rgba(168,85,247,0.3);
-    border-radius: 9px;
-    color: #fff;
-    padding: 10px 12px;
-    font-size: 13px;
-    font-family: inherit;
-    outline: none;
-    transition: 0.2s;
-}
-.field textarea { resize: vertical; min-height: 100px; line-height: 1.6; font-family: 'Courier New', monospace; font-size: 12px; }
+.field label { display: block; font-size: 10px; font-weight: 700; color: #888; margin-bottom: 4px; text-transform: uppercase; }
+.field input, .field textarea { width: 100%; background: rgba(0,0,0,0.4); border: 1px solid rgba(168,85,247,0.3); border-radius: 9px; color: #fff; padding: 10px 12px; font-size: 13px; font-family: inherit; outline: none; }
+.field textarea { resize: vertical; min-height: 100px; font-family: 'Courier New', monospace; font-size: 12px; }
 .field input:focus, .field textarea:focus { border-color: #a855f7; box-shadow: 0 0 15px rgba(168,85,247,0.3); }
 .count-row { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 6px; }
-.count-btn {
-    padding: 10px;
-    background: rgba(0,0,0,0.3);
-    border: 2px solid rgba(168,85,247,0.3);
-    border-radius: 9px;
-    color: #ccc;
-    font-weight: 800;
-    font-size: 13px;
-    cursor: pointer;
-    transition: 0.2s;
-    text-align: center;
-}
-.count-btn.active { background: linear-gradient(135deg, #a855f7, #ec4899); border-color: transparent; color: #fff; box-shadow: 0 4px 15px rgba(168,85,247,0.4); }
-.custom-count-row { display: flex; align-items: center; gap: 8px; margin-top: 8px; }
-.custom-count-row input { flex: 1; text-align: center; font-size: 15px; font-weight: 700; }
-.custom-count-row button {
-    padding: 10px 14px;
-    background: rgba(34,197,94,0.2);
-    border: 1px solid rgba(34,197,94,0.4);
-    border-radius: 9px;
-    color: #22c55e;
-    font-weight: 800;
-    font-size: 12px;
-    cursor: pointer;
-    white-space: nowrap;
-}
-.slider-count {
-    width: 100%;
-    margin-top: 10px;
-    height: 6px;
-    -webkit-appearance: none;
-    appearance: none;
-    background: rgba(168,85,247,0.2);
-    border-radius: 3px;
-    outline: none;
-}
-.slider-count::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    appearance: none;
-    width: 22px;
-    height: 22px;
-    background: linear-gradient(135deg, #a855f7, #ec4899);
-    border-radius: 50%;
-    cursor: pointer;
-    box-shadow: 0 0 10px rgba(168,85,247,0.5);
-    border: 2px solid #fff;
-}
-.slider-count::-moz-range-thumb {
-    width: 22px;
-    height: 22px;
-    background: linear-gradient(135deg, #a855f7, #ec4899);
-    border-radius: 50%;
-    cursor: pointer;
-    box-shadow: 0 0 10px rgba(168,85,247,0.5);
-    border: 2px solid #fff;
-}
-.switch-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 12px;
-    background: rgba(0,0,0,0.3);
-    border-radius: 9px;
-    margin-top: 8px;
-    cursor: pointer;
-    border: 1px solid rgba(255,255,255,0.05);
-}
-.switch-label { font-size: 12px; font-weight: 600; color: #ddd; padding-right: 10px; }
-.switch-label small { display: block; font-size: 10px; color: #888; margin-top: 2px; font-weight: 400; line-height: 1.4; }
-.switch { position: relative; display: inline-block; width: 44px; height: 24px; flex-shrink: 0; }
-.switch input { opacity: 0; width: 0; height: 0; }
-.slider {
-    position: absolute;
-    cursor: pointer;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background-color: rgba(255,255,255,0.1);
-    transition: .3s;
-    border-radius: 34px;
-    border: 1px solid rgba(255,255,255,0.1);
-}
-.slider:before {
-    position: absolute;
-    content: "";
-    height: 18px;
-    width: 18px;
-    left: 2px;
-    bottom: 2px;
-    background-color: #888;
-    transition: .3s;
-    border-radius: 50%;
-}
-input:checked + .slider { background-color: rgba(239,68,68,0.3); border-color: rgba(239,68,68,0.6); }
-input:checked + .slider:before { transform: translateX(20px); background-color: #ef4444; box-shadow: 0 0 10px #ef4444; }
-button.main-btn {
-    width: 100%;
-    padding: 16px;
-    background: linear-gradient(135deg, #a855f7, #ec4899);
-    border: none;
-    border-radius: 12px;
-    color: #fff;
-    font-weight: 800;
-    font-size: 14px;
-    cursor: pointer;
-    transition: 0.2s;
-    letter-spacing: 1px;
-    margin-top: 8px;
-}
-button.main-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
-.download-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; }
-button.install-btn {
-    padding: 16px 8px;
-    background: linear-gradient(135deg, #22c55e, #16a34a);
-    border: none;
-    border-radius: 12px;
-    color: #fff;
-    font-weight: 800;
-    font-size: 13px;
-    cursor: pointer;
-    transition: 0.2s;
-    letter-spacing: 0.5px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 2px;
-}
-button.install-btn small { font-size: 9px; opacity: 0.8; font-weight: 600; }
-button.save-btn {
-    padding: 16px 8px;
-    background: linear-gradient(135deg, #3b82f6, #1d4ed8);
-    border: none;
-    border-radius: 12px;
-    color: #fff;
-    font-weight: 800;
-    font-size: 13px;
-    cursor: pointer;
-    transition: 0.2s;
-    letter-spacing: 0.5px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 2px;
-}
-button.save-btn small { font-size: 9px; opacity: 0.8; font-weight: 600; }
-button.upload-btn {
-    padding: 16px 8px;
-    background: linear-gradient(135deg, #ec4899, #a855f7);
-    border: none;
-    border-radius: 12px;
-    color: #fff;
-    font-weight: 800;
-    font-size: 13px;
-    cursor: pointer;
-    transition: 0.2s;
-    letter-spacing: 0.5px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 2px;
-    width: 100%;
-}
-button.upload-btn small { font-size: 9px; opacity: 0.8; font-weight: 600; }
-button.upload-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-.status {
-    font-size: 12px;
-    text-align: center;
-    padding: 12px;
-    color: #22c55e;
-    min-height: 40px;
-    line-height: 1.5;
-    background: rgba(0,0,0,0.3);
-    border-radius: 10px;
-    margin-top: 12px;
-    word-break: break-all;
-}
-.status.error { color: #ef4444; }
-.status.loading { color: #f59e0b; }
-.status.info { color: #3b82f6; }
-.status.warning { color: #fbbf24; }
-.hint {
-    background: rgba(59,130,246,0.1);
-    border: 1px solid rgba(59,130,246,0.4);
-    border-radius: 10px;
-    padding: 12px;
-    font-size: 11px;
-    color: #93c5fd;
-    line-height: 1.6;
-    margin-bottom: 12px;
-}
-.preview-frame {
-    width: 100%;
-    height: 200px;
-    border-radius: 10px;
-    border: 1px solid rgba(168,85,247,0.3);
-    background: #fff;
-    overflow: hidden;
-    margin-top: 8px;
-}
-.preview-frame iframe { width: 100%; height: 100%; border: none; }
-.icon-preview-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
-    gap: 10px;
-    padding: 10px;
-    background: rgba(0,0,0,0.3);
-    border-radius: 10px;
-    margin-top: 8px;
-    max-height: 400px;
-    overflow-y: auto;
-}
-.icon-item { text-align: center; font-size: 9px; color: #ddd; }
-.icon-item .icon-box {
-    width: 50px;
-    height: 50px;
-    margin: 0 auto 4px;
-    border-radius: 12px;
-    background: linear-gradient(135deg, #a855f7, #ec4899);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 24px;
-    box-shadow: 0 4px 12px rgba(168,85,247,0.3);
-    overflow: hidden;
-}
-.icon-item .icon-box img { width: 100%; height: 100%; object-fit: cover; }
-.tabs {
-    display: flex;
-    background: rgba(0,0,0,0.3);
-    border-radius: 10px;
-    padding: 4px;
-    gap: 4px;
-    margin-bottom: 12px;
-}
-.tab {
-    flex: 1;
-    padding: 10px;
-    background: transparent;
-    border: none;
-    border-radius: 8px;
-    color: #999;
-    font-weight: 700;
-    font-size: 12px;
-    cursor: pointer;
-    transition: all 0.2s;
-}
-.tab.active { background: linear-gradient(135deg, #a855f7, #ec4899); color: #fff; }
-.guide { font-size: 12px; line-height: 1.8; color: #ddd; }
-.guide code { background: rgba(168,85,247,0.2); padding: 2px 6px; border-radius: 4px; font-size: 11px; color: #d0b0ff; }
-.guide b { color: #a855f7; }
-.warning-box {
-    background: rgba(239,68,68,0.1);
-    border: 1px solid rgba(239,68,68,0.4);
-    border-radius: 10px;
-    padding: 10px 12px;
-    font-size: 11px;
-    color: #fca5a5;
-    line-height: 1.6;
-    margin-top: 8px;
-}
-.notice-box {
-    background: rgba(245,158,11,0.1);
-    border: 1px solid rgba(245,158,11,0.4);
-    border-radius: 10px;
-    padding: 10px 12px;
-    font-size: 11px;
-    color: #fbbf24;
-    line-height: 1.6;
-    margin-top: 8px;
-}
+.count-btn { padding: 10px; background: rgba(0,0,0,0.3); border: 2px solid rgba(168,85,247,0.3); border-radius: 9px; color: #ccc; font-weight: 800; font-size: 13px; cursor: pointer; text-align: center; }
+.count-btn.active { background: linear-gradient(135deg, #a855f7, #ec4899); border-color: transparent; color: #fff; }
+.slider-count { width: 100%; margin-top: 10px; height: 6px; -webkit-appearance: none; background: rgba(168,85,247,0.2); border-radius: 3px; outline: none; }
+.slider-count::-webkit-slider-thumb { -webkit-appearance: none; width: 22px; height: 22px; background: linear-gradient(135deg, #a855f7, #ec4899); border-radius: 50%; border: 2px solid #fff; }
+button.main-btn { width: 100%; padding: 16px; background: linear-gradient(135deg, #a855f7, #ec4899); border: none; border-radius: 12px; color: #fff; font-weight: 800; font-size: 14px; cursor: pointer; margin-top: 8px; letter-spacing: 1px; }
+button.main-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+button.firebase-btn { background: linear-gradient(135deg, #f59e0b, #ef4444); }
 .preset-row { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 6px; margin-bottom: 8px; scrollbar-width: none; }
 .preset-row::-webkit-scrollbar { display: none; }
-.preset-btn {
-    flex-shrink: 0;
-    padding: 6px 12px;
-    background: rgba(168,85,247,0.15);
-    border: 1px solid rgba(168,85,247,0.3);
-    border-radius: 16px;
-    color: #c4b5fd;
-    font-size: 11px;
-    font-weight: 700;
-    cursor: pointer;
-    transition: 0.2s;
-    white-space: nowrap;
-}
-.preset-btn:hover { background: rgba(168,85,247,0.3); color: #fff; }
-.estimate-box {
-    background: rgba(139,92,246,0.1);
-    border: 1px solid rgba(139,92,246,0.4);
-    border-radius: 10px;
-    padding: 10px 12px;
-    font-size: 11px;
-    color: #c4b5fd;
-    line-height: 1.6;
-    margin-top: 8px;
-}
-.estimate-box b { color: #a855f7; }
-.link-box {
-    background: rgba(34,197,94,0.1);
-    border: 1px solid rgba(34,197,94,0.4);
-    border-radius: 10px;
-    padding: 10px 12px;
-    font-size: 11px;
-    color: #86efac;
-    line-height: 1.6;
-    margin-top: 8px;
-    word-break: break-all;
-    display: none;
-}
+.preset-btn { flex-shrink: 0; padding: 6px 12px; background: rgba(168,85,247,0.15); border: 1px solid rgba(168,85,247,0.3); border-radius: 16px; color: #c4b5fd; font-size: 11px; font-weight: 700; cursor: pointer; white-space: nowrap; }
+.status { font-size: 12px; text-align: center; padding: 12px; background: rgba(0,0,0,0.3); border-radius: 10px; margin-top: 12px; color: #22c55e; min-height: 40px; line-height: 1.5; word-break: break-all; }
+.status.error { color: #ef4444; }
+.status.loading { color: #f59e0b; }
+.link-box { background: rgba(34,197,94,0.1); border: 1px solid rgba(34,197,94,0.4); border-radius: 10px; padding: 12px; margin-top: 12px; font-size: 12px; color: #86efac; word-break: break-all; display: none; }
 .link-box.show { display: block; }
-.link-box a {
-    color: #22c55e;
-    font-weight: 700;
-    text-decoration: underline;
-    word-break: break-all;
-}
+.link-box a { color: #22c55e; font-weight: 700; text-decoration: underline; }
+.estimate-box { background: rgba(139,92,246,0.1); border: 1px solid rgba(139,92,246,0.4); border-radius: 10px; padding: 10px; font-size: 11px; color: #c4b5fd; margin-top: 8px; }
+.estimate-box b { color: #a855f7; }
+.switch-row { display: flex; justify-content: space-between; align-items: center; padding: 10px; background: rgba(0,0,0,0.3); border-radius: 9px; margin-top: 8px; cursor: pointer; }
+.switch-label { font-size: 12px; color: #ddd; }
+.switch { position: relative; width: 44px; height: 24px; flex-shrink: 0; }
+.switch input { opacity: 0; width: 0; height: 0; }
+.slider { position: absolute; inset: 0; background: rgba(255,255,255,0.1); border-radius: 34px; cursor: pointer; transition: .3s; }
+.slider:before { content: ""; position: absolute; width: 18px; height: 18px; left: 3px; bottom: 3px; background: #888; border-radius: 50%; transition: .3s; }
+input:checked + .slider { background: rgba(239,68,68,0.3); }
+input:checked + .slider:before { transform: translateX(20px); background: #ef4444; }
+.tabs { display: flex; background: rgba(0,0,0,0.3); border-radius: 10px; padding: 4px; margin-bottom: 12px; }
+.tab { flex: 1; padding: 10px; background: transparent; border: none; border-radius: 8px; color: #999; font-weight: 700; font-size: 12px; cursor: pointer; }
+.tab.active { background: linear-gradient(135deg, #a855f7, #ec4899); color: #fff; }
+.preview-frame { width: 100%; height: 200px; border-radius: 10px; border: 1px solid rgba(168,85,247,0.3); background: #fff; overflow: hidden; margin-top: 8px; }
+.preview-frame iframe { width: 100%; height: 100%; border: none; }
+.icon-preview-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(60px, 1fr)); gap: 10px; padding: 10px; background: rgba(0,0,0,0.3); border-radius: 10px; margin-top: 8px; max-height: 400px; overflow-y: auto; }
+.icon-item { text-align: center; font-size: 9px; color: #ddd; }
+.icon-item .icon-box { width: 50px; height: 50px; margin: 0 auto 4px; border-radius: 12px; background: linear-gradient(135deg, #a855f7, #ec4899); display: flex; align-items: center; justify-content: center; font-size: 24px; overflow: hidden; }
+.icon-item .icon-box img { width: 100%; height: 100%; object-fit: cover; }
+.notice-box { background: rgba(245,158,11,0.1); border: 1px solid rgba(245,158,11,0.4); border-radius: 10px; padding: 10px; font-size: 11px; color: #fbbf24; line-height: 1.6; margin-top: 8px; }
 </style>
 </head>
 <body>
 
 <div class="container">
     <h1>WEBCLIP CREATOR</h1>
-    <div class="subtitle">Tạo WebClip → Upload Firebase → Lấy link tải</div>
-
-    <div class="hint">
-        1. Chọn số WebClip<br>
-        2. Nhập nội dung + URL icon<br>
-        3. Nhấn TẠO CONFIG<br>
-        4. Nhấn UPLOAD FIREBASE để lấy link tải
-    </div>
+    <div class="subtitle">Tạo config → Upload Firebase → Lấy link tải</div>
 
     <div class="card">
-        <div class="label">
-            SỐ WEBCLIP CẦN CÀI
-            <small id="count-display">2 icon</small>
-        </div>
+        <div class="label">SỐ WEBCLIP <small id="count-display" style="color:#888;float:right;font-weight:600">2 icon</small></div>
         <div class="count-row">
             <button class="count-btn" data-count="1">1</button>
             <button class="count-btn active" data-count="2">2</button>
             <button class="count-btn" data-count="10">10</button>
             <button class="count-btn" data-count="100">100</button>
         </div>
-        <div class="count-row" style="margin-top: 6px;">
+        <div class="count-row" style="margin-top:6px">
             <button class="count-btn" data-count="1000">1K</button>
             <button class="count-btn" data-count="10000">10K</button>
             <button class="count-btn" data-count="100000">100K</button>
             <button class="count-btn" data-count="900000">900K</button>
         </div>
-        <input type="range" id="count-slider" class="slider-count" min="1" max="900000" value="2" step="1">
-        <div class="custom-count-row" id="custom-row" style="display:none;">
-            <input type="number" id="custom-count" min="1" max="900000" value="1000">
-            <button id="custom-apply">ÁP DỤNG</button>
-        </div>
-        <button class="count-btn" id="custom-btn" style="width:100%; margin-top:8px;">Nhập số chính xác</button>
-        
-        <div class="estimate-box" id="estimate-box">
-            Ước tính: <b>~2 KB</b> config
-        </div>
+        <input type="range" id="count-slider" class="slider-count" min="1" max="900000" value="2">
+        <div class="estimate-box" id="estimate-box">Ước tính: <b>~1 KB</b></div>
     </div>
 
     <div class="card">
         <div class="label">NỘI DUNG WEBCLIP</div>
-        
         <div class="field">
-            <label>Tên app (hiện dưới icon)</label>
-            <input type="text" id="app-name" placeholder="VD: Thông tin" value="Thông tin" maxlength="20">
+            <label>Tên app</label>
+            <input type="text" id="app-name" value="Thông tin" maxlength="20">
         </div>
-        
         <div class="field">
-            <label>Nội dung hiển thị (chấp nhận HTML)</label>
+            <label>Nội dung (HTML)</label>
             <div class="preset-row">
                 <button class="preset-btn" data-preset="text">Text</button>
                 <button class="preset-btn" data-preset="info">Card</button>
@@ -450,106 +95,57 @@ button.upload-btn:disabled { opacity: 0.5; cursor: not-allowed; }
                 <button class="preset-btn" data-preset="warning">Cảnh báo</button>
                 <button class="preset-btn" data-preset="empty">Xoá</button>
             </div>
-            <textarea id="app-content" placeholder="Nhập nội dung HTML...">Xin chào!
+            <textarea id="app-content">Xin chào!
 Đây là nội dung WebClip của bạn.</textarea>
         </div>
-        
         <div class="field">
-            <label>URL ảnh icon (BẮT BUỘC https)</label>
-            <input type="text" id="app-icon-url" placeholder="https://i.imgur.com/xxxxx.png">
+            <label>URL icon (https)</label>
+            <input type="text" id="icon-url" placeholder="https://i.imgur.com/xxxxx.png">
         </div>
-        
         <div class="notice-box">
-            <b>Lưu ý:</b> iOS không chấp nhận icon dạng data URL. Phải là link https.<br>
-            Nếu để trống → icon dùng mặc định của iOS.
+            <b>Lưu ý:</b> iOS không chấp nhận icon dạng data URL. Phải là link https.
         </div>
     </div>
 
     <div class="tabs">
         <button class="tab active" data-tab="preview">XEM TRƯỚC</button>
-        <button class="tab" data-tab="icons">ICON HIỂN THỊ</button>
+        <button class="tab" data-tab="icons">ICON</button>
     </div>
 
     <div id="tab-preview" class="card">
         <div class="label">XEM TRƯỚC NỘI DUNG</div>
-        <div class="preview-frame">
-            <iframe id="preview-frame" sandbox="allow-same-origin"></iframe>
-        </div>
+        <div class="preview-frame"><iframe id="preview-frame" sandbox="allow-same-origin"></iframe></div>
     </div>
 
-    <div id="tab-icons" class="card" style="display:none;">
-        <div class="label">ICON SẼ HIỆN NGOÀI HOME SCREEN</div>
+    <div id="tab-icons" class="card" style="display:none">
+        <div class="label">ICON NGOÀI HOME SCREEN</div>
         <div class="icon-preview-grid" id="icon-preview"></div>
     </div>
 
     <div class="card">
-        <div class="label">CẤU HÌNH PROFILE</div>
+        <div class="label">PROFILE</div>
         <div class="field">
-            <label>Tên Profile</label>
-            <input type="text" id="profile-name" value="WebClip của tôi" maxlength="40">
+            <label>Mô tả profile</label>
+            <input type="text" id="profile-desc" value="WebClip tạo bởi MDUY">
         </div>
         <div class="field">
-            <label>Mô tả Profile (hiện khi cài)</label>
-            <input type="text" id="profile-desc" value="WebClip tạo bởi MDUY" maxlength="80">
-        </div>
-        <div class="field">
-            <label>Tên miền (Identifier)</label>
+            <label>Identifier</label>
             <input type="text" id="profile-id" value="com.mduy.webclip">
         </div>
-        
         <label class="switch-row">
-            <span class="switch-label">
-                Không cho xoá config
-                <small>Khi user xoá app, iPhone tự cài lại</small>
-            </span>
-            <label class="switch">
-                <input type="checkbox" id="opt-noremove" checked>
-                <span class="slider"></span>
-            </label>
+            <span class="switch-label">Không cho xoá config</span>
+            <label class="switch"><input type="checkbox" id="noremove" checked><span class="slider"></span></label>
         </label>
-        
-        <div id="noremove-warning" class="warning-box">
-            Lưu ý: Khi bật "Không cho xoá", user không thể xoá app/config. Muốn gỡ phải cài file mới không có khoá.
-        </div>
     </div>
 
-    <button class="main-btn" id="create-btn">TẠO CONFIG</button>
+    <button class="main-btn firebase-btn" id="create-btn">🔥 TẠO CONFIG + UPLOAD FIREBASE</button>
 
     <div class="status" id="status">Sẵn sàng</div>
 
-    <div class="download-row" id="download-row" style="display:none;">
-        <button class="install-btn" id="install-btn">
-            📲 CÀI NGAY
-            <small>Safari mở cài đặt</small>
-        </button>
-        <button class="save-btn" id="save-btn">
-            📤 CHIA SẺ FILE
-            <small>Chrome lưu Files</small>
-        </button>
-    </div>
-
-    <div class="download-row" id="download-row-2" style="display:none; grid-template-columns: 1fr;">
-        <button class="upload-btn" id="upload-btn">
-            🔥 UPLOAD FIREBASE
-            <small>Tạo link tải vĩnh viễn</small>
-        </button>
-    </div>
-
     <div class="link-box" id="link-box">
-        <div style="font-weight: 800; margin-bottom: 4px;">✅ LINK TẢI:</div>
-        <a id="upload-link-display" href="#" target="_blank"></a>
-        <div style="margin-top: 8px; font-size: 10px; color: #86efac; opacity: 0.7;">Đã tự copy vào clipboard. Gửi link cho người khác!</div>
-    </div>
-
-    <div class="card" id="guide-card" style="display:none;">
-        <div class="label">HƯỚNG DẪN</div>
-        <div class="guide">
-            <b>🔥 UPLOAD FIREBASE:</b><br>
-            1. Tạo config → Nhấn "UPLOAD FIREBASE"<br>
-            2. Link được auto copy: <code>download.html?id=abc123</code><br>
-            3. Gửi link cho người khác<br>
-            4. Họ mở → web tự tải file → cài iPhone
-        </div>
+        <div style="font-weight:800;margin-bottom:6px">✅ LINK TẢI ĐÃ TẠO:</div>
+        <a id="link-display" href="#" target="_blank"></a>
+        <div style="margin-top:8px;font-size:10px;opacity:0.7">Đã copy. Gửi cho người khác để cài!</div>
     </div>
 </div>
 
@@ -557,142 +153,74 @@ button.upload-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 (function() {
     'use strict';
 
-    var $ = function(id) { return document.getElementById(id); };
-    var configData = null;
-    var currentCount = 2;
-    var MAX = 900000;
+    var FIREBASE = 'https://shopmduy-default-rtdb.asia-southeast1.firebasedatabase.app/configs/';
+    var DOWNLOAD_URL = 'https://shopmduy.github.io/download.html?id=';
 
-    var FIREBASE_URL = 'https://shopmduy-default-rtdb.asia-southeast1.firebasedatabase.app/configs/';
+    var $ = function(id) { return document.getElementById(id); };
+    var currentCount = 2;
 
     var PRESETS = {
         text: 'Xin chào!\nĐây là nội dung WebClip của bạn.',
-        info: '<div style="padding:20px;font-family:sans-serif;">\n  <h1 style="color:#a855f7;">Thông tin</h1>\n  <p><b>Tên:</b> Nguyễn Văn A</p>\n  <p><b>SĐT:</b> 0328033706</p>\n</div>',
-        contact: '<div style="padding:20px;font-family:sans-serif;text-align:center;">\n  <h1 style="color:#22c55e;">Liên hệ</h1>\n  <p style="font-size:18px;">Zalo: <b>0328033706</b></p>\n  <p style="font-size:18px;">Telegram: <b>@mduyk</b></p>\n</div>',
-        warning: '<div style="padding:20px;font-family:sans-serif;background:#fee;border:2px solid #f00;border-radius:10px;margin:20px;">\n  <h1 style="color:#f00;">CẢNH BÁO</h1>\n  <p>Đây là nội dung cảnh báo quan trọng!</p>\n</div>',
+        info: '<div style="padding:20px;font-family:sans-serif"><h1 style="color:#a855f7">Thông tin</h1><p><b>Tên:</b> Nguyễn Văn A</p><p><b>SĐT:</b> 0328033706</p></div>',
+        contact: '<div style="padding:20px;font-family:sans-serif;text-align:center"><h1 style="color:#22c55e">Liên hệ</h1><p>Zalo: <b>0328033706</b></p><p>Telegram: <b>@mduyk</b></p></div>',
+        warning: '<div style="padding:20px;font-family:sans-serif;background:#fee;border:2px solid #f00;border-radius:10px"><h1 style="color:#f00">CẢNH BÁO</h1><p>Nội dung cảnh báo quan trọng!</p></div>',
         empty: ''
     };
 
     document.querySelectorAll('.preset-btn').forEach(function(btn) {
         btn.onclick = function() {
-            var preset = btn.getAttribute('data-preset');
-            $('app-content').value = PRESETS[preset] || '';
+            $('app-content').value = PRESETS[btn.getAttribute('data-preset')] || '';
             updatePreview();
         };
     });
 
     document.querySelectorAll('.count-btn').forEach(function(btn) {
-        if (btn.id === 'custom-btn') return;
         btn.onclick = function() {
-            var count = parseInt(btn.getAttribute('data-count'));
-            setCount(count);
-            document.querySelectorAll('.count-btn').forEach(function(b) { 
-                if (b.id !== 'custom-btn') b.classList.remove('active'); 
-            });
+            currentCount = parseInt(btn.getAttribute('data-count'));
+            document.querySelectorAll('.count-btn').forEach(function(b) { b.classList.remove('active'); });
             btn.classList.add('active');
-            $('custom-row').style.display = 'none';
-            $('count-slider').value = Math.min(count, MAX);
+            $('count-slider').value = Math.min(currentCount, 900000);
+            updateCountInfo();
         };
     });
 
-    $('custom-btn').onclick = function() {
-        var isHidden = $('custom-row').style.display === 'none' || !$('custom-row').style.display;
-        $('custom-row').style.display = isHidden ? 'flex' : 'none';
-        if (isHidden) $('custom-count').focus();
-    };
-
     $('count-slider').addEventListener('input', function() {
-        var val = parseInt(this.value);
-        setCount(val);
-        document.querySelectorAll('.count-btn').forEach(function(b) { 
-            if (b.id !== 'custom-btn') b.classList.remove('active'); 
-        });
-        $('custom-row').style.display = 'none';
+        currentCount = parseInt(this.value);
+        document.querySelectorAll('.count-btn').forEach(function(b) { b.classList.remove('active'); });
+        updateCountInfo();
     });
 
-    $('custom-apply').onclick = function() {
-        var val = parseInt($('custom-count').value);
-        if (val < 1) val = 1;
-        if (val > MAX) val = MAX;
-        $('custom-count').value = val;
-        setCount(val);
-        $('count-slider').value = Math.min(val, MAX);
-    };
-
-    $('custom-count').addEventListener('input', function() {
-        var val = parseInt(this.value) || 1;
-        if (val < 1) val = 1;
-        if (val > MAX) val = MAX;
-        setCount(val);
-    });
-
-    function setCount(val) {
-        currentCount = val;
-        updateCountDisplay();
-        updateEstimate();
-        if (val <= 200) {
-            updateIconPreview();
-        } else {
-            $('icon-preview').innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:20px;color:#888;font-size:11px;">Preview bị tắt do quá nhiều icon (' + formatNumber(val) + ').</div>';
-        }
+    function updateCountInfo() {
+        $('count-display').textContent = formatNumber(currentCount) + ' icon';
+        var kb = Math.round(currentCount * 0.5);
+        var sizeText = kb < 1024 ? kb + ' KB' : (kb / 1024).toFixed(1) + ' MB';
+        var warn = kb > 10 * 1024 ? ' <span style="color:#ef4444">⚠ >10MB</span>' : '';
+        $('estimate-box').innerHTML = 'Ước tính: <b>' + sizeText + '</b>' + warn;
+        if (currentCount <= 200) updateIconPreview();
     }
 
     function formatNumber(n) {
         return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
     }
 
-    function updateCountDisplay() {
-        $('count-display').textContent = formatNumber(currentCount) + ' icon';
-    }
-
-    function updateEstimate() {
-        var kb = Math.round(currentCount * 0.5);
-        var sizeText;
-        if (kb < 1024) {
-            sizeText = kb + ' KB';
-        } else if (kb < 1024 * 1024) {
-            sizeText = (kb / 1024).toFixed(1) + ' MB';
-        } else {
-            sizeText = (kb / 1024 / 1024).toFixed(2) + ' GB';
-        }
-        
-        var warn = '';
-        if (kb > 10 * 1024) {
-            warn = ' <span style="color:#ef4444;">⚠ iOS thường giới hạn 10MB/profile</span>';
-        } else if (kb > 5 * 1024) {
-            warn = ' <span style="color:#fbbf24;">⚠ File khá lớn</span>';
-        }
-        
-        $('estimate-box').innerHTML = 'Ước tính: <b>' + sizeText + '</b>' + warn;
-    }
-
     document.querySelectorAll('.tab').forEach(function(tab) {
         tab.onclick = function() {
             document.querySelectorAll('.tab').forEach(function(t) { t.classList.remove('active'); });
             tab.classList.add('active');
-            var tabName = tab.getAttribute('data-tab');
-            $('tab-preview').style.display = tabName === 'preview' ? 'block' : 'none';
-            $('tab-icons').style.display = tabName === 'icons' ? 'block' : 'none';
-            if (tabName === 'icons' && currentCount <= 200) updateIconPreview();
+            var name = tab.getAttribute('data-tab');
+            $('tab-preview').style.display = name === 'preview' ? 'block' : 'none';
+            $('tab-icons').style.display = name === 'icons' ? 'block' : 'none';
+            if (name === 'icons' && currentCount <= 200) updateIconPreview();
         };
     });
 
     function buildHtml() {
         var content = $('app-content').value;
         var name = $('app-name').value || 'WebClip';
-        var bodyContent;
-        if (/<[a-z][\s\S]*>/i.test(content)) {
-            bodyContent = content;
-        } else {
-            bodyContent = '<pre style="white-space:pre-wrap;word-break:break-word;">' + escapeHtml(content) + '</pre>';
-        }
-        return '<!DOCTYPE html>\n' +
-            '<html>\n' +
-            '<head>\n' +
-            '<meta charset="UTF-8">\n' +
-            '<meta name="viewport" content="width=device-width, initial-scale=1.0">\n' +
-            '<title>' + escapeHtml(name) + '</title>\n' +
-            '<style>*{box-sizing:border-box;}body{font-family:-apple-system,sans-serif;background:#fff;color:#333;padding:20px;margin:0;}</style>\n' +
-            '</head>\n<body>\n' + bodyContent + '\n</body>\n</html>';
+        var bodyContent = /<[a-z][\s\S]*>/i.test(content) 
+            ? content 
+            : '<pre style="white-space:pre-wrap;word-break:break-word">' + content.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') + '</pre>';
+        return '<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>' + name + '</title><style>*{box-sizing:border-box}body{font-family:-apple-system,sans-serif;background:#fff;color:#333;padding:20px;margin:0}</style></head><body>' + bodyContent + '</body></html>';
     }
 
     function updatePreview() {
@@ -703,52 +231,56 @@ button.upload-btn:disabled { opacity: 0.5; cursor: not-allowed; }
         var grid = $('icon-preview');
         grid.innerHTML = '';
         var name = $('app-name').value.trim() || 'App';
-        var iconUrl = $('app-icon-url').value.trim();
-        
-        var previewLimit = Math.min(currentCount, 200);
-        
-        for (var i = 0; i < previewLimit; i++) {
-            var displayName = name;
-            if (currentCount > 1) displayName = name + ' ' + (i + 1);
-            
-            var iconBox;
-            if (iconUrl && iconUrl.indexOf('http') === 0) {
-                iconBox = '<img src="' + escapeHtml(iconUrl) + '" onerror="this.style.display=\'none\';this.parentNode.innerHTML=\'🌐\'" />';
-            } else {
-                iconBox = '🌐';
-            }
-            
-            grid.innerHTML += '<div class="icon-item"><div class="icon-box">' + iconBox + '</div><div>' + escapeHtml(displayName) + '</div></div>';
+        var iconUrl = $('icon-url').value.trim();
+        var limit = Math.min(currentCount, 200);
+
+        for (var i = 0; i < limit; i++) {
+            var dn = currentCount > 1 ? name + ' ' + (i + 1) : name;
+            var box = (iconUrl && iconUrl.indexOf('http') === 0)
+                ? '<img src="' + iconUrl.replace(/"/g, '&quot;') + '" onerror="this.style.display=\'none\';this.parentNode.innerHTML=\'🌐\'">'
+                : '🌐';
+            grid.innerHTML += '<div class="icon-item"><div class="icon-box">' + box + '</div><div>' + dn.replace(/</g, '&lt;') + '</div></div>';
         }
-        
-        if (currentCount > previewLimit) {
-            grid.innerHTML += '<div style="grid-column:1/-1;text-align:center;padding:10px;color:#888;font-size:11px;">... và ' + formatNumber(currentCount - previewLimit) + ' icon nữa</div>';
+        if (currentCount > limit) {
+            grid.innerHTML += '<div style="grid-column:1/-1;text-align:center;padding:10px;color:#888;font-size:11px">...và ' + formatNumber(currentCount - limit) + ' icon nữa</div>';
         }
     }
 
-    ['app-content', 'app-name', 'app-icon-url'].forEach(function(id) {
+    ['app-content', 'app-name', 'icon-url'].forEach(function(id) {
         $(id).addEventListener('input', function() {
             updatePreview();
             if (currentCount <= 200) updateIconPreview();
         });
     });
 
+    function generateUUID() {
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+            var r = Math.random() * 16 | 0;
+            return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16).toUpperCase();
+        });
+    }
+
+    function escapeXml(s) {
+        return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&apos;');
+    }
+
     $('create-btn').onclick = function() {
         var btn = $('create-btn');
         btn.disabled = true;
-        setStatus('Đang tạo ' + formatNumber(currentCount) + ' WebClip...', 'loading');
+        btn.textContent = '⏳ ĐANG TẠO...';
+        setStatus('Đang tạo config...', 'loading');
 
         setTimeout(function() {
             try {
                 var appName = $('app-name').value.trim() || 'WebClip';
                 var profileDesc = $('profile-desc').value.trim() || 'WebClip';
                 var profileId = $('profile-id').value.trim() || 'com.mduy.webclip';
-                var iconUrl = $('app-icon-url').value.trim();
-                var noRemove = $('opt-noremove').checked;
+                var iconUrl = $('icon-url').value.trim();
+                var noRemove = $('noremove').checked;
 
                 if (iconUrl && iconUrl.indexOf('http') !== 0) {
-                    setStatus('URL icon phải bắt đầu bằng http:// hoặc https://', 'error');
-                    btn.disabled = false;
+                    setStatus('❌ URL icon phải bắt đầu bằng http/https', 'error');
+                    resetBtn();
                     return;
                 }
 
@@ -756,250 +288,98 @@ button.upload-btn:disabled { opacity: 0.5; cursor: not-allowed; }
                 var base64Html = btoa(unescape(encodeURIComponent(html)));
                 var dataUri = 'data:text/html;charset=utf-8;base64,' + base64Html;
 
-                var payloadParts = [];
+                var payloads = [];
                 var noRemoveStr = noRemove ? 'true' : 'false';
-                
+
                 for (var i = 0; i < currentCount; i++) {
-                    var displayName = appName;
-                    if (currentCount > 1) displayName = appName + ' ' + (i + 1);
-                    
+                    var dn = currentCount > 1 ? appName + ' ' + (i + 1) : appName;
                     var uuid = generateUUID();
-                    var iconXml = '';
-                    if (iconUrl && iconUrl.indexOf('http') === 0) {
-                        iconXml = '            <key>Icon</key>\n' +
-                                  '            <string>' + escapeXml(iconUrl) + '</string>\n';
-                    }
-                    
-                    payloadParts.push([
+                    var iconXml = (iconUrl && iconUrl.indexOf('http') === 0) 
+                        ? '            <key>Icon</key>\n            <string>' + escapeXml(iconUrl) + '</string>\n' 
+                        : '';
+                    payloads.push([
                         '        <dict>',
-                        '            <key>FullScreen</key>',
-                        '            <true/>',
-                        '            <key>IgnoreManifestScope</key>',
-                        '            <false/>',
-                        '            <key>IsRemovable</key>',
-                        '            <true/>',
-                        '            <key>Label</key>',
-                        '            <string>' + escapeXml(displayName) + '</string>',
-                        '            <key>Precomposed</key>',
-                        '            <true/>',
-                        '            <key>PayloadDescription</key>',
-                        '            <string>' + escapeXml(displayName) + '</string>',
-                        '            <key>PayloadDisplayName</key>',
-                        '            <string>' + escapeXml(displayName) + '</string>',
-                        '            <key>PayloadIdentifier</key>',
-                        '            <string>' + escapeXml(profileId) + '.webclip.' + i + '</string>',
-                        '            <key>PayloadOrganization</key>',
-                        '            <string>MDUY</string>',
-                        '            <key>PayloadType</key>',
-                        '            <string>com.apple.webClip.managed</string>',
-                        '            <key>PayloadUUID</key>',
-                        '            <string>' + uuid + '</string>',
-                        '            <key>PayloadVersion</key>',
-                        '            <integer>1</integer>',
-                        '            <key>URL</key>',
-                        '            <string>' + escapeXml(dataUri) + '</string>',
+                        '            <key>FullScreen</key><true/>',
+                        '            <key>IgnoreManifestScope</key><false/>',
+                        '            <key>IsRemovable</key><true/>',
+                        '            <key>Label</key><string>' + escapeXml(dn) + '</string>',
+                        '            <key>Precomposed</key><true/>',
+                        '            <key>PayloadDescription</key><string>' + escapeXml(dn) + '</string>',
+                        '            <key>PayloadDisplayName</key><string>' + escapeXml(dn) + '</string>',
+                        '            <key>PayloadIdentifier</key><string>' + escapeXml(profileId) + '.webclip.' + i + '</string>',
+                        '            <key>PayloadOrganization</key><string>MDUY</string>',
+                        '            <key>PayloadType</key><string>com.apple.webClip.managed</string>',
+                        '            <key>PayloadUUID</key><string>' + uuid + '</string>',
+                        '            <key>PayloadVersion</key><integer>1</integer>',
+                        '            <key>URL</key><string>' + escapeXml(dataUri) + '</string>',
                         iconXml + '        </dict>'
                     ].join('\n'));
                 }
 
-                var allPayloads = payloadParts.join('\n');
+                var config = '<?xml version="1.0" encoding="UTF-8"?>\n<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">\n<plist version="1.0">\n<dict>\n    <key>PayloadContent</key>\n    <array>\n' + payloads.join('\n') + '\n    </array>\n    <key>PayloadDescription</key><string>' + escapeXml(profileDesc) + '</string>\n    <key>PayloadDisplayName</key><string>' + escapeXml(profileDesc) + '</string>\n    <key>PayloadIdentifier</key><string>' + escapeXml(profileId) + '</string>\n    <key>PayloadOrganization</key><string>MDUY</string>\n    <key>PayloadRemovalDisallowed</key><' + noRemoveStr + '/>\n    <key>PayloadType</key><string>Configuration</string>\n    <key>PayloadUUID</key><string>' + generateUUID() + '</string>\n    <key>PayloadVersion</key><integer>1</integer>\n</dict>\n</plist>';
 
-                var config = '<?xml version="1.0" encoding="UTF-8"?>\n' +
-                    '<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">\n' +
-                    '<plist version="1.0">\n<dict>\n' +
-                    '    <key>PayloadContent</key>\n    <array>\n' +
-                    allPayloads + '\n    </array>\n' +
-                    '    <key>PayloadDescription</key>\n    <string>' + escapeXml(profileDesc) + '</string>\n' +
-                    '    <key>PayloadDisplayName</key>\n    <string>' + escapeXml(profileDesc) + '</string>\n' +
-                    '    <key>PayloadIdentifier</key>\n    <string>' + escapeXml(profileId) + '</string>\n' +
-                    '    <key>PayloadOrganization</key>\n    <string>MDUY</string>\n' +
-                    '    <key>PayloadRemovalDisallowed</key>\n    <' + noRemoveStr + '/>\n' +
-                    '    <key>PayloadType</key>\n    <string>Configuration</string>\n' +
-                    '    <key>PayloadUUID</key>\n    <string>' + generateUUID() + '</string>\n' +
-                    '    <key>PayloadVersion</key>\n    <integer>1</integer>\n' +
-                    '</dict>\n</plist>';
+                var configId = 'cfg_' + Date.now() + '_' + Math.random().toString(36).substring(2, 8);
+                var firebaseUrl = FIREBASE + configId + '.json';
 
-                configData = {
+                var data = {
                     name: appName.replace(/\s+/g, '-').toLowerCase() + '-' + currentCount + 'icons.mobileconfig',
                     content: config,
-                    count: currentCount
+                    count: currentCount,
+                    created: Date.now()
                 };
 
-                var sizeKB = Math.round(config.length / 1024);
-                var sizeText = sizeKB < 1024 ? sizeKB + 'KB' : (sizeKB / 1024).toFixed(2) + 'MB';
-                
-                if (sizeKB > 10 * 1024) {
-                    setStatus('⚠ File ' + sizeText + ' — iOS có thể từ chối. Nên giảm số icon!', 'warning');
+                setStatus('🔥 Đang upload lên Firebase...', 'loading');
+
+                if (typeof GM_xmlhttpRequest === 'function') {
+                    GM_xmlhttpRequest({
+                        method: 'PUT',
+                        url: firebaseUrl,
+                        data: JSON.stringify(data),
+                        headers: { 'Content-Type': 'application/json' },
+                        timeout: 30000,
+                        onload: function(r) { handleResponse(r.status, configId); },
+                        onerror: function() { setStatus('❌ Lỗi mạng', 'error'); resetBtn(); },
+                        ontimeout: function() { setStatus('❌ Timeout', 'error'); resetBtn(); }
+                    });
                 } else {
-                    setStatus('Đã tạo ' + formatNumber(currentCount) + ' WebClip (' + sizeText + ')!', 'success');
+                    fetch(firebaseUrl, {
+                        method: 'PUT',
+                        body: JSON.stringify(data),
+                        headers: { 'Content-Type': 'application/json' }
+                    }).then(function(r) { handleResponse(r.status, configId); })
+                      .catch(function(e) { setStatus('❌ ' + e.message, 'error'); resetBtn(); });
                 }
-                
-                $('download-row').style.display = 'grid';
-                $('download-row-2').style.display = 'grid';
-                $('guide-card').style.display = 'block';
-                $('link-box').classList.remove('show');
-                btn.disabled = false;
+
+                function handleResponse(status, id) {
+                    if (status < 200 || status >= 300) {
+                        setStatus('❌ Firebase HTTP ' + status + '. Kiểm tra Rules!', 'error');
+                        resetBtn();
+                        return;
+                    }
+                    var link = DOWNLOAD_URL + id;
+                    try {
+                        if (navigator.clipboard && navigator.clipboard.writeText) {
+                            navigator.clipboard.writeText(link).catch(function() {});
+                        }
+                    } catch(e) {}
+                    $('link-display').textContent = link;
+                    $('link-display').href = link;
+                    $('link-box').classList.add('show');
+                    setStatus('✅ Đã tạo! Link đã copy vào clipboard', 'success');
+                    resetBtn();
+                }
 
             } catch(err) {
-                console.error(err);
-                setStatus('Lỗi: ' + err.message, 'error');
-                btn.disabled = false;
+                setStatus('❌ ' + err.message, 'error');
+                resetBtn();
             }
         }, 100);
     };
 
-    $('install-btn').onclick = function() {
-        if (!configData) return;
-        
-        try {
-            var base64 = btoa(unescape(encodeURIComponent(configData.content)));
-            var dataUri = 'data:application/x-apple-aspen-config;base64,' + base64;
-            
-            if (isMobileSafari()) {
-                window.location.href = dataUri;
-                setStatus('Đang mở cài đặt...', 'info');
-            } else {
-                var a = document.createElement('a');
-                a.href = dataUri;
-                a.download = configData.name;
-                a.style.display = 'none';
-                document.body.appendChild(a);
-                a.click();
-                setTimeout(function() { document.body.removeChild(a); }, 100);
-                setStatus('Đã tải file.', 'info');
-            }
-        } catch(err) {
-            setStatus('Lỗi: ' + err.message, 'error');
-        }
-    };
-
-    $('save-btn').onclick = async function() {
-        if (!configData) return;
-        
-        setStatus('Đang chuẩn bị file...', 'loading');
-        
-        try {
-            var blob = new Blob([configData.content], { type: 'application/x-apple-aspen-config' });
-            var file = new File([blob], configData.name, { type: 'application/x-apple-aspen-config' });
-            
-            if (navigator.canShare && navigator.canShare({ files: [file] })) {
-                await navigator.share({
-                    files: [file],
-                    title: 'Config WebClip',
-                    text: 'Lưu file để cài đặt'
-                });
-                setStatus('Đã chia sẻ!', 'success');
-            } else {
-                var dataUri = 'data:application/x-apple-aspen-config;base64,' + btoa(unescape(encodeURIComponent(configData.content)));
-                var a = document.createElement('a');
-                a.href = dataUri;
-                a.download = configData.name;
-                a.style.display = 'none';
-                document.body.appendChild(a);
-                a.click();
-                setTimeout(function() { document.body.removeChild(a); }, 100);
-                setStatus('Đã tải file.', 'info');
-            }
-        } catch(err) {
-            if (err.name !== 'AbortError') {
-                setStatus('Lỗi: ' + err.message, 'error');
-            }
-        }
-    };
-
-    $('upload-btn').onclick = function() {
-        if (!configData) return;
-        
-        var btn = $('upload-btn');
-        btn.disabled = true;
-        btn.innerHTML = '⏳ ĐANG UPLOAD...<small>Vui lòng đợi</small>';
-        setStatus('⏳ Đang upload lên Firebase...', 'loading');
-        
-        var configId = 'cfg_' + Date.now() + '_' + Math.random().toString(36).substring(2, 8);
-        var firebaseUrl = FIREBASE_URL + configId + '.json';
-        
-        var data = {
-            name: configData.name,
-            content: configData.content,
-            count: configData.count,
-            created: Date.now()
-        };
-        
-        if (typeof GM_xmlhttpRequest === 'function') {
-            GM_xmlhttpRequest({
-                method: 'PUT',
-                url: firebaseUrl,
-                data: JSON.stringify(data),
-                headers: { 'Content-Type': 'application/json' },
-                timeout: 30000,
-                onload: function(response) {
-                    handleFirebaseResponse(response.status, configId);
-                },
-                onerror: function() {
-                    setStatus('❌ Lỗi kết nối Firebase. Kiểm tra mạng!', 'error');
-                    resetUploadBtn();
-                },
-                ontimeout: function() {
-                    setStatus('❌ Timeout. Thử lại!', 'error');
-                    resetUploadBtn();
-                }
-            });
-        } else {
-            fetch(firebaseUrl, {
-                method: 'PUT',
-                body: JSON.stringify(data),
-                headers: { 'Content-Type': 'application/json' }
-            }).then(function(res) {
-                handleFirebaseResponse(res.status, configId);
-            }).catch(function(err) {
-                setStatus('❌ Lỗi: ' + err.message, 'error');
-                resetUploadBtn();
-            });
-        }
-    };
-
-    function handleFirebaseResponse(status, configId) {
-        if (status < 200 || status >= 300) {
-            setStatus('❌ Firebase HTTP ' + status + '. Kiểm tra Rules!', 'error');
-            resetUploadBtn();
-            return;
-        }
-        
-        var baseUrl = location.origin + location.pathname.replace(/\/[^\/]*$/, '/');
-        var downloadLink = baseUrl + 'download.html?id=' + configId;
-        
-        try {
-            if (navigator.clipboard && navigator.clipboard.writeText) {
-                navigator.clipboard.writeText(downloadLink).catch(function() {});
-            } else {
-                var ta = document.createElement('textarea');
-                ta.value = downloadLink;
-                ta.style.position = 'fixed';
-                ta.style.opacity = '0';
-                document.body.appendChild(ta);
-                ta.select();
-                document.execCommand('copy');
-                document.body.removeChild(ta);
-            }
-        } catch(e) {}
-        
-        $('upload-link-display').textContent = downloadLink;
-        $('upload-link-display').href = downloadLink;
-        $('link-box').classList.add('show');
-        
-        setStatus('✅ Đã upload! Link đã copy vào clipboard', 'success');
-        resetUploadBtn();
-    }
-
-    function resetUploadBtn() {
-        var btn = $('upload-btn');
+    function resetBtn() {
+        var btn = $('create-btn');
         btn.disabled = false;
-        btn.innerHTML = '🔥 UPLOAD FIREBASE<small>Tạo link tải vĩnh viễn</small>';
-    }
-
-    function isMobileSafari() {
-        var ua = navigator.userAgent;
-        return /iPhone|iPad|iPod/i.test(ua) && /Safari/i.test(ua) && !/CriOS|FxiOS|EdgiOS/i.test(ua);
+        btn.textContent = '🔥 TẠO CONFIG + UPLOAD FIREBASE';
     }
 
     function setStatus(text, type) {
@@ -1008,37 +388,9 @@ button.upload-btn:disabled { opacity: 0.5; cursor: not-allowed; }
         el.className = 'status' + (type ? ' ' + type : '');
     }
 
-    function generateUUID() {
-        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-            var r = Math.random() * 16 | 0;
-            var v = c === 'x' ? r : (r & 0x3 | 0x8);
-            return v.toString(16).toUpperCase();
-        });
-    }
-
-    function escapeXml(str) {
-        return String(str)
-            .replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;')
-            .replace(/"/g, '&quot;')
-            .replace(/'/g, '&apos;');
-    }
-
-    function escapeHtml(str) {
-        return String(str)
-            .replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;')
-            .replace(/"/g, '&quot;')
-            .replace(/'/g, '&#39;');
-    }
-
     updatePreview();
+    updateCountInfo();
     updateIconPreview();
-    updateEstimate();
-
-    console.log('WebClip Creator - Firebase đã sẵn sàng');
 })();
 </script>
 
