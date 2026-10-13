@@ -154,7 +154,7 @@ input:checked + .slider:before { transform: translateX(20px); background: #ef444
     'use strict';
 
     var FIREBASE = 'https://shopmduy-default-rtdb.asia-southeast1.firebasedatabase.app/configs/';
-    var DOWNLOAD_URL = 'https://shopmduy.github.io/download.html?id=';
+    var DOWNLOAD_URL = 'https://mduyfkt.github.io/download.html?id=';
 
     var $ = function(id) { return document.getElementById(id); };
     var currentCount = 2;
@@ -330,33 +330,17 @@ input:checked + .slider:before { transform: translateX(20px); background: #ef444
 
                 setStatus('🔥 Đang upload lên Firebase...', 'loading');
 
-                if (typeof GM_xmlhttpRequest === 'function') {
-                    GM_xmlhttpRequest({
-                        method: 'PUT',
-                        url: firebaseUrl,
-                        data: JSON.stringify(data),
-                        headers: { 'Content-Type': 'application/json' },
-                        timeout: 30000,
-                        onload: function(r) { handleResponse(r.status, configId); },
-                        onerror: function() { setStatus('❌ Lỗi mạng', 'error'); resetBtn(); },
-                        ontimeout: function() { setStatus('❌ Timeout', 'error'); resetBtn(); }
-                    });
-                } else {
-                    fetch(firebaseUrl, {
-                        method: 'PUT',
-                        body: JSON.stringify(data),
-                        headers: { 'Content-Type': 'application/json' }
-                    }).then(function(r) { handleResponse(r.status, configId); })
-                      .catch(function(e) { setStatus('❌ ' + e.message, 'error'); resetBtn(); });
-                }
-
-                function handleResponse(status, id) {
-                    if (status < 200 || status >= 300) {
-                        setStatus('❌ Firebase HTTP ' + status + '. Kiểm tra Rules!', 'error');
+                fetch(firebaseUrl, {
+                    method: 'PUT',
+                    body: JSON.stringify(data),
+                    headers: { 'Content-Type': 'application/json' }
+                }).then(function(r) {
+                    if (r.status < 200 || r.status >= 300) {
+                        setStatus('❌ Firebase HTTP ' + r.status + '. Kiểm tra Rules!', 'error');
                         resetBtn();
                         return;
                     }
-                    var link = DOWNLOAD_URL + id;
+                    var link = DOWNLOAD_URL + configId;
                     try {
                         if (navigator.clipboard && navigator.clipboard.writeText) {
                             navigator.clipboard.writeText(link).catch(function() {});
@@ -367,7 +351,10 @@ input:checked + .slider:before { transform: translateX(20px); background: #ef444
                     $('link-box').classList.add('show');
                     setStatus('✅ Đã tạo! Link đã copy vào clipboard', 'success');
                     resetBtn();
-                }
+                }).catch(function(err) {
+                    setStatus('❌ ' + err.message, 'error');
+                    resetBtn();
+                });
 
             } catch(err) {
                 setStatus('❌ ' + err.message, 'error');
