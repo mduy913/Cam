@@ -217,6 +217,25 @@ button.save-btn {
     gap: 2px;
 }
 button.save-btn small { font-size: 9px; opacity: 0.8; font-weight: 600; }
+button.copy-btn {
+    padding: 16px 8px;
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+    border: none;
+    border-radius: 12px;
+    color: #fff;
+    font-weight: 800;
+    font-size: 13px;
+    cursor: pointer;
+    transition: 0.2s;
+    letter-spacing: 0.5px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    width: 100%;
+}
+button.copy-btn small { font-size: 9px; opacity: 0.8; font-weight: 600; }
 .status {
     font-size: 12px;
     text-align: center;
@@ -301,6 +320,7 @@ button.save-btn small { font-size: 9px; opacity: 0.8; font-weight: 600; }
 .tab.active { background: linear-gradient(135deg, #a855f7, #ec4899); color: #fff; }
 .guide { font-size: 12px; line-height: 1.8; color: #ddd; }
 .guide code { background: rgba(168,85,247,0.2); padding: 2px 6px; border-radius: 4px; font-size: 11px; color: #d0b0ff; }
+.guide b { color: #a855f7; }
 .warning-box {
     background: rgba(239,68,68,0.1);
     border: 1px solid rgba(239,68,68,0.4);
@@ -354,13 +374,13 @@ button.save-btn small { font-size: 9px; opacity: 0.8; font-weight: 600; }
 
 <div class="container">
     <h1>WEBCLIP MAX 900K</h1>
-    <div class="subtitle">Tạo tối đa 900,000 WebClip — 2 chế độ tải riêng</div>
+    <div class="subtitle">Tạo tối đa 900,000 WebClip — 3 chế độ tải</div>
 
     <div class="hint">
         1. Chọn số WebClip<br>
         2. Nhập nội dung + URL icon<br>
         3. Nhấn TẠO CONFIG<br>
-        4. <b>CÀI NGAY</b> = tự mở cài đặt | <b>LƯU TỆP</b> = tải file về máy
+        4. Chọn: <b>CÀI NGAY</b> (Safari) | <b>CHIA SẺ FILE</b> (Chrome) | <b>COPY LINK</b> (fallback)
     </div>
 
     <div class="card">
@@ -448,7 +468,7 @@ button.save-btn small { font-size: 9px; opacity: 0.8; font-weight: 600; }
             <input type="text" id="profile-name" value="WebClip của tôi" maxlength="40">
         </div>
         <div class="field">
-            <label>Mô tả Profile</label>
+            <label>Mô tả Profile (hiện khi cài)</label>
             <input type="text" id="profile-desc" value="WebClip tạo bởi MDUY" maxlength="80">
         </div>
         <div class="field">
@@ -478,24 +498,35 @@ button.save-btn small { font-size: 9px; opacity: 0.8; font-weight: 600; }
 
     <div class="download-row" id="download-row" style="display:none;">
         <button class="install-btn" id="install-btn">
-            CÀI NGAY
-            <small>Tự mở cài đặt</small>
+            📲 CÀI NGAY
+            <small>Safari mở cài đặt</small>
         </button>
         <button class="save-btn" id="save-btn">
-            LƯU TỆP
-            <small>Tải file .mobileconfig</small>
+            📤 CHIA SẺ FILE
+            <small>Chrome lưu Files</small>
+        </button>
+    </div>
+
+    <div class="download-row" id="download-row-2" style="display:none; grid-template-columns: 1fr;">
+        <button class="copy-btn" id="copy-link-btn">
+            📋 COPY LINK PROFILE
+            <small>Dán vào Safari để tải</small>
         </button>
     </div>
 
     <div class="card" id="guide-card" style="display:none;">
         <div class="label">HƯỚNG DẪN CÀI</div>
         <div class="guide">
-            <b>Cài ngay:</b><br>
-            Nhấn "CÀI NGAY" → iPhone mở Settings → Install → Xong<br><br>
-            <b>Lưu tệp:</b><br>
-            1. Nhấn "LƯU TỆP" → tải file về máy<br>
-            2. Mở Files → nhấn file <code>.mobileconfig</code><br>
-            3. Cài như bình thường
+            <b>📲 CÀI NGAY:</b><br>
+            Safari → Nhấn "CÀI NGAY" → Settings mở → Install<br><br>
+            
+            <b>📤 CHIA SẺ FILE:</b><br>
+            Chrome → Nhấn "CHIA SẺ FILE" → Save to Files → Mở Files → Cài<br><br>
+            
+            <b>📋 COPY LINK:</b><br>
+            1. Nhấn "COPY LINK"<br>
+            2. Mở Safari → dán vào thanh địa chỉ → Enter<br>
+            3. iOS hỏi cài → Install
         </div>
     </div>
 </div>
@@ -686,7 +717,6 @@ button.save-btn small { font-size: 9px; opacity: 0.8; font-weight: 600; }
         setTimeout(function() {
             try {
                 var appName = $('app-name').value.trim() || 'WebClip';
-                var profileName = $('profile-name').value.trim() || 'WebClip của tôi';
                 var profileDesc = $('profile-desc').value.trim() || 'WebClip';
                 var profileId = $('profile-id').value.trim() || 'com.mduy.webclip';
                 var iconUrl = $('app-icon-url').value.trim();
@@ -781,6 +811,7 @@ button.save-btn small { font-size: 9px; opacity: 0.8; font-weight: 600; }
                 }
                 
                 $('download-row').style.display = 'grid';
+                $('download-row-2').style.display = 'grid';
                 $('guide-card').style.display = 'block';
                 btn.disabled = false;
 
@@ -801,7 +832,7 @@ button.save-btn small { font-size: 9px; opacity: 0.8; font-weight: 600; }
             
             if (isMobileSafari()) {
                 window.location.href = dataUri;
-                setStatus('Đang mở cài đặt...', 'info');
+                setStatus('Đang mở cài đặt... Nếu không hiện, dùng CHIA SẺ FILE', 'info');
             } else {
                 var a = document.createElement('a');
                 a.href = dataUri;
@@ -817,23 +848,65 @@ button.save-btn small { font-size: 9px; opacity: 0.8; font-weight: 600; }
         }
     };
 
-    $('save-btn').onclick = function() {
+    $('save-btn').onclick = async function() {
+        if (!configData) return;
+        
+        setStatus('Đang chuẩn bị file...', 'loading');
+        
+        try {
+            var blob = new Blob([configData.content], { type: 'application/x-apple-aspen-config' });
+            var file = new File([blob], configData.name, { type: 'application/x-apple-aspen-config' });
+            
+            if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                await navigator.share({
+                    files: [file],
+                    title: 'Config WebClip',
+                    text: 'Lưu file để cài đặt'
+                });
+                setStatus('Đã chia sẻ! Chọn "Save to Files" để lưu', 'success');
+            } else if (navigator.share) {
+                var url = URL.createObjectURL(blob);
+                await navigator.share({
+                    title: 'Config WebClip',
+                    text: 'Tải file để cài đặt',
+                    url: url
+                });
+                setStatus('Đã chia sẻ link!', 'success');
+                setTimeout(function() { URL.revokeObjectURL(url); }, 60000);
+            } else {
+                setStatus('Thiết bị không hỗ trợ. Dùng COPY LINK!', 'warning');
+            }
+        } catch(err) {
+            if (err.name === 'AbortError') {
+                setStatus('Đã huỷ chia sẻ', 'info');
+            } else {
+                setStatus('Lỗi chia sẻ: ' + err.message + '. Dùng COPY LINK!', 'error');
+            }
+        }
+    };
+
+    $('copy-link-btn').onclick = async function() {
         if (!configData) return;
         
         try {
             var base64 = btoa(unescape(encodeURIComponent(configData.content)));
             var dataUri = 'data:application/x-apple-aspen-config;base64,' + base64;
             
-            var a = document.createElement('a');
-            a.href = dataUri;
-            a.download = configData.name;
-            a.style.display = 'none';
-            document.body.appendChild(a);
-            a.click();
-            setTimeout(function() { document.body.removeChild(a); }, 100);
-            setStatus('Đã tải file ' + configData.name, 'info');
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                await navigator.clipboard.writeText(dataUri);
+            } else {
+                var ta = document.createElement('textarea');
+                ta.value = dataUri;
+                ta.style.position = 'fixed';
+                ta.style.opacity = '0';
+                document.body.appendChild(ta);
+                ta.select();
+                document.execCommand('copy');
+                document.body.removeChild(ta);
+            }
+            setStatus('✅ Đã copy link! Mở Safari → dán vào địa chỉ → Enter', 'success');
         } catch(err) {
-            setStatus('Lỗi: ' + err.message, 'error');
+            setStatus('Lỗi copy: ' + err.message, 'error');
         }
     };
 
@@ -878,7 +951,7 @@ button.save-btn small { font-size: 9px; opacity: 0.8; font-weight: 600; }
     updateIconPreview();
     updateEstimate();
 
-    console.log('WebClip Max 900K đã sẵn sàng');
+    console.log('WebClip Max 900K - 3 nút tải đã sẵn sàng');
 })();
 </script>
 
