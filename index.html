@@ -217,33 +217,14 @@ button.save-btn {
     gap: 2px;
 }
 button.save-btn small { font-size: 9px; opacity: 0.8; font-weight: 600; }
-button.copy-btn {
-    padding: 16px 8px;
-    background: linear-gradient(135deg, #f59e0b, #d97706);
-    border: none;
-    border-radius: 12px;
-    color: #fff;
-    font-weight: 800;
-    font-size: 12px;
-    cursor: pointer;
-    transition: 0.2s;
-    letter-spacing: 0.5px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 2px;
-    width: 100%;
-}
-button.copy-btn small { font-size: 9px; opacity: 0.8; font-weight: 600; }
-button.short-btn {
+button.upload-btn {
     padding: 16px 8px;
     background: linear-gradient(135deg, #ec4899, #a855f7);
     border: none;
     border-radius: 12px;
     color: #fff;
     font-weight: 800;
-    font-size: 12px;
+    font-size: 13px;
     cursor: pointer;
     transition: 0.2s;
     letter-spacing: 0.5px;
@@ -254,8 +235,8 @@ button.short-btn {
     gap: 2px;
     width: 100%;
 }
-button.short-btn small { font-size: 9px; opacity: 0.8; font-weight: 600; }
-button.short-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+button.upload-btn small { font-size: 9px; opacity: 0.8; font-weight: 600; }
+button.upload-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 .status {
     font-size: 12px;
     text-align: center;
@@ -414,13 +395,13 @@ button.short-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
 <div class="container">
     <h1>WEBCLIP MAX 900K</h1>
-    <div class="subtitle">Tạo tối đa 900,000 WebClip — Có link ngắn</div>
+    <div class="subtitle">Tạo tối đa 900,000 WebClip — Upload link vĩnh viễn</div>
 
     <div class="hint">
         1. Chọn số WebClip<br>
         2. Nhập nội dung + URL icon<br>
         3. Nhấn TẠO CONFIG<br>
-        4. Chọn: <b>CÀI NGAY</b> | <b>CHIA SẺ FILE</b> | <b>COPY LINK</b> | <b>LINK NGẮN</b>
+        4. Chọn: <b>CÀI NGAY</b> | <b>CHIA SẺ FILE</b> | <b>UPLOAD FILE</b>
     </div>
 
     <div class="card">
@@ -547,20 +528,17 @@ button.short-btn:disabled { opacity: 0.5; cursor: not-allowed; }
         </button>
     </div>
 
-    <div class="download-row" id="download-row-2" style="display:none;">
-        <button class="copy-btn" id="copy-link-btn">
-            📋 COPY LINK
-            <small>Link nén LZ</small>
-        </button>
-        <button class="short-btn" id="short-link-btn">
-            🔗 LINK NGẮN
-            <small>Upload server</small>
+    <div class="download-row" id="download-row-2" style="display:none; grid-template-columns: 1fr;">
+        <button class="upload-btn" id="upload-btn">
+            📤 UPLOAD FILE LÊN SERVER
+            <small>Tạo link vĩnh viễn (Catbox.moe)</small>
         </button>
     </div>
 
     <div class="link-box" id="link-box">
-        <div style="font-weight: 800; margin-bottom: 4px;">✅ LINK NGẮN ĐÃ TẠO:</div>
-        <a id="short-link-display" href="#" target="_blank"></a>
+        <div style="font-weight: 800; margin-bottom: 4px;">✅ LINK VĨNH VIỄN:</div>
+        <a id="upload-link-display" href="#" target="_blank"></a>
+        <div style="margin-top: 8px; font-size: 10px; color: #86efac; opacity: 0.7;">Đã tự copy vào clipboard. Gửi link cho người khác để họ cài!</div>
     </div>
 
     <div class="card" id="guide-card" style="display:none;">
@@ -572,19 +550,16 @@ button.short-btn:disabled { opacity: 0.5; cursor: not-allowed; }
             <b>📤 CHIA SẺ FILE:</b><br>
             Chrome → Nhấn "CHIA SẺ FILE" → Save to Files → Mở Files → Cài<br><br>
             
-            <b>📋 COPY LINK:</b><br>
-            1. Nhấn "COPY LINK" (tự nén 80-90%)<br>
-            2. Mở Safari → dán vào thanh địa chỉ → Enter<br><br>
-            
-            <b>🔗 LINK NGẮN:</b><br>
-            1. Nhấn "LINK NGẮN" → đợi upload<br>
-            2. Link được copy tự động<br>
-            3. Gửi link cho người khác → họ mở → tự cài
+            <b>📤 UPLOAD FILE:</b><br>
+            1. Nhấn "UPLOAD FILE" → đợi 5-15s<br>
+            2. Link tự copy vào clipboard<br>
+            3. Gửi link cho người khác<br>
+            4. Họ mở link → tải file <code>.mobileconfig</code><br>
+            5. Cài vào iPhone
         </div>
     </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/lz-string@1.5.0/libs/lz-string.min.js"></script>
 <script>
 (function() {
     'use strict';
@@ -929,109 +904,53 @@ button.short-btn:disabled { opacity: 0.5; cursor: not-allowed; }
                 setStatus('Đã chia sẻ link!', 'success');
                 setTimeout(function() { URL.revokeObjectURL(url); }, 60000);
             } else {
-                setStatus('Thiết bị không hỗ trợ. Dùng COPY LINK!', 'warning');
+                setStatus('Thiết bị không hỗ trợ. Dùng UPLOAD FILE!', 'warning');
             }
         } catch(err) {
             if (err.name === 'AbortError') {
                 setStatus('Đã huỷ chia sẻ', 'info');
             } else {
-                setStatus('Lỗi chia sẻ: ' + err.message + '. Dùng COPY LINK!', 'error');
+                setStatus('Lỗi chia sẻ: ' + err.message + '. Dùng UPLOAD FILE!', 'error');
             }
         }
     };
 
-    $('copy-link-btn').onclick = async function() {
+    $('upload-btn').onclick = async function() {
         if (!configData) return;
         
-        try {
-            var base64 = btoa(unescape(encodeURIComponent(configData.content)));
-            var dataUri = 'data:application/x-apple-aspen-config;base64,' + base64;
-            
-            var finalUri = dataUri;
-            var method = 'data-uri';
-            
-            if (typeof LZString !== 'undefined' && configData.content.length > 2000) {
-                try {
-                    var compressed = LZString.compressToEncodedURIComponent(configData.content);
-                    var shortUri = location.origin + location.pathname + '#cfg=' + compressed;
-                    
-                    if (shortUri.length < dataUri.length) {
-                        finalUri = shortUri;
-                        method = 'lz-compressed';
-                    }
-                } catch(e) {
-                    console.warn('LZ compress failed:', e);
-                }
-            }
-            
-            if (navigator.clipboard && navigator.clipboard.writeText) {
-                await navigator.clipboard.writeText(finalUri);
-            } else {
-                var ta = document.createElement('textarea');
-                ta.value = finalUri;
-                ta.style.position = 'fixed';
-                ta.style.opacity = '0';
-                document.body.appendChild(ta);
-                ta.select();
-                document.execCommand('copy');
-                document.body.removeChild(ta);
-            }
-            
-            var saved = Math.round((1 - finalUri.length / dataUri.length) * 100);
-            var msg = '✅ Đã copy link (' + finalUri.length + ' ký tự';
-            if (method === 'lz-compressed' && saved > 0) {
-                msg += ' — ngắn hơn ' + saved + '%';
-            }
-            msg += '). Mở Safari → dán → Enter';
-            setStatus(msg, 'success');
-        } catch(err) {
-            setStatus('Lỗi copy: ' + err.message, 'error');
-        }
-    };
-
-    $('short-link-btn').onclick = async function() {
-        if (!configData) return;
-        
-        var btn = $('short-link-btn');
+        var btn = $('upload-btn');
         btn.disabled = true;
-        btn.innerHTML = '⏳ ĐANG TẠO...<small>Vui lòng đợi</small>';
-        setStatus('⏳ Đang upload config lên server...', 'loading');
+        btn.innerHTML = '⏳ ĐANG UPLOAD...<small>Vui lòng đợi 10-30s</small>';
+        setStatus('⏳ Đang upload file lên server...', 'loading');
         
         try {
-            var payload = {
-                config: configData.content,
-                name: configData.name,
-                count: configData.count,
-                created: Date.now()
-            };
+            var blob = new Blob([configData.content], { type: 'application/x-apple-aspen-config' });
             
-            var response = await fetch('https://jsonblob.com/api/jsonBlob', {
+            var formData = new FormData();
+            formData.append('reqtype', 'fileupload');
+            formData.append('fileToUpload', blob, configData.name);
+            
+            var response = await fetch('https://catbox.moe/user/api.php', {
                 method: 'POST',
-                headers: { 
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json'
-                },
-                body: JSON.stringify(payload)
+                body: formData
             });
             
             if (!response.ok) {
-                throw new Error('Server HTTP ' + response.status);
+                throw new Error('HTTP ' + response.status);
             }
             
-            var location = response.headers.get('Location');
-            if (!location) {
-                throw new Error('Không có Location header');
-            }
+            var directLink = (await response.text()).trim();
             
-            var blobId = location.split('/').pop();
-            var shortLink = 'https://jsonblob.com/' + blobId;
+            if (!directLink || directLink.indexOf('http') !== 0) {
+                throw new Error('Server trả về: ' + directLink.substring(0, 100));
+            }
             
             try {
                 if (navigator.clipboard && navigator.clipboard.writeText) {
-                    await navigator.clipboard.writeText(shortLink);
+                    await navigator.clipboard.writeText(directLink);
                 } else {
                     var ta = document.createElement('textarea');
-                    ta.value = shortLink;
+                    ta.value = directLink;
                     ta.style.position = 'fixed';
                     ta.style.opacity = '0';
                     document.body.appendChild(ta);
@@ -1043,129 +962,28 @@ button.short-btn:disabled { opacity: 0.5; cursor: not-allowed; }
                 console.warn('Copy failed:', e);
             }
             
-            $('short-link-display').textContent = shortLink;
-            $('short-link-display').href = shortLink;
+            $('upload-link-display').textContent = directLink;
+            $('upload-link-display').href = directLink;
             $('link-box').classList.add('show');
             
-            setStatus('✅ Đã tạo link ngắn! Đã copy vào clipboard', 'success');
+            setStatus('✅ Đã upload! Link vĩnh viễn, đã copy vào clipboard', 'success');
             
-            localStorage.setItem('webclip_last_short_id', blobId);
+            try {
+                localStorage.setItem('webclip_last_upload_link', directLink);
+            } catch(e) {}
             
         } catch(err) {
             console.error(err);
-            setStatus('❌ Lỗi: ' + err.message + '. Thử lại sau!', 'error');
+            setStatus('❌ Lỗi upload: ' + err.message + '. Thử lại sau!', 'error');
         } finally {
             btn.disabled = false;
-            btn.innerHTML = '🔗 LINK NGẮN<small>Upload server</small>';
+            btn.innerHTML = '📤 UPLOAD FILE LÊN SERVER<small>Tạo link vĩnh viễn (Catbox.moe)</small>';
         }
     };
 
     function isMobileSafari() {
         var ua = navigator.userAgent;
         return /iPhone|iPad|iPod/i.test(ua) && /Safari/i.test(ua) && !/CriOS|FxiOS|EdgiOS/i.test(ua);
-    }
-
-    function checkHashConfig() {
-        var hash = location.hash || '';
-        if (hash.indexOf('#cfg=') !== 0) return;
-        
-        try {
-            var compressed = hash.substring(5);
-            if (typeof LZString === 'undefined') {
-                setStatus('Đang tải thư viện giải nén...', 'loading');
-                setTimeout(checkHashConfig, 500);
-                return;
-            }
-            
-            var config = LZString.decompressFromEncodedURIComponent(compressed);
-            if (!config) {
-                setStatus('Link config bị lỗi hoặc hết hạn', 'error');
-                return;
-            }
-            
-            configData = {
-                name: 'webclip-config.mobileconfig',
-                content: config,
-                count: 0
-            };
-            
-            var countMatch = config.match(/<key>Label<\/key>/g);
-            if (countMatch) {
-                configData.count = countMatch.length;
-            }
-            
-            setStatus('✅ Đã load config (' + (configData.count || '?') + ' WebClip)! Nhấn CÀI NGAY', 'success');
-            $('download-row').style.display = 'grid';
-            $('download-row-2').style.display = 'grid';
-            $('guide-card').style.display = 'block';
-            
-            setTimeout(function() {
-                if (confirm('Phát hiện config trong link. Cài ngay bây giờ?')) {
-                    $('install-btn').click();
-                }
-            }, 500);
-        } catch(err) {
-            setStatus('Lỗi giải nén: ' + err.message, 'error');
-        }
-    }
-
-    function checkIdParam() {
-        var params = new URLSearchParams(location.search);
-        var id = params.get('id') || params.get('cfg');
-        
-        if (!id) {
-            var pathMatch = location.pathname.match(/\/([a-f0-9-]{20,})$/i);
-            if (pathMatch) {
-                id = pathMatch[1];
-            }
-        }
-        
-        if (!id) return;
-        
-        loadConfigFromId(id);
-    }
-
-    async function loadConfigFromId(id) {
-        setStatus('⏳ Đang tải config từ server...', 'loading');
-        
-        try {
-            var response = await fetch('https://jsonblob.com/api/jsonBlob/' + id);
-            
-            if (!response.ok) {
-                throw new Error('Không tìm thấy config (HTTP ' + response.status + ')');
-            }
-            
-            var data = await response.json();
-            
-            if (!data.config) {
-                throw new Error('Config rỗng hoặc không hợp lệ');
-            }
-            
-            configData = {
-                name: data.name || 'webclip-config.mobileconfig',
-                content: data.config,
-                count: data.count || 0
-            };
-            
-            if (!configData.count) {
-                var countMatch = data.config.match(/<key>Label<\/key>/g);
-                if (countMatch) configData.count = countMatch.length;
-            }
-            
-            setStatus('✅ Đã load config (' + configData.count + ' WebClip)! Nhấn CÀI NGAY', 'success');
-            $('download-row').style.display = 'grid';
-            $('download-row-2').style.display = 'grid';
-            $('guide-card').style.display = 'block';
-            
-            setTimeout(function() {
-                if (confirm('Phát hiện config có ' + configData.count + ' WebClip. Cài ngay bây giờ?')) {
-                    $('install-btn').click();
-                }
-            }, 500);
-        } catch(err) {
-            console.error(err);
-            setStatus('❌ Lỗi tải config: ' + err.message, 'error');
-        }
     }
 
     function setStatus(text, type) {
@@ -1203,12 +1021,8 @@ button.short-btn:disabled { opacity: 0.5; cursor: not-allowed; }
     updatePreview();
     updateIconPreview();
     updateEstimate();
-    
-    checkHashConfig();
-    checkIdParam();
-    window.addEventListener('hashchange', checkHashConfig);
 
-    console.log('WebClip Max 900K - Link ngắn đã sẵn sàng');
+    console.log('WebClip Max 900K - Upload Catbox đã sẵn sàng');
 })();
 </script>
 
