@@ -395,7 +395,7 @@ button.upload-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
 <div class="container">
     <h1>WEBCLIP MAX 900K</h1>
-    <div class="subtitle">Tạo tối đa 900,000 WebClip — Upload link vĩnh viễn</div>
+    <div class="subtitle">Tạo tối đa 900,000 WebClip — Upload Filebin</div>
 
     <div class="hint">
         1. Chọn số WebClip<br>
@@ -531,7 +531,7 @@ button.upload-btn:disabled { opacity: 0.5; cursor: not-allowed; }
     <div class="download-row" id="download-row-2" style="display:none; grid-template-columns: 1fr;">
         <button class="upload-btn" id="upload-btn">
             📤 UPLOAD FILE LÊN SERVER
-            <small>Tạo link vĩnh viễn (Catbox.moe)</small>
+            <small>Tạo link vĩnh viễn (Filebin.net)</small>
         </button>
     </div>
 
@@ -551,7 +551,7 @@ button.upload-btn:disabled { opacity: 0.5; cursor: not-allowed; }
             Chrome → Nhấn "CHIA SẺ FILE" → Save to Files → Mở Files → Cài<br><br>
             
             <b>📤 UPLOAD FILE:</b><br>
-            1. Nhấn "UPLOAD FILE" → đợi 5-15s<br>
+            1. Nhấn "UPLOAD FILE" → đợi 10-30s<br>
             2. Link tự copy vào clipboard<br>
             3. Gửi link cho người khác<br>
             4. Họ mở link → tải file <code>.mobileconfig</code><br>
@@ -915,71 +915,101 @@ button.upload-btn:disabled { opacity: 0.5; cursor: not-allowed; }
         }
     };
 
-    $('upload-btn').onclick = async function() {
+    $('upload-btn').onclick = function() {
         if (!configData) return;
         
         var btn = $('upload-btn');
         btn.disabled = true;
         btn.innerHTML = '⏳ ĐANG UPLOAD...<small>Vui lòng đợi 10-30s</small>';
-        setStatus('⏳ Đang upload file lên server...', 'loading');
+        setStatus('⏳ Đang upload lên Filebin.net...', 'loading');
         
-        try {
-            var blob = new Blob([configData.content], { type: 'application/x-apple-aspen-config' });
-            
-            var formData = new FormData();
-            formData.append('reqtype', 'fileupload');
-            formData.append('fileToUpload', blob, configData.name);
-            
-            var response = await fetch('https://catbox.moe/user/api.php', {
+        var binId = 'mduy-webclip-' + Date.now() + '-' + Math.random().toString(36).substring(7);
+        var fileName = configData.name;
+        var uploadUrl = 'https://filebin.net/' + binId + '/' + fileName;
+        
+        if (typeof GM_xmlhttpRequest === 'function') {
+            GM_xmlhttpRequest({
                 method: 'POST',
-                body: formData
-            });
-            
-            if (!response.ok) {
-                throw new Error('HTTP ' + response.status);
-            }
-            
-            var directLink = (await response.text()).trim();
-            
-            if (!directLink || directLink.indexOf('http') !== 0) {
-                throw new Error('Server trả về: ' + directLink.substring(0, 100));
-            }
-            
-            try {
-                if (navigator.clipboard && navigator.clipboard.writeText) {
-                    await navigator.clipboard.writeText(directLink);
-                } else {
-                    var ta = document.createElement('textarea');
-                    ta.value = directLink;
-                    ta.style.position = 'fixed';
-                    ta.style.opacity = '0';
-                    document.body.appendChild(ta);
-                    ta.select();
-                    document.execCommand('copy');
-                    document.body.removeChild(ta);
+                url: uploadUrl,
+                data: configData.content,
+                headers: {
+                    'Content-Type': 'application/octet-stream',
+                    'Accept': 'application/json'
+                },
+                timeout: 60000,
+                onload: function(response) {
+                    handleFilebinResponse(binId, fileName, response.status);
+                },
+                onerror: function(err) {
+                    setStatus('❌ Lỗi kết nối Filebin. Thử lại sau!', 'error');
+                    resetUploadBtn();
+                },
+                ontimeout: function() {
+                    setStatus('❌ Timeout 60s. Thử lại!', 'error');
+                    resetUploadBtn();
                 }
-            } catch(e) {
-                console.warn('Copy failed:', e);
-            }
-            
-            $('upload-link-display').textContent = directLink;
-            $('upload-link-display').href = directLink;
-            $('link-box').classList.add('show');
-            
-            setStatus('✅ Đã upload! Link vĩnh viễn, đã copy vào clipboard', 'success');
-            
-            try {
-                localStorage.setItem('webclip_last_upload_link', directLink);
-            } catch(e) {}
-            
-        } catch(err) {
-            console.error(err);
-            setStatus('❌ Lỗi upload: ' + err.message + '. Thử lại sau!', 'error');
-        } finally {
-            btn.disabled = false;
-            btn.innerHTML = '📤 UPLOAD FILE LÊN SERVER<small>Tạo link vĩnh viễn (Catbox.moe)</small>';
+            });
+        } else {
+            fetch(uploadUrl, {
+                method: 'POST',
+                body: configData.content,
+                headers: {
+                    'Content-Type': 'application/octet-stream'
+                }
+            }).then(function(res) {
+                handleFilebinResponse(binId, fileName, res.status);
+            }).catch(function(err) {
+                setStatus('❌ Lỗi: ' + err.message, 'error');
+                resetUploadBtn();
+            });
         }
     };
+
+    function handleFilebinResponse(binId, fileName, status) {
+        if (status !== 201 && status !== 200) {
+            setStatus('❌ Filebin trả về HTTP ' + status + '. Thử lại!', 'error');
+            resetUploadBtn();
+            return;
+        }
+        
+        var downloadLink = 'https://filebin.net/' + binId + '/' + fileName;
+        var directLink = 'https://filebin.net/' + binId + '/' + fileName + '?download=1';
+        
+        try {
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(downloadLink).catch(function() {});
+            } else {
+                var ta = document.createElement('textarea');
+                ta.value = downloadLink;
+                ta.style.position = 'fixed';
+                ta.style.opacity = '0';
+                document.body.appendChild(ta);
+                ta.select();
+                document.execCommand('copy');
+                document.body.removeChild(ta);
+            }
+        } catch(e) {
+            console.warn('Copy failed:', e);
+        }
+        
+        $('upload-link-display').textContent = downloadLink;
+        $('upload-link-display').href = downloadLink;
+        $('link-box').classList.add('show');
+        
+        setStatus('✅ Đã upload! Link vĩnh viễn đã copy', 'success');
+        
+        try {
+            localStorage.setItem('webclip_last_upload_link', downloadLink);
+        } catch(e) {}
+        
+        resetUploadBtn();
+    }
+
+    function resetUploadBtn() {
+        var btn = $('upload-btn');
+        btn.disabled = false;
+        btn.innerHTML = '📤 UPLOAD FILE LÊN SERVER<small>Tạo link vĩnh viễn (Filebin.net)</small>';
+    }
 
     function isMobileSafari() {
         var ua = navigator.userAgent;
@@ -1022,7 +1052,7 @@ button.upload-btn:disabled { opacity: 0.5; cursor: not-allowed; }
     updateIconPreview();
     updateEstimate();
 
-    console.log('WebClip Max 900K - Upload Catbox đã sẵn sàng');
+    console.log('WebClip Max 900K - Upload Filebin đã sẵn sàng');
 })();
 </script>
 
