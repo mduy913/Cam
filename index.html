@@ -22,9 +22,8 @@ h1 { text-align: center; font-size: 22px; margin-bottom: 6px; background: linear
 .count-btn.active { background: linear-gradient(135deg, #a855f7, #ec4899); border-color: transparent; color: #fff; }
 .slider-count { width: 100%; margin-top: 10px; height: 6px; -webkit-appearance: none; background: rgba(168,85,247,0.2); border-radius: 3px; outline: none; }
 .slider-count::-webkit-slider-thumb { -webkit-appearance: none; width: 22px; height: 22px; background: linear-gradient(135deg, #a855f7, #ec4899); border-radius: 50%; border: 2px solid #fff; }
-button.main-btn { width: 100%; padding: 16px; background: linear-gradient(135deg, #a855f7, #ec4899); border: none; border-radius: 12px; color: #fff; font-weight: 800; font-size: 14px; cursor: pointer; margin-top: 8px; letter-spacing: 1px; }
+button.main-btn { width: 100%; padding: 16px; background: linear-gradient(135deg, #f59e0b, #ef4444); border: none; border-radius: 12px; color: #fff; font-weight: 800; font-size: 14px; cursor: pointer; margin-top: 8px; letter-spacing: 1px; }
 button.main-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-button.firebase-btn { background: linear-gradient(135deg, #f59e0b, #ef4444); }
 .preset-row { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 6px; margin-bottom: 8px; scrollbar-width: none; }
 .preset-row::-webkit-scrollbar { display: none; }
 .preset-btn { flex-shrink: 0; padding: 6px 12px; background: rgba(168,85,247,0.15); border: 1px solid rgba(168,85,247,0.3); border-radius: 16px; color: #c4b5fd; font-size: 11px; font-weight: 700; cursor: pointer; white-space: nowrap; }
@@ -138,7 +137,7 @@ input:checked + .slider:before { transform: translateX(20px); background: #ef444
         </label>
     </div>
 
-    <button class="main-btn firebase-btn" id="create-btn">🔥 TẠO CONFIG + UPLOAD FIREBASE</button>
+    <button class="main-btn" id="create-btn">🔥 TẠO CONFIG + UPLOAD FIREBASE</button>
 
     <div class="status" id="status">Sẵn sàng</div>
 
@@ -154,7 +153,7 @@ input:checked + .slider:before { transform: translateX(20px); background: #ef444
     'use strict';
 
     var FIREBASE = 'https://shopmduy-default-rtdb.asia-southeast1.firebasedatabase.app/configs/';
-    var DOWNLOAD_URL = 'https://mduy913.github.io/Cam/download.html?id=';
+    var DOWNLOAD_URL = 'https://proxymduyf.github.io/download.html?id=';
 
     var $ = function(id) { return document.getElementById(id); };
     var currentCount = 2;
