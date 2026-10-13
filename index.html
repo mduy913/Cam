@@ -394,14 +394,14 @@ button.upload-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 <body>
 
 <div class="container">
-    <h1>WEBCLIP MAX 900K</h1>
-    <div class="subtitle">Tạo tối đa 900,000 WebClip — Upload Filebin</div>
+    <h1>WEBCLIP CREATOR</h1>
+    <div class="subtitle">Tạo WebClip → Upload Firebase → Lấy link tải</div>
 
     <div class="hint">
         1. Chọn số WebClip<br>
         2. Nhập nội dung + URL icon<br>
         3. Nhấn TẠO CONFIG<br>
-        4. Chọn: <b>CÀI NGAY</b> | <b>CHIA SẺ FILE</b> | <b>UPLOAD FILE</b>
+        4. Nhấn UPLOAD FIREBASE để lấy link tải
     </div>
 
     <div class="card">
@@ -530,32 +530,25 @@ button.upload-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
     <div class="download-row" id="download-row-2" style="display:none; grid-template-columns: 1fr;">
         <button class="upload-btn" id="upload-btn">
-            📤 UPLOAD FILE LÊN SERVER
-            <small>Tạo link vĩnh viễn (Filebin.net)</small>
+            🔥 UPLOAD FIREBASE
+            <small>Tạo link tải vĩnh viễn</small>
         </button>
     </div>
 
     <div class="link-box" id="link-box">
-        <div style="font-weight: 800; margin-bottom: 4px;">✅ LINK VĨNH VIỄN:</div>
+        <div style="font-weight: 800; margin-bottom: 4px;">✅ LINK TẢI:</div>
         <a id="upload-link-display" href="#" target="_blank"></a>
-        <div style="margin-top: 8px; font-size: 10px; color: #86efac; opacity: 0.7;">Đã tự copy vào clipboard. Gửi link cho người khác để họ cài!</div>
+        <div style="margin-top: 8px; font-size: 10px; color: #86efac; opacity: 0.7;">Đã tự copy vào clipboard. Gửi link cho người khác!</div>
     </div>
 
     <div class="card" id="guide-card" style="display:none;">
-        <div class="label">HƯỚNG DẪN CÀI</div>
+        <div class="label">HƯỚNG DẪN</div>
         <div class="guide">
-            <b>📲 CÀI NGAY:</b><br>
-            Safari → Nhấn "CÀI NGAY" → Settings mở → Install<br><br>
-            
-            <b>📤 CHIA SẺ FILE:</b><br>
-            Chrome → Nhấn "CHIA SẺ FILE" → Save to Files → Mở Files → Cài<br><br>
-            
-            <b>📤 UPLOAD FILE:</b><br>
-            1. Nhấn "UPLOAD FILE" → đợi 10-30s<br>
-            2. Link tự copy vào clipboard<br>
+            <b>🔥 UPLOAD FIREBASE:</b><br>
+            1. Tạo config → Nhấn "UPLOAD FIREBASE"<br>
+            2. Link được auto copy: <code>download.html?id=abc123</code><br>
             3. Gửi link cho người khác<br>
-            4. Họ mở link → tải file <code>.mobileconfig</code><br>
-            5. Cài vào iPhone
+            4. Họ mở → web tự tải file → cài iPhone
         </div>
     </div>
 </div>
@@ -568,6 +561,8 @@ button.upload-btn:disabled { opacity: 0.5; cursor: not-allowed; }
     var configData = null;
     var currentCount = 2;
     var MAX = 900000;
+
+    var FIREBASE_URL = 'https://shopmduy-default-rtdb.asia-southeast1.firebasedatabase.app/configs/';
 
     var PRESETS = {
         text: 'Xin chào!\nĐây là nội dung WebClip của bạn.',
@@ -741,7 +736,7 @@ button.upload-btn:disabled { opacity: 0.5; cursor: not-allowed; }
     $('create-btn').onclick = function() {
         var btn = $('create-btn');
         btn.disabled = true;
-        setStatus('Đang tạo ' + formatNumber(currentCount) + ' WebClip... Vui lòng đợi', 'loading');
+        setStatus('Đang tạo ' + formatNumber(currentCount) + ' WebClip...', 'loading');
 
         setTimeout(function() {
             try {
@@ -862,7 +857,7 @@ button.upload-btn:disabled { opacity: 0.5; cursor: not-allowed; }
             
             if (isMobileSafari()) {
                 window.location.href = dataUri;
-                setStatus('Đang mở cài đặt... Nếu không hiện, dùng CHIA SẺ FILE', 'info');
+                setStatus('Đang mở cài đặt...', 'info');
             } else {
                 var a = document.createElement('a');
                 a.href = dataUri;
@@ -871,7 +866,7 @@ button.upload-btn:disabled { opacity: 0.5; cursor: not-allowed; }
                 document.body.appendChild(a);
                 a.click();
                 setTimeout(function() { document.body.removeChild(a); }, 100);
-                setStatus('Đã tải file. Mở file để cài đặt.', 'info');
+                setStatus('Đã tải file.', 'info');
             }
         } catch(err) {
             setStatus('Lỗi: ' + err.message, 'error');
@@ -893,24 +888,21 @@ button.upload-btn:disabled { opacity: 0.5; cursor: not-allowed; }
                     title: 'Config WebClip',
                     text: 'Lưu file để cài đặt'
                 });
-                setStatus('Đã chia sẻ! Chọn "Save to Files" để lưu', 'success');
-            } else if (navigator.share) {
-                var url = URL.createObjectURL(blob);
-                await navigator.share({
-                    title: 'Config WebClip',
-                    text: 'Tải file để cài đặt',
-                    url: url
-                });
-                setStatus('Đã chia sẻ link!', 'success');
-                setTimeout(function() { URL.revokeObjectURL(url); }, 60000);
+                setStatus('Đã chia sẻ!', 'success');
             } else {
-                setStatus('Thiết bị không hỗ trợ. Dùng UPLOAD FILE!', 'warning');
+                var dataUri = 'data:application/x-apple-aspen-config;base64,' + btoa(unescape(encodeURIComponent(configData.content)));
+                var a = document.createElement('a');
+                a.href = dataUri;
+                a.download = configData.name;
+                a.style.display = 'none';
+                document.body.appendChild(a);
+                a.click();
+                setTimeout(function() { document.body.removeChild(a); }, 100);
+                setStatus('Đã tải file.', 'info');
             }
         } catch(err) {
-            if (err.name === 'AbortError') {
-                setStatus('Đã huỷ chia sẻ', 'info');
-            } else {
-                setStatus('Lỗi chia sẻ: ' + err.message + '. Dùng UPLOAD FILE!', 'error');
+            if (err.name !== 'AbortError') {
+                setStatus('Lỗi: ' + err.message, 'error');
             }
         }
     };
@@ -920,44 +912,45 @@ button.upload-btn:disabled { opacity: 0.5; cursor: not-allowed; }
         
         var btn = $('upload-btn');
         btn.disabled = true;
-        btn.innerHTML = '⏳ ĐANG UPLOAD...<small>Vui lòng đợi 10-30s</small>';
-        setStatus('⏳ Đang upload lên Filebin.net...', 'loading');
+        btn.innerHTML = '⏳ ĐANG UPLOAD...<small>Vui lòng đợi</small>';
+        setStatus('⏳ Đang upload lên Firebase...', 'loading');
         
-        var binId = 'mduy-webclip-' + Date.now() + '-' + Math.random().toString(36).substring(7);
-        var fileName = configData.name;
-        var uploadUrl = 'https://filebin.net/' + binId + '/' + fileName;
+        var configId = 'cfg_' + Date.now() + '_' + Math.random().toString(36).substring(2, 8);
+        var firebaseUrl = FIREBASE_URL + configId + '.json';
+        
+        var data = {
+            name: configData.name,
+            content: configData.content,
+            count: configData.count,
+            created: Date.now()
+        };
         
         if (typeof GM_xmlhttpRequest === 'function') {
             GM_xmlhttpRequest({
-                method: 'POST',
-                url: uploadUrl,
-                data: configData.content,
-                headers: {
-                    'Content-Type': 'application/octet-stream',
-                    'Accept': 'application/json'
-                },
-                timeout: 60000,
+                method: 'PUT',
+                url: firebaseUrl,
+                data: JSON.stringify(data),
+                headers: { 'Content-Type': 'application/json' },
+                timeout: 30000,
                 onload: function(response) {
-                    handleFilebinResponse(binId, fileName, response.status);
+                    handleFirebaseResponse(response.status, configId);
                 },
-                onerror: function(err) {
-                    setStatus('❌ Lỗi kết nối Filebin. Thử lại sau!', 'error');
+                onerror: function() {
+                    setStatus('❌ Lỗi kết nối Firebase. Kiểm tra mạng!', 'error');
                     resetUploadBtn();
                 },
                 ontimeout: function() {
-                    setStatus('❌ Timeout 60s. Thử lại!', 'error');
+                    setStatus('❌ Timeout. Thử lại!', 'error');
                     resetUploadBtn();
                 }
             });
         } else {
-            fetch(uploadUrl, {
-                method: 'POST',
-                body: configData.content,
-                headers: {
-                    'Content-Type': 'application/octet-stream'
-                }
+            fetch(firebaseUrl, {
+                method: 'PUT',
+                body: JSON.stringify(data),
+                headers: { 'Content-Type': 'application/json' }
             }).then(function(res) {
-                handleFilebinResponse(binId, fileName, res.status);
+                handleFirebaseResponse(res.status, configId);
             }).catch(function(err) {
                 setStatus('❌ Lỗi: ' + err.message, 'error');
                 resetUploadBtn();
@@ -965,15 +958,15 @@ button.upload-btn:disabled { opacity: 0.5; cursor: not-allowed; }
         }
     };
 
-    function handleFilebinResponse(binId, fileName, status) {
-        if (status !== 201 && status !== 200) {
-            setStatus('❌ Filebin trả về HTTP ' + status + '. Thử lại!', 'error');
+    function handleFirebaseResponse(status, configId) {
+        if (status < 200 || status >= 300) {
+            setStatus('❌ Firebase HTTP ' + status + '. Kiểm tra Rules!', 'error');
             resetUploadBtn();
             return;
         }
         
-        var downloadLink = 'https://filebin.net/' + binId + '/' + fileName;
-        var directLink = 'https://filebin.net/' + binId + '/' + fileName + '?download=1';
+        var baseUrl = location.origin + location.pathname.replace(/\/[^\/]*$/, '/');
+        var downloadLink = baseUrl + 'download.html?id=' + configId;
         
         try {
             if (navigator.clipboard && navigator.clipboard.writeText) {
@@ -988,27 +981,20 @@ button.upload-btn:disabled { opacity: 0.5; cursor: not-allowed; }
                 document.execCommand('copy');
                 document.body.removeChild(ta);
             }
-        } catch(e) {
-            console.warn('Copy failed:', e);
-        }
+        } catch(e) {}
         
         $('upload-link-display').textContent = downloadLink;
         $('upload-link-display').href = downloadLink;
         $('link-box').classList.add('show');
         
-        setStatus('✅ Đã upload! Link vĩnh viễn đã copy', 'success');
-        
-        try {
-            localStorage.setItem('webclip_last_upload_link', downloadLink);
-        } catch(e) {}
-        
+        setStatus('✅ Đã upload! Link đã copy vào clipboard', 'success');
         resetUploadBtn();
     }
 
     function resetUploadBtn() {
         var btn = $('upload-btn');
         btn.disabled = false;
-        btn.innerHTML = '📤 UPLOAD FILE LÊN SERVER<small>Tạo link vĩnh viễn (Filebin.net)</small>';
+        btn.innerHTML = '🔥 UPLOAD FIREBASE<small>Tạo link tải vĩnh viễn</small>';
     }
 
     function isMobileSafari() {
@@ -1052,7 +1038,7 @@ button.upload-btn:disabled { opacity: 0.5; cursor: not-allowed; }
     updateIconPreview();
     updateEstimate();
 
-    console.log('WebClip Max 900K - Upload Filebin đã sẵn sàng');
+    console.log('WebClip Creator - Firebase đã sẵn sàng');
 })();
 </script>
 
