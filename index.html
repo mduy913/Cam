@@ -3,26 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>FF Web Clone - Realistic Aim Assist</title>
+    <title>FF Web - Cơ chế Vút Tâm (Drag Headshot)</title>
     <style>
         body { margin: 0; overflow: hidden; background-color: #87CEEB; font-family: sans-serif; touch-action: none; }
         canvas { display: block; }
         
+        /* Tâm ngắm */
         #crosshair {
             position: fixed; top: 50%; left: 50%; width: 24px; height: 24px;
             transform: translate(-50%, -50%); pointer-events: none; z-index: 10;
             transition: transform 0.05s;
         }
         #crosshair::before, #crosshair::after {
-            content: ''; position: absolute; background: rgba(255, 255, 255, 0.8);
+            content: ''; position: absolute; background: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 0 3px black;
         }
         #crosshair::before { top: 11px; left: 0; width: 24px; height: 2px; }
         #crosshair::after { top: 0; left: 11px; width: 2px; height: 24px; }
         
+        /* Đổi màu tâm khi khóa mục tiêu */
         #crosshair.locked::before, #crosshair.locked::after {
-            background: #ff0000; box-shadow: 0 0 8px #ff0000;
+            background: #00ff00; box-shadow: 0 0 8px #00ff00;
         }
 
+        /* UI */
         #ui {
             position: fixed; top: 20px; left: 20px; color: white; font-weight: bold;
             text-shadow: 2px 2px 0 #000; z-index: 10; font-size: 20px;
@@ -32,17 +36,19 @@
             text-shadow: 2px 2px 0 #000; z-index: 10; font-size: 30px;
         }
         
+        /* Hiệu ứng chữ khi bắn trúng */
         #hitmarker {
             position: fixed; top: 40%; left: 50%; transform: translate(-50%, -50%);
             color: red; font-size: 30px; font-weight: bold; opacity: 0; 
-            pointer-events: none; z-index: 20; transition: opacity 0.1s;
+            pointer-events: none; z-index: 20; transition: opacity 0.2s;
             text-shadow: 0 0 10px black; text-align: center;
         }
-        
+
+        /* Hướng dẫn */
         #hint {
             position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%);
-            color: white; font-size: 12px; text-shadow: 1px 1px 0 #000;
-            z-index: 10; text-align: center; opacity: 0.7;
+            color: white; font-size: 14px; text-shadow: 1px 1px 0 #000;
+            z-index: 10; text-align: center; background: rgba(0,0,0,0.5); padding: 5px 10px; border-radius: 5px;
         }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -53,7 +59,7 @@
     <div id="ui">Kills: <span id="kills">0</span></div>
     <div id="ammo">🔫 <span id="ammo-count">30</span> / 30</div>
     <div id="hitmarker">💥 HEADSHOT!</div>
-    <div id="hint">Kéo (vuốt) lên để bắn đầu | Tâm tự hút vào bụng như FF</div>
+    <div id="hint">Vuốt lên khi bắn để vút tâm lên đầu!</div>
 
 <script>
     // ==========================================
@@ -61,7 +67,7 @@
     // ==========================================
     const scene = new THREE.Scene();
     scene.background = new THREE.Color(0x87CEEB);
-    scene.fog = new THREE.Fog(0x87CEEB, 10, 80);
+    scene.fog = new THREE.Fog(0x87CEEB, 20, 100);
 
     const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
     camera.position.y = 1.6;
@@ -70,29 +76,33 @@
     renderer.setSize(window.innerWidth, window.innerHeight);
     document.body.appendChild(renderer.domElement);
 
+    // Ánh sáng
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
     scene.add(ambientLight);
     const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
     dirLight.position.set(10, 20, 10);
     scene.add(dirLight);
 
+    // Mặt đất
     const floor = new THREE.Mesh(new THREE.PlaneGeometry(200, 200), new THREE.MeshLambertMaterial({ color: 0x3a7d44 }));
     floor.rotation.x = -Math.PI / 2;
     scene.add(floor);
 
-    for (let i = 0; i < 15; i++) {
+    // Vật cản
+    for (let i = 0; i < 10; i++) {
         const box = new THREE.Mesh(new THREE.BoxGeometry(2, 2, 2), new THREE.MeshLambertMaterial({ color: 0x8B4513 }));
-        box.position.set((Math.random() - 0.5) * 50, 1, (Math.random() - 0.5) * 50);
+        box.position.set((Math.random() - 0.5) * 40, 1, (Math.random() - 0.5) * 40);
         scene.add(box);
     }
 
+    // Súng
     const gun = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.1, 0.6), new THREE.MeshLambertMaterial({ color: 0x333333 }));
     gun.position.set(0.3, -0.3, -0.5);
     camera.add(gun);
     scene.add(camera);
 
     // ==========================================
-    // 2. KẺ ĐỊCH (Có đủ BỤNG, NGỰC, CỔ, ĐẦU)
+    // 2. TẠO BOT (Có đủ Bụng, Ngực, Cổ, Đầu)
     // ==========================================
     let enemies = [];
     let kills = 0;
@@ -107,19 +117,19 @@
         legs.userData = { part: 'legs', hp: 100, damage: 15 };
         enemyGroup.add(legs);
 
-        // Bụng (Aim Assist sẽ hút vào đây)
+        // Bụng (Aim Assist hút vào đây)
         const stomach = new THREE.Mesh(new THREE.BoxGeometry(0.55, 0.35, 0.28), new THREE.MeshLambertMaterial({ color: 0x0000ff }));
         stomach.position.y = 0.87;
-        stomach.userData = { part: 'stomach', hp: 100, damage: 20 };
+        stomach.userData = { part: 'stomach', hp: 100, damage: 25 };
         enemyGroup.add(stomach);
 
-        // Ngực (Vùng cao hơn, dễ chuyển lên đầu)
+        // Ngực
         const chest = new THREE.Mesh(new THREE.BoxGeometry(0.6, 0.35, 0.3), new THREE.MeshLambertMaterial({ color: 0x0000cc }));
         chest.position.y = 1.22;
-        chest.userData = { part: 'chest', hp: 100, damage: 25 };
+        chest.userData = { part: 'chest', hp: 100, damage: 30 };
         enemyGroup.add(chest);
 
-        // Cổ (Vùng đặt tâm lý tưởng của FF)
+        // Cổ
         const neck = new THREE.Mesh(new THREE.BoxGeometry(0.15, 0.12, 0.15), new THREE.MeshLambertMaterial({ color: 0xffccaa }));
         neck.position.y = 1.45;
         neck.userData = { part: 'neck', hp: 100, damage: 50 };
@@ -131,18 +141,18 @@
         head.userData = { part: 'head', hp: 100, damage: 100 };
         enemyGroup.add(head);
 
-        enemyGroup.position.set((Math.random() - 0.5) * 40, 0, (Math.random() - 0.5) * 40 - 10);
-        enemyGroup.speed = 0.015 + Math.random() * 0.02;
+        enemyGroup.position.set((Math.random() - 0.5) * 30, 0, (Math.random() - 0.5) * 30 - 10);
+        enemyGroup.speed = 0.01 + Math.random() * 0.02;
         enemyGroup.direction = Math.random() * Math.PI * 2;
         
         scene.add(enemyGroup);
         enemies.push(enemyGroup);
     }
 
-    for (let i = 0; i < 12; i++) createEnemy();
+    for (let i = 0; i < 10; i++) createEnemy();
 
     // ==========================================
-    // 3. ĐIỀU KHIỂN & AIM ASSIST
+    // 3. CƠ CHẾ VÚT TÂM (DRAG HEADSHOT)
     // ==========================================
     let shootCooldown = false;
     let ammo = 30;
@@ -150,38 +160,29 @@
     const raycaster = new THREE.Raycaster();
     const mouse = new THREE.Vector2(0, 0);
 
-    // Biến cho Aim Assist
-    let aimAssistTarget = null;      // Mục tiêu đang bị hút
-    let aimOffsetY = 0;              // Độ lệch dọc do người chơi kéo
+    let aimOffsetY = 0; // Độ lệch tâm (Kéo lên)
+    let targetEnemy = null;
     let lastTouchY = 0;
-    let dragVelocity = 0;            // Tốc độ kéo
-    let isDragging = false;
 
-    // Hàm lấy vị trí bụng/ngực của địch (Aim Assist target)
-    function getAimAssistPoint(enemy) {
+    // Hàm lấy điểm hút (Bụng của địch)
+    function getStomachPoint(enemy) {
         const stomach = enemy.children.find(c => c.userData.part === 'stomach');
-        const chest = enemy.children.find(c => c.userData.part === 'chest');
-        if (!stomach || !chest) return null;
-        
-        const stomachPos = new THREE.Vector3();
-        const chestPos = new THREE.Vector3();
-        stomach.getWorldPosition(stomachPos);
-        chest.getWorldPosition(chestPos);
-        
-        // Aim Assist mặc định hút vào khoảng giữa bụng và ngực
-        return stomachPos.clone().lerp(chestPos, 0.4);
+        if (!stomach) return null;
+        const pos = new THREE.Vector3();
+        stomach.getWorldPosition(pos);
+        return pos;
     }
 
-    // Cập nhật Aim Assist mỗi frame
+    // Cập nhật Aim Assist (Tự hút vào bụng)
     function updateAimAssist() {
-        if (enemies.length === 0) { aimAssistTarget = null; crosshairEl.classList.remove('locked'); return; }
+        if (enemies.length === 0) { targetEnemy = null; crosshairEl.classList.remove('locked'); return; }
 
         const center = new THREE.Vector2(0, 0);
         let closestEnemy = null;
-        let minDist = 0.25; // Bán kính hút
+        let minDist = 0.3; // Bán kính hút
 
         enemies.forEach(enemy => {
-            const aimPoint = getAimAssistPoint(enemy);
+            const aimPoint = getStomachPoint(enemy);
             if (!aimPoint) return;
 
             const screenPos = aimPoint.clone().project(camera);
@@ -194,107 +195,96 @@
         });
 
         if (closestEnemy) {
-            const targetPoint = getAimAssistPoint(closestEnemy);
-            if (targetPoint) {
-                // Lấy vị trí đầu và bụng
-                const head = closestEnemy.children.find(c => c.userData.part === 'head');
-                const headPos = new THREE.Vector3();
-                head.getWorldPosition(headPos);
-                
-                // Tính toán vị trí cuối cùng: hút vào bụng + offset từ việc kéo
-                const basePoint = targetPoint.clone();
-                const headDir = headPos.clone().sub(basePoint).normalize();
-                
-                // Áp dụng độ kéo của người chơi (aimOffsetY)
-                // Nếu kéo đủ mạnh (aimOffsetY > 0.8), tâm sẽ lên đầu
-                const finalPoint = basePoint.clone().add(headDir.multiplyScalar(aimOffsetY * 0.6));
-                
-                camera.lookAt(finalPoint);
-                crosshairEl.classList.add('locked');
-                aimAssistTarget = closestEnemy;
-            }
+            targetEnemy = closestEnemy;
+            const stomachPoint = getStomachPoint(closestEnemy);
+            const head = closestEnemy.children.find(c => c.userData.part === 'head');
+            const headPos = new THREE.Vector3();
+            head.getWorldPosition(headPos);
+            
+            // Tính hướng từ bụng lên đầu
+            const basePoint = stomachPoint.clone();
+            const headDir = headPos.clone().sub(basePoint).normalize();
+            
+            // Áp dụng độ kéo của người chơi (aimOffsetY)
+            // Kéo càng mạnh, tâm càng lên cao
+            const finalPoint = basePoint.clone().add(headDir.multiplyScalar(aimOffsetY * 0.8));
+            
+            camera.lookAt(finalPoint);
+            crosshairEl.classList.add('locked');
         } else {
-            aimAssistTarget = null;
+            targetEnemy = null;
             crosshairEl.classList.remove('locked');
+            // Từ từ reset tâm về giữa
+            aimOffsetY *= 0.9; 
         }
     }
 
-    // Xử lý kéo chuột (PC)
+    // ==========================================
+    // 4. ĐIỀU KHIỂN VUỐT (MOBILE & PC)
+    // ==========================================
+    // Chuột (PC)
+    let isDragging = false;
     let prevMouseY = 0;
+
     document.addEventListener('mousedown', (e) => {
-        if (e.button === 0) { isDragging = true; prevMouseY = e.clientY; dragVelocity = 0; }
+        if (e.button === 0) { isDragging = true; prevMouseY = e.clientY; }
     });
 
     document.addEventListener('mousemove', (e) => {
         if (!isDragging) return;
-        const deltaY = prevMouseY - e.clientY; // Kéo lên thì delta dương
+        const deltaY = prevMouseY - e.clientY;
         prevMouseY = e.clientY;
         
-        // Nếu không có mục tiêu, xoay bình thường
-        if (!aimAssistTarget) {
+        if (targetEnemy) {
+            // Có địch -> Kéo tâm lên đầu
+            aimOffsetY += deltaY * 0.02;
+            aimOffsetY = Math.max(0, Math.min(1.5, aimOffsetY));
+        } else {
+            // Không có địch -> Xoay camera bình thường
             camera.rotation.x += deltaY * 0.003;
             camera.rotation.x = Math.max(-Math.PI/2, Math.min(Math.PI/2, camera.rotation.x));
-        } else {
-            // Có mục tiêu: kéo làm tăng aimOffsetY (kéo lên đầu)
-            dragVelocity = deltaY * 0.01;
-            aimOffsetY += dragVelocity;
-            aimOffsetY = Math.max(0, Math.min(1.2, aimOffsetY)); // Giới hạn 0 -> 1.2
         }
     });
 
     document.addEventListener('mouseup', (e) => {
         if (e.button === 0) {
-            if (Math.abs(dragVelocity) < 0.05) shoot(); // Click nhẹ = bắn
+            if (Math.abs(aimOffsetY) < 0.1) shoot(); // Click nhẹ = bắn
             isDragging = false;
-            // Từ từ reset offset về 0 (hút lại xuống bụng)
-            resetAimOffset();
         }
     });
 
-    // Xử lý vuốt (Mobile)
-    let touchStartY = 0;
+    // Cảm ứng (Mobile)
     document.addEventListener('touchstart', (e) => {
-        touchStartY = e.touches[0].clientY;
+        lastTouchY = e.touches[0].clientY;
         isDragging = true;
-        dragVelocity = 0;
     });
 
     document.addEventListener('touchmove', (e) => {
         if (!isDragging) return;
         const touchY = e.touches[0].clientY;
-        const deltaY = touchStartY - touchY;
-        touchStartY = touchY;
+        const deltaY = lastTouchY - touchY;
+        lastTouchY = touchY;
 
-        if (!aimAssistTarget) {
+        if (targetEnemy) {
+            aimOffsetY += deltaY * 0.03; // Mobile nhạy hơn chút
+            aimOffsetY = Math.max(0, Math.min(1.5, aimOffsetY));
+        } else {
             camera.rotation.x += deltaY * 0.005;
             camera.rotation.x = Math.max(-Math.PI/2, Math.min(Math.PI/2, camera.rotation.x));
-        } else {
-            dragVelocity = deltaY * 0.015;
-            aimOffsetY += dragVelocity;
-            aimOffsetY = Math.max(0, Math.min(1.2, aimOffsetY));
         }
     });
 
     document.addEventListener('touchend', (e) => {
         if (e.changedTouches.length > 0) {
             const touch = e.changedTouches[0];
-            const dist = Math.hypot(touch.clientX - touchStartY, touch.clientY - touchStartY);
-            if (Math.abs(dragVelocity) < 0.1) shoot();
+            const dist = Math.hypot(touch.clientX - touch.clientX, touch.clientY - lastTouchY);
+            if (dist < 10) shoot(); // Chạm nhẹ = bắn
         }
         isDragging = false;
-        resetAimOffset();
     });
 
-    // Từ từ reset aimOffset về 0 (mô phỏng magnet kéo về bụng)
-    function resetAimOffset() {
-        const interval = setInterval(() => {
-            aimOffsetY *= 0.85;
-            if (aimOffsetY < 0.01) { aimOffsetY = 0; clearInterval(interval); }
-        }, 50);
-    }
-
     // ==========================================
-    // 4. BẮN VÀ DAMAGE
+    // 5. HÀM BẮN VÀ TÍNH SÁT THƯƠNG
     // ==========================================
     function shoot() {
         if (shootCooldown || ammo <= 0) return;
@@ -315,15 +305,17 @@
             const partData = hit.object.userData;
 
             if (partData.part) {
-                const isHeadshot = partData.part === 'head';
-                createBloodParticle(hit.point, isHeadshot ? 0xff0000 : 0xaa0000);
+                // Nổ máu
+                createBloodParticle(hit.point, partData.part === 'head' ? 0xff0000 : 0xaa0000);
                 
-                if (isHeadshot) {
+                if (partData.part === 'head') {
+                    // HEADSHOT: 100 Dame (Chết ngay)
                     kills++;
                     document.getElementById('kills').innerText = kills;
-                    showHitmarker("💥 HEADSHOT!");
+                    showHitmarker("💥 HEADSHOT! (-100)");
                     removeEnemy(hit.object.parent);
                 } else {
+                    // BODY: Dame nhỏ
                     showHitmarker(`🎯 ${partData.part.toUpperCase()} (-${partData.damage})`);
                     partData.hp -= partData.damage;
                     if (partData.hp <= 0) {
@@ -332,7 +324,7 @@
                         removeEnemy(hit.object.parent);
                     }
                 }
-                break;
+                break; 
             }
         }
     }
@@ -341,13 +333,13 @@
         const hm = document.getElementById('hitmarker');
         hm.innerText = text;
         hm.style.opacity = 1;
-        setTimeout(() => hm.style.opacity = 0, 200);
+        setTimeout(() => hm.style.opacity = 0, 300);
     }
 
     function removeEnemy(enemyGroup) {
         scene.remove(enemyGroup);
         enemies = enemies.filter(e => e !== enemyGroup);
-        if (aimAssistTarget === enemyGroup) aimAssistTarget = null;
+        if (targetEnemy === enemyGroup) targetEnemy = null;
         setTimeout(createEnemy, 2000);
     }
 
@@ -368,7 +360,7 @@
     }
 
     // ==========================================
-    // 5. GAME LOOP
+    // 6. GAME LOOP
     // ==========================================
     function animate() {
         requestAnimationFrame(animate);
@@ -376,7 +368,7 @@
         enemies.forEach(enemy => {
             enemy.position.x += Math.cos(enemy.direction) * enemy.speed;
             enemy.position.z += Math.sin(enemy.direction) * enemy.speed;
-            if (Math.abs(enemy.position.x) > 40 || Math.abs(enemy.position.z) > 40) {
+            if (Math.abs(enemy.position.x) > 30 || Math.abs(enemy.position.z) > 30) {
                 enemy.direction += Math.PI / 2;
             }
             enemy.rotation.y = -enemy.direction;
