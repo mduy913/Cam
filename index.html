@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>FF Web - Cơ chế Vút Tâm (Drag Headshot)</title>
+    <title>FF Web Clone - Full Mobile Control</title>
     <style>
-        body { margin: 0; overflow: hidden; background-color: #87CEEB; font-family: sans-serif; touch-action: none; }
+        body { margin: 0; overflow: hidden; background-color: #87CEEB; font-family: sans-serif; touch-action: none; user-select: none; }
         canvas { display: block; }
         
         /* Tâm ngắm */
@@ -20,23 +20,12 @@
         }
         #crosshair::before { top: 11px; left: 0; width: 24px; height: 2px; }
         #crosshair::after { top: 0; left: 11px; width: 2px; height: 24px; }
-        
-        /* Đổi màu tâm khi khóa mục tiêu */
         #crosshair.locked::before, #crosshair.locked::after {
             background: #00ff00; box-shadow: 0 0 8px #00ff00;
         }
 
         /* UI */
-        #ui {
-            position: fixed; top: 20px; left: 20px; color: white; font-weight: bold;
-            text-shadow: 2px 2px 0 #000; z-index: 10; font-size: 20px;
-        }
-        #ammo {
-            position: fixed; bottom: 20px; right: 20px; color: white; font-weight: bold;
-            text-shadow: 2px 2px 0 #000; z-index: 10; font-size: 30px;
-        }
-        
-        /* Hiệu ứng chữ khi bắn trúng */
+        #ui { position: fixed; top: 20px; left: 20px; color: white; font-weight: bold; text-shadow: 2px 2px 0 #000; z-index: 10; font-size: 20px; }
         #hitmarker {
             position: fixed; top: 40%; left: 50%; transform: translate(-50%, -50%);
             color: red; font-size: 30px; font-weight: bold; opacity: 0; 
@@ -44,11 +33,30 @@
             text-shadow: 0 0 10px black; text-align: center;
         }
 
-        /* Hướng dẫn */
-        #hint {
-            position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%);
-            color: white; font-size: 14px; text-shadow: 1px 1px 0 #000;
-            z-index: 10; text-align: center; background: rgba(0,0,0,0.5); padding: 5px 10px; border-radius: 5px;
+        /* Nút điều khiển (Mobile) */
+        #joystick-zone {
+            position: fixed; bottom: 20px; left: 20px; width: 120px; height: 120px;
+            background: rgba(255, 255, 255, 0.2); border-radius: 50%;
+            border: 2px solid rgba(255, 255, 255, 0.5); z-index: 100;
+            display: flex; justify-content: center; align-items: center;
+        }
+        #joystick-knob {
+            width: 50px; height: 50px; background: rgba(255, 255, 255, 0.8);
+            border-radius: 50%; pointer-events: none;
+        }
+        #btn-jump {
+            position: fixed; bottom: 30px; right: 140px; width: 60px; height: 60px;
+            background: rgba(0, 150, 255, 0.7); border: 2px solid white;
+            border-radius: 50%; color: white; font-weight: bold; font-size: 18px;
+            display: flex; justify-content: center; align-items: center;
+            z-index: 100; cursor: pointer;
+        }
+        #btn-fire {
+            position: fixed; bottom: 30px; right: 30px; width: 90px; height: 90px;
+            background: rgba(255, 0, 0, 0.7); border: 2px solid white;
+            border-radius: 50%; color: white; font-weight: bold; font-size: 24px;
+            display: flex; justify-content: center; align-items: center;
+            z-index: 100; cursor: pointer;
         }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -57,9 +65,12 @@
 
     <div id="crosshair"></div>
     <div id="ui">Kills: <span id="kills">0</span></div>
-    <div id="ammo">🔫 <span id="ammo-count">30</span> / 30</div>
     <div id="hitmarker">💥 HEADSHOT!</div>
-    <div id="hint">Vuốt lên khi bắn để vút tâm lên đầu!</div>
+
+    <!-- Điều khiển -->
+    <div id="joystick-zone"><div id="joystick-knob"></div></div>
+    <div id="btn-jump">NHẢY</div>
+    <div id="btn-fire">BẮN</div>
 
 <script>
     // ==========================================
@@ -76,33 +87,29 @@
     renderer.setSize(window.innerWidth, window.innerHeight);
     document.body.appendChild(renderer.domElement);
 
-    // Ánh sáng
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
     scene.add(ambientLight);
     const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
     dirLight.position.set(10, 20, 10);
     scene.add(dirLight);
 
-    // Mặt đất
     const floor = new THREE.Mesh(new THREE.PlaneGeometry(200, 200), new THREE.MeshLambertMaterial({ color: 0x3a7d44 }));
     floor.rotation.x = -Math.PI / 2;
     scene.add(floor);
 
-    // Vật cản
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < 15; i++) {
         const box = new THREE.Mesh(new THREE.BoxGeometry(2, 2, 2), new THREE.MeshLambertMaterial({ color: 0x8B4513 }));
-        box.position.set((Math.random() - 0.5) * 40, 1, (Math.random() - 0.5) * 40);
+        box.position.set((Math.random() - 0.5) * 50, 1, (Math.random() - 0.5) * 50);
         scene.add(box);
     }
 
-    // Súng
     const gun = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.1, 0.6), new THREE.MeshLambertMaterial({ color: 0x333333 }));
     gun.position.set(0.3, -0.3, -0.5);
     camera.add(gun);
     scene.add(camera);
 
     // ==========================================
-    // 2. TẠO BOT (Có đủ Bụng, Ngực, Cổ, Đầu)
+    // 2. TẠO BOT
     // ==========================================
     let enemies = [];
     let kills = 0;
@@ -111,38 +118,23 @@
     function createEnemy() {
         const enemyGroup = new THREE.Group();
 
-        // Chân
         const legs = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.7, 0.25), new THREE.MeshLambertMaterial({ color: 0x1a1a2e }));
-        legs.position.y = 0.35;
-        legs.userData = { part: 'legs', hp: 100, damage: 15 };
-        enemyGroup.add(legs);
+        legs.position.y = 0.35; legs.userData = { part: 'legs', hp: 100, damage: 15 }; enemyGroup.add(legs);
 
-        // Bụng (Aim Assist hút vào đây)
         const stomach = new THREE.Mesh(new THREE.BoxGeometry(0.55, 0.35, 0.28), new THREE.MeshLambertMaterial({ color: 0x0000ff }));
-        stomach.position.y = 0.87;
-        stomach.userData = { part: 'stomach', hp: 100, damage: 25 };
-        enemyGroup.add(stomach);
+        stomach.position.y = 0.87; stomach.userData = { part: 'stomach', hp: 100, damage: 25 }; enemyGroup.add(stomach);
 
-        // Ngực
         const chest = new THREE.Mesh(new THREE.BoxGeometry(0.6, 0.35, 0.3), new THREE.MeshLambertMaterial({ color: 0x0000cc }));
-        chest.position.y = 1.22;
-        chest.userData = { part: 'chest', hp: 100, damage: 30 };
-        enemyGroup.add(chest);
+        chest.position.y = 1.22; chest.userData = { part: 'chest', hp: 100, damage: 30 }; enemyGroup.add(chest);
 
-        // Cổ
         const neck = new THREE.Mesh(new THREE.BoxGeometry(0.15, 0.12, 0.15), new THREE.MeshLambertMaterial({ color: 0xffccaa }));
-        neck.position.y = 1.45;
-        neck.userData = { part: 'neck', hp: 100, damage: 50 };
-        enemyGroup.add(neck);
+        neck.position.y = 1.45; neck.userData = { part: 'neck', hp: 100, damage: 50 }; enemyGroup.add(neck);
 
-        // Đầu
         const head = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.3, 0.3), new THREE.MeshLambertMaterial({ color: 0xffccaa }));
-        head.position.y = 1.66;
-        head.userData = { part: 'head', hp: 100, damage: 100 };
-        enemyGroup.add(head);
+        head.position.y = 1.66; head.userData = { part: 'head', hp: 100, damage: 100 }; enemyGroup.add(head);
 
-        enemyGroup.position.set((Math.random() - 0.5) * 30, 0, (Math.random() - 0.5) * 30 - 10);
-        enemyGroup.speed = 0.01 + Math.random() * 0.02;
+        enemyGroup.position.set((Math.random() - 0.5) * 40, 0, (Math.random() - 0.5) * 40 - 10);
+        enemyGroup.speed = 0.02 + Math.random() * 0.03;
         enemyGroup.direction = Math.random() * Math.PI * 2;
         
         scene.add(enemyGroup);
@@ -152,19 +144,15 @@
     for (let i = 0; i < 10; i++) createEnemy();
 
     // ==========================================
-    // 3. CƠ CHẾ VÚT TÂM (DRAG HEADSHOT)
+    // 3. CƠ CHẾ VÚT TÂM & BẮN
     // ==========================================
+    let isFiring = false;
     let shootCooldown = false;
-    let ammo = 30;
-    const maxAmmo = 30;
+    let aimOffsetY = 0; 
+    let targetEnemy = null;
     const raycaster = new THREE.Raycaster();
     const mouse = new THREE.Vector2(0, 0);
 
-    let aimOffsetY = 0; // Độ lệch tâm (Kéo lên)
-    let targetEnemy = null;
-    let lastTouchY = 0;
-
-    // Hàm lấy điểm hút (Bụng của địch)
     function getStomachPoint(enemy) {
         const stomach = enemy.children.find(c => c.userData.part === 'stomach');
         if (!stomach) return null;
@@ -173,21 +161,18 @@
         return pos;
     }
 
-    // Cập nhật Aim Assist (Tự hút vào bụng)
     function updateAimAssist() {
         if (enemies.length === 0) { targetEnemy = null; crosshairEl.classList.remove('locked'); return; }
 
         const center = new THREE.Vector2(0, 0);
         let closestEnemy = null;
-        let minDist = 0.3; // Bán kính hút
+        let minDist = 0.3; 
 
         enemies.forEach(enemy => {
             const aimPoint = getStomachPoint(enemy);
             if (!aimPoint) return;
-
             const screenPos = aimPoint.clone().project(camera);
             const dist = center.distanceTo(new THREE.Vector2(screenPos.x, screenPos.y));
-
             if (dist < minDist) {
                 minDist = dist;
                 closestEnemy = enemy;
@@ -201,12 +186,8 @@
             const headPos = new THREE.Vector3();
             head.getWorldPosition(headPos);
             
-            // Tính hướng từ bụng lên đầu
             const basePoint = stomachPoint.clone();
             const headDir = headPos.clone().sub(basePoint).normalize();
-            
-            // Áp dụng độ kéo của người chơi (aimOffsetY)
-            // Kéo càng mạnh, tâm càng lên cao
             const finalPoint = basePoint.clone().add(headDir.multiplyScalar(aimOffsetY * 0.8));
             
             camera.lookAt(finalPoint);
@@ -214,86 +195,16 @@
         } else {
             targetEnemy = null;
             crosshairEl.classList.remove('locked');
-            // Từ từ reset tâm về giữa
             aimOffsetY *= 0.9; 
         }
     }
 
-    // ==========================================
-    // 4. ĐIỀU KHIỂN VUỐT (MOBILE & PC)
-    // ==========================================
-    // Chuột (PC)
-    let isDragging = false;
-    let prevMouseY = 0;
-
-    document.addEventListener('mousedown', (e) => {
-        if (e.button === 0) { isDragging = true; prevMouseY = e.clientY; }
-    });
-
-    document.addEventListener('mousemove', (e) => {
-        if (!isDragging) return;
-        const deltaY = prevMouseY - e.clientY;
-        prevMouseY = e.clientY;
-        
-        if (targetEnemy) {
-            // Có địch -> Kéo tâm lên đầu
-            aimOffsetY += deltaY * 0.02;
-            aimOffsetY = Math.max(0, Math.min(1.5, aimOffsetY));
-        } else {
-            // Không có địch -> Xoay camera bình thường
-            camera.rotation.x += deltaY * 0.003;
-            camera.rotation.x = Math.max(-Math.PI/2, Math.min(Math.PI/2, camera.rotation.x));
-        }
-    });
-
-    document.addEventListener('mouseup', (e) => {
-        if (e.button === 0) {
-            if (Math.abs(aimOffsetY) < 0.1) shoot(); // Click nhẹ = bắn
-            isDragging = false;
-        }
-    });
-
-    // Cảm ứng (Mobile)
-    document.addEventListener('touchstart', (e) => {
-        lastTouchY = e.touches[0].clientY;
-        isDragging = true;
-    });
-
-    document.addEventListener('touchmove', (e) => {
-        if (!isDragging) return;
-        const touchY = e.touches[0].clientY;
-        const deltaY = lastTouchY - touchY;
-        lastTouchY = touchY;
-
-        if (targetEnemy) {
-            aimOffsetY += deltaY * 0.03; // Mobile nhạy hơn chút
-            aimOffsetY = Math.max(0, Math.min(1.5, aimOffsetY));
-        } else {
-            camera.rotation.x += deltaY * 0.005;
-            camera.rotation.x = Math.max(-Math.PI/2, Math.min(Math.PI/2, camera.rotation.x));
-        }
-    });
-
-    document.addEventListener('touchend', (e) => {
-        if (e.changedTouches.length > 0) {
-            const touch = e.changedTouches[0];
-            const dist = Math.hypot(touch.clientX - touch.clientX, touch.clientY - lastTouchY);
-            if (dist < 10) shoot(); // Chạm nhẹ = bắn
-        }
-        isDragging = false;
-    });
-
-    // ==========================================
-    // 5. HÀM BẮN VÀ TÍNH SÁT THƯƠNG
-    // ==========================================
     function shoot() {
-        if (shootCooldown || ammo <= 0) return;
+        if (shootCooldown) return;
         
         gun.position.z = -0.4;
         setTimeout(() => gun.position.z = -0.5, 50);
 
-        ammo--;
-        document.getElementById('ammo-count').innerText = ammo;
         shootCooldown = true;
         setTimeout(() => shootCooldown = false, 150);
 
@@ -305,17 +216,14 @@
             const partData = hit.object.userData;
 
             if (partData.part) {
-                // Nổ máu
                 createBloodParticle(hit.point, partData.part === 'head' ? 0xff0000 : 0xaa0000);
                 
                 if (partData.part === 'head') {
-                    // HEADSHOT: 100 Dame (Chết ngay)
                     kills++;
                     document.getElementById('kills').innerText = kills;
                     showHitmarker("💥 HEADSHOT! (-100)");
                     removeEnemy(hit.object.parent);
                 } else {
-                    // BODY: Dame nhỏ
                     showHitmarker(`🎯 ${partData.part.toUpperCase()} (-${partData.damage})`);
                     partData.hp -= partData.damage;
                     if (partData.hp <= 0) {
@@ -360,26 +268,152 @@
     }
 
     // ==========================================
-    // 6. GAME LOOP
+    // 4. ĐIỀU KHIỂN (JOYSTICK & KÉO TÂM)
+    // ==========================================
+    let moveX = 0; 
+    let moveZ = 0;
+    let isJumping = false;
+    let velocityY = 0;
+    let isDraggingCamera = false;
+    let lastTouchX = 0, lastTouchY = 0;
+
+    // --- Joystick Logic ---
+    const joyZone = document.getElementById('joystick-zone');
+    const joyKnob = document.getElementById('joystick-knob');
+    let joyActive = false, joyCenter = { x: 0, y: 0 };
+
+    joyZone.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        joyActive = true;
+        const rect = joyZone.getBoundingClientRect();
+        joyCenter = { x: rect.left + rect.width/2, y: rect.top + rect.height/2 };
+    });
+
+    document.addEventListener('touchmove', (e) => {
+        if (joyActive) {
+            const touch = Array.from(e.touches).find(t => {
+                const rect = joyZone.getBoundingClientRect();
+                return t.clientX >= rect.left && t.clientX <= rect.right && t.clientY >= rect.top && t.clientY <= rect.bottom;
+            });
+            if (!touch) return;
+
+            let dx = touch.clientX - joyCenter.x;
+            let dy = touch.clientY - joyCenter.y;
+            const maxDist = 40;
+            const dist = Math.hypot(dx, dy);
+            
+            if (dist > maxDist) {
+                dx = (dx / dist) * maxDist;
+                dy = (dy / dist) * maxDist;
+            }
+            joyKnob.style.transform = `translate(${dx}px, ${dy}px)`;
+            
+            moveX = dx / maxDist;
+            moveZ = dy / maxDist;
+        }
+    }, { passive: false });
+
+    joyZone.addEventListener('touchend', () => {
+        joyActive = false;
+        joyKnob.style.transform = `translate(0px, 0px)`;
+        moveX = 0; moveZ = 0;
+    });
+
+    // --- Nút Nhảy ---
+    document.getElementById('btn-jump').addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        if (!isJumping) {
+            isJumping = true;
+            velocityY = 0.15;
+        }
+    });
+
+    // --- Kéo tâm & Bắn ---
+    const fireBtn = document.getElementById('btn-fire');
+    fireBtn.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        isFiring = true;
+        shoot(); // Bắn phát đầu tiên
+        setInterval(() => { if (isFiring) shoot(); }, 150); // Bắn liên thanh
+    });
+    
+    fireBtn.addEventListener('touchend', (e) => {
+        e.preventDefault();
+        isFiring = false;
+    });
+
+    // Vuốt màn hình để kéo tâm
+    document.addEventListener('touchstart', (e) => {
+        if (e.target === renderer.domElement) {
+            isDraggingCamera = true;
+            lastTouchX = e.touches[0].clientX;
+            lastTouchY = e.touches[0].clientY;
+        }
+    });
+
+    document.addEventListener('touchmove', (e) => {
+        if (isDraggingCamera && e.target === renderer.domElement) {
+            const touchX = e.touches[0].clientX;
+            const touchY = e.touches[0].clientY;
+            const deltaX = lastTouchX - touchX;
+            const deltaY = lastTouchY - touchY;
+            
+            if (targetEnemy) {
+                // Vút tâm lên đầu
+                aimOffsetY += deltaY * 0.03;
+                aimOffsetY = Math.max(0, Math.min(1.5, aimOffsetY));
+            } else {
+                // Xoay camera
+                camera.rotation.y -= deltaX * 0.005;
+                camera.rotation.x -= deltaY * 0.005;
+                camera.rotation.x = Math.max(-Math.PI/2, Math.min(Math.PI/2, camera.rotation.x));
+            }
+            
+            lastTouchX = touchX;
+            lastTouchY = touchY;
+        }
+    });
+
+    document.addEventListener('touchend', () => {
+        isDraggingCamera = false;
+    });
+
+    // ==========================================
+    // 5. GAME LOOP
     // ==========================================
     function animate() {
         requestAnimationFrame(animate);
 
+        // Di chuyển (Joystick)
+        const moveSpeed = 0.1;
+        const forward = new THREE.Vector3(0, 0, -1).applyQuaternion(camera.quaternion);
+        const right = new THREE.Vector3(1, 0, 0).applyQuaternion(camera.quaternion);
+        
+        camera.position.add(forward.multiplyScalar(moveZ * moveSpeed));
+        camera.position.add(right.multiplyScalar(moveX * moveSpeed));
+        camera.position.y = 1.6; // Cố định độ cao
+
+        // Nhảy
+        if (isJumping) {
+            camera.position.y += velocityY;
+            velocityY -= 0.01; // Trọng lực
+            if (camera.position.y <= 1.6) {
+                camera.position.y = 1.6;
+                isJumping = false;
+            }
+        }
+
+        // Bot di chuyển
         enemies.forEach(enemy => {
             enemy.position.x += Math.cos(enemy.direction) * enemy.speed;
             enemy.position.z += Math.sin(enemy.direction) * enemy.speed;
-            if (Math.abs(enemy.position.x) > 30 || Math.abs(enemy.position.z) > 30) {
+            if (Math.abs(enemy.position.x) > 40 || Math.abs(enemy.position.z) > 40) {
                 enemy.direction += Math.PI / 2;
             }
             enemy.rotation.y = -enemy.direction;
         });
 
         updateAimAssist();
-
-        if (ammo === 0) {
-            setTimeout(() => { ammo = maxAmmo; document.getElementById('ammo-count').innerText = ammo; }, 1500);
-            ammo = -1;
-        }
 
         renderer.render(scene, camera);
     }
