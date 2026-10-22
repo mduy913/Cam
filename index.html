@@ -1,573 +1,404 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>WebClip + UserScript Builder</title>
-<style>
-* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    background: linear-gradient(135deg, #0a0a1a 0%, #1a0a2a 50%, #0a0a1a 100%);
-    color: #fff; min-height: 100vh; padding: 14px;
-    display: flex; flex-direction: column; align-items: center;
-}
-.container { max-width: 640px; width: 100%; }
-h1 {
-    text-align: center; font-size: 22px; margin-bottom: 6px;
-    background: linear-gradient(135deg, #a855f7, #ec4899, #f59e0b);
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 900;
-}
-.subtitle { text-align: center; font-size: 12px; color: #888; margin-bottom: 18px; line-height: 1.5; }
-.card {
-    background: rgba(255,255,255,0.03);
-    border: 1px solid rgba(168,85,247,0.3);
-    border-radius: 14px; padding: 14px; margin-bottom: 12px;
-}
-.label {
-    font-size: 11px; font-weight: 800; color: #a855f7; margin-bottom: 8px;
-    text-transform: uppercase; letter-spacing: 1px;
-    display: flex; justify-content: space-between; align-items: center;
-}
-.field { margin-bottom: 10px; }
-.field:last-child { margin-bottom: 0; }
-.field label {
-    display: block; font-size: 10px; font-weight: 700; color: #888;
-    margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px;
-}
-.field input, .field textarea {
-    width: 100%; background: rgba(0,0,0,0.4);
-    border: 1px solid rgba(168,85,247,0.3); border-radius: 9px;
-    color: #fff; padding: 10px 12px; font-size: 13px;
-    font-family: inherit; outline: none; transition: 0.2s;
-}
-.field textarea {
-    resize: vertical; min-height: 120px; line-height: 1.6;
-    font-family: 'Courier New', monospace; font-size: 12px;
-}
-.field input:focus, .field textarea:focus { border-color: #a855f7; box-shadow: 0 0 15px rgba(168,85,247,0.3); }
-.count-row { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 6px; }
-.count-btn {
-    padding: 10px; background: rgba(0,0,0,0.3);
-    border: 2px solid rgba(168,85,247,0.3); border-radius: 9px;
-    color: #ccc; font-weight: 800; font-size: 13px; cursor: pointer;
-    transition: 0.2s; text-align: center;
-}
-.count-btn.active {
-    background: linear-gradient(135deg, #a855f7, #ec4899);
-    border-color: transparent; color: #fff;
-    box-shadow: 0 4px 15px rgba(168,85,247,0.4);
-}
-.slider-count {
-    width: 100%; margin-top: 10px; height: 6px;
-    -webkit-appearance: none; appearance: none;
-    background: rgba(168,85,247,0.2); border-radius: 3px; outline: none;
-}
-.slider-count::-webkit-slider-thumb {
-    -webkit-appearance: none; width: 22px; height: 22px;
-    background: linear-gradient(135deg, #a855f7, #ec4899);
-    border-radius: 50%; cursor: pointer;
-    box-shadow: 0 0 10px rgba(168,85,247,0.5); border: 2px solid #fff;
-}
-.switch-row {
-    display: flex; justify-content: space-between; align-items: center;
-    padding: 10px 12px; background: rgba(0,0,0,0.3); border-radius: 9px;
-    margin-top: 8px; cursor: pointer; border: 1px solid rgba(255,255,255,0.05);
-}
-.switch-label { font-size: 12px; font-weight: 600; color: #ddd; padding-right: 10px; }
-.switch-label small { display: block; font-size: 10px; color: #888; margin-top: 2px; font-weight: 400; line-height: 1.4; }
-.switch { position: relative; display: inline-block; width: 44px; height: 24px; flex-shrink: 0; }
-.switch input { opacity: 0; width: 0; height: 0; }
-.slider {
-    position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
-    background-color: rgba(255,255,255,0.1); transition: .3s; border-radius: 34px;
-    border: 1px solid rgba(255,255,255,0.1);
-}
-.slider:before {
-    position: absolute; content: ""; height: 18px; width: 18px; left: 2px; bottom: 2px;
-    background-color: #888; transition: .3s; border-radius: 50%;
-}
-input:checked + .slider { background-color: rgba(239,68,68,0.3); border-color: rgba(239,68,68,0.6); }
-input:checked + .slider:before { transform: translateX(20px); background-color: #ef4444; box-shadow: 0 0 10px #ef4444; }
-button.main-btn {
-    width: 100%; padding: 16px;
-    background: linear-gradient(135deg, #a855f7, #ec4899);
-    border: none; border-radius: 12px; color: #fff; font-weight: 800;
-    font-size: 14px; cursor: pointer; transition: 0.2s;
-    letter-spacing: 1px; margin-top: 8px;
-}
-button.main-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-.download-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; }
-button.install-btn {
-    padding: 16px 8px; background: linear-gradient(135deg, #22c55e, #16a34a);
-    border: none; border-radius: 12px; color: #fff; font-weight: 800; font-size: 13px;
-    cursor: pointer; display: flex; flex-direction: column;
-    align-items: center; justify-content: center; gap: 2px;
-}
-button.install-btn small { font-size: 9px; opacity: 0.8; font-weight: 600; }
-button.save-btn {
-    padding: 16px 8px; background: linear-gradient(135deg, #3b82f6, #1d4ed8);
-    border: none; border-radius: 12px; color: #fff; font-weight: 800; font-size: 13px;
-    cursor: pointer; display: flex; flex-direction: column;
-    align-items: center; justify-content: center; gap: 2px;
-}
-button.save-btn small { font-size: 9px; opacity: 0.8; font-weight: 600; }
-button.userscript-btn {
-    width: 100%; padding: 16px;
-    background: linear-gradient(135deg, #f59e0b, #d97706);
-    border: none; border-radius: 12px; color: #fff; font-weight: 800; font-size: 13px;
-    cursor: pointer; margin-top: 8px; letter-spacing: 0.5px;
-    display: flex; flex-direction: column; align-items: center; gap: 2px;
-}
-button.userscript-btn small { font-size: 9px; opacity: 0.8; font-weight: 600; }
-.status {
-    font-size: 12px; text-align: center; padding: 12px;
-    color: #22c55e; min-height: 40px; line-height: 1.5;
-    background: rgba(0,0,0,0.3); border-radius: 10px; margin-top: 12px;
-}
-.status.error { color: #ef4444; }
-.status.loading { color: #f59e0b; }
-.status.info { color: #3b82f6; }
-.status.warning { color: #fbbf24; }
-.hint {
-    background: rgba(59,130,246,0.1);
-    border: 1px solid rgba(59,130,246,0.4); border-radius: 10px;
-    padding: 12px; font-size: 11px; color: #93c5fd; line-height: 1.6; margin-bottom: 12px;
-}
-.notice-box {
-    background: rgba(245,158,11,0.1);
-    border: 1px solid rgba(245,158,11,0.4); border-radius: 10px;
-    padding: 10px 12px; font-size: 11px; color: #fbbf24;
-    line-height: 1.6; margin-top: 8px;
-}
-.warning-box {
-    background: rgba(239,68,68,0.1);
-    border: 1px solid rgba(239,68,68,0.4); border-radius: 10px;
-    padding: 10px 12px; font-size: 11px; color: #fca5a5;
-    line-height: 1.6; margin-top: 8px;
-}
-.estimate-box {
-    background: rgba(139,92,246,0.1);
-    border: 1px solid rgba(139,92,246,0.4); border-radius: 10px;
-    padding: 10px 12px; font-size: 11px; color: #c4b5fd;
-    line-height: 1.6; margin-top: 8px;
-}
-.estimate-box b { color: #a855f7; }
-.guide { font-size: 12px; line-height: 1.8; color: #ddd; }
-.guide code { background: rgba(168,85,247,0.2); padding: 2px 6px; border-radius: 4px; font-size: 11px; color: #d0b0ff; }
-.guide ol { padding-left: 18px; }
-.guide li { margin-bottom: 4px; }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>FF Web Clone - Realistic Aim Assist</title>
+    <style>
+        body { margin: 0; overflow: hidden; background-color: #87CEEB; font-family: sans-serif; touch-action: none; }
+        canvas { display: block; }
+        
+        #crosshair {
+            position: fixed; top: 50%; left: 50%; width: 24px; height: 24px;
+            transform: translate(-50%, -50%); pointer-events: none; z-index: 10;
+            transition: transform 0.05s;
+        }
+        #crosshair::before, #crosshair::after {
+            content: ''; position: absolute; background: rgba(255, 255, 255, 0.8);
+        }
+        #crosshair::before { top: 11px; left: 0; width: 24px; height: 2px; }
+        #crosshair::after { top: 0; left: 11px; width: 2px; height: 24px; }
+        
+        #crosshair.locked::before, #crosshair.locked::after {
+            background: #ff0000; box-shadow: 0 0 8px #ff0000;
+        }
+
+        #ui {
+            position: fixed; top: 20px; left: 20px; color: white; font-weight: bold;
+            text-shadow: 2px 2px 0 #000; z-index: 10; font-size: 20px;
+        }
+        #ammo {
+            position: fixed; bottom: 20px; right: 20px; color: white; font-weight: bold;
+            text-shadow: 2px 2px 0 #000; z-index: 10; font-size: 30px;
+        }
+        
+        #hitmarker {
+            position: fixed; top: 40%; left: 50%; transform: translate(-50%, -50%);
+            color: red; font-size: 30px; font-weight: bold; opacity: 0; 
+            pointer-events: none; z-index: 20; transition: opacity 0.1s;
+            text-shadow: 0 0 10px black; text-align: center;
+        }
+        
+        #hint {
+            position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%);
+            color: white; font-size: 12px; text-shadow: 1px 1px 0 #000;
+            z-index: 10; text-align: center; opacity: 0.7;
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 </head>
 <body>
 
-<div class="container">
-    <h1>WEBCLIP + USERSCRIPT</h1>
-    <div class="subtitle">Dán link web → tạo WebClip mở link đó + tải kèm UserScript</div>
-
-    <div class="hint">
-        <b>Quy trình:</b><br>
-        1. Dán link web bạn muốn (vd: <code>pqjqqo.com</code>)<br>
-        2. Dán code UserScript vào ô bên dưới<br>
-        3. Nhấn TẠO → cài WebClip + tải file <code>.user.js</code><br>
-        4. Mở Tampermonkey/Stay → Import file <code>.user.js</code> → xong
-    </div>
-
-    <!-- ============ LINK WEB ============ -->
-    <div class="card">
-        <div class="label">LINK WEB ĐÍCH</div>
-        <div class="field">
-            <label>URL website (sẽ mở khi bấm icon)</label>
-            <input type="text" id="target-url" placeholder="pqjqqo.com hoặc https://pqjqqo.com" value="">
-        </div>
-        <div class="notice-box">
-            <b>Lưu ý:</b> Nếu không có <code>https://</code>, tool sẽ tự thêm vào.
-        </div>
-    </div>
-
-    <!-- ============ SỐ ICON ============ -->
-    <div class="card">
-        <div class="label">
-            SỐ WEBCLIP CẦN TẠO
-            <small id="count-display">1 icon</small>
-        </div>
-        <div class="count-row">
-            <button class="count-btn active" data-count="1">1</button>
-            <button class="count-btn" data-count="2">2</button>
-            <button class="count-btn" data-count="5">5</button>
-            <button class="count-btn" data-count="10">10</button>
-        </div>
-        <input type="range" id="count-slider" class="slider-count" min="1" max="100" value="1" step="1">
-        <div class="estimate-box" id="estimate-box">
-            Ước tính: <b>~1 KB</b> config
-        </div>
-    </div>
-
-    <!-- ============ CẤU HÌNH WEBCLIP ============ -->
-    <div class="card">
-        <div class="label">CẤU HÌNH WEBCLIP</div>
-        <div class="field">
-            <label>Tên app (hiện dưới icon)</label>
-            <input type="text" id="app-name" placeholder="VD: SORA" value="SORA" maxlength="20">
-        </div>
-        <div class="field">
-            <label>URL ảnh icon (https — để trống dùng icon mặc định iOS)</label>
-            <input type="text" id="app-icon-url" placeholder="https://i.imgur.com/xxxxx.png">
-        </div>
-    </div>
-
-    <!-- ============ USERSCRIPT ============ -->
-    <div class="card">
-        <div class="label">USERSCRIPT (dán code vào đây)</div>
-        <div class="field">
-            <label>Code UserScript đầy đủ (gồm cả // ==UserScript== ... ==/UserScript==)</label>
-            <textarea id="userscript-code" placeholder="Dán code UserScript vào đây...">// ==UserScript==
-// @name         MDUY x TROLLMODZ x SORA
-// @namespace    https://mduyk.local/
-// @version      6.3
-// @description  MDUY website customization
-// @match        https://client.trollmodz.store/*
-// @match        https://sonlab.info/Sora/ff-menu/*
-// @run-at       document-idle
-// @grant        none
-// ==/UserScript==
-
-(function() {
-    'use strict';
-    console.log('[MDUY] UserScript loaded on', location.href);
-    // ... code của bạn ...
-})();</textarea>
-        </div>
-        <div class="notice-box">
-            <b>Quan trọng:</b> UserScript <b>chỉ chạy</b> trên các URL khớp với <code>@match</code> trong metadata.<br>
-            Nếu bạn đổi link web đích khác, hãy sửa lại <code>@match</code> cho đúng domain đó.
-        </div>
-    </div>
-
-    <!-- ============ PROFILE ============ -->
-    <div class="card">
-        <div class="label">CẤU HÌNH PROFILE</div>
-        <div class="field">
-            <label>Tên Profile</label>
-            <input type="text" id="profile-name" value="WebClip của tôi" maxlength="40">
-        </div>
-        <div class="field">
-            <label>Mô tả Profile</label>
-            <input type="text" id="profile-desc" value="WebClip tạo bởi MDUY" maxlength="80">
-        </div>
-        <div class="field">
-            <label>Tên miền (Identifier)</label>
-            <input type="text" id="profile-id" value="com.mduy.webclip">
-        </div>
-        <label class="switch-row">
-            <span class="switch-label">
-                Không cho xoá config
-                <small>User xoá app → iPhone tự cài lại</small>
-            </span>
-            <label class="switch">
-                <input type="checkbox" id="opt-noremove">
-                <span class="slider"></span>
-            </label>
-        </label>
-        <div id="noremove-warning" class="warning-box" style="display:none;">
-            Khi bật, user không thể xoá app/config. Muốn gỡ phải cài file mới không có khoá.
-        </div>
-    </div>
-
-    <button class="main-btn" id="create-btn">TẠO CONFIG + USERSCRIPT</button>
-
-    <div class="status" id="status">Sẵn sàng</div>
-
-    <div class="download-row" id="download-row" style="display:none;">
-        <button class="install-btn" id="install-btn">
-            CÀI WEBCLIP
-            <small>Mở cài đặt</small>
-        </button>
-        <button class="save-btn" id="save-btn">
-            LƯU .mobileconfig
-            <small>Tải file cấu hình</small>
-        </button>
-    </div>
-
-    <button class="userscript-btn" id="userscript-btn" style="display:none;">
-        TẢI USERSCRIPT (.user.js)
-        <small>Import vào Tampermonkey / Stay / Userscripts</small>
-    </button>
-
-    <div class="card" id="guide-card" style="display:none;">
-        <div class="label">HƯỚNG DẪN CÀI ĐẶT</div>
-        <div class="guide">
-            <b>Bước 1 — Cài WebClip:</b>
-            <ol>
-                <li>Nhấn <b>CÀI WEBCLIP</b> (hoặc <b>LƯU .mobileconfig</b> rồi mở file trong Files)</li>
-                <li>iPhone mở <b>Cài đặt</b> → <b>Đã tải Profile</b> → <b>Cài đặt</b> → nhập mật khẩu → <b>Cài</b></li>
-                <li>Ra Home Screen sẽ thấy icon WebClip mở đúng link bạn đã nhập</li>
-            </ol>
-            <br>
-            <b>Bước 2 — Cài UserScript (chạy trên web đó):</b>
-            <ol>
-                <li>Cài app <b>Stay</b> hoặc <b>Userscripts</b> (Safari Extension) từ App Store</li>
-                <li>Nhấn <b>TẢI USERSCRIPT (.user.js)</b> ở trên</li>
-                <li>Mở app Stay/Userscripts → <b>Import</b> file vừa tải → bật extension trong Safari</li>
-                <li>Mở WebClip → UserScript sẽ tự chạy trên web (nếu domain khớp <code>@match</code>)</li>
-            </ol>
-        </div>
-    </div>
-</div>
+    <div id="crosshair"></div>
+    <div id="ui">Kills: <span id="kills">0</span></div>
+    <div id="ammo">🔫 <span id="ammo-count">30</span> / 30</div>
+    <div id="hitmarker">💥 HEADSHOT!</div>
+    <div id="hint">Kéo (vuốt) lên để bắn đầu | Tâm tự hút vào bụng như FF</div>
 
 <script>
-(function() {
-    'use strict';
+    // ==========================================
+    // 1. KHỞI TẠO 3D
+    // ==========================================
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x87CEEB);
+    scene.fog = new THREE.Fog(0x87CEEB, 10, 80);
 
-    var $ = function(id) { return document.getElementById(id); };
-    var configFile = null;
-    var configBlobUrl = null;
-    var userScriptBlobUrl = null;
-    var currentCount = 1;
-    var MAX = 100;
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    camera.position.y = 1.6;
 
-    // ---- Count ----
-    document.querySelectorAll('.count-btn').forEach(function(btn) {
-        btn.onclick = function() {
-            var c = parseInt(btn.getAttribute('data-count'));
-            setCount(c);
-            document.querySelectorAll('.count-btn').forEach(function(b) { b.classList.remove('active'); });
-            btn.classList.add('active');
-            $('count-slider').value = c;
-        };
-    });
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    document.body.appendChild(renderer.domElement);
 
-    $('count-slider').addEventListener('input', function() {
-        var v = parseInt(this.value);
-        setCount(v);
-        document.querySelectorAll('.count-btn').forEach(function(b) { b.classList.remove('active'); });
-    });
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+    scene.add(ambientLight);
+    const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
+    dirLight.position.set(10, 20, 10);
+    scene.add(dirLight);
 
-    function setCount(v) {
-        currentCount = Math.max(1, Math.min(MAX, v));
-        $('count-display').textContent = currentCount + ' icon';
-        updateEstimate();
+    const floor = new THREE.Mesh(new THREE.PlaneGeometry(200, 200), new THREE.MeshLambertMaterial({ color: 0x3a7d44 }));
+    floor.rotation.x = -Math.PI / 2;
+    scene.add(floor);
+
+    for (let i = 0; i < 15; i++) {
+        const box = new THREE.Mesh(new THREE.BoxGeometry(2, 2, 2), new THREE.MeshLambertMaterial({ color: 0x8B4513 }));
+        box.position.set((Math.random() - 0.5) * 50, 1, (Math.random() - 0.5) * 50);
+        scene.add(box);
     }
 
-    function updateEstimate() {
-        var kb = Math.max(1, Math.round(currentCount * 1.2));
-        $('estimate-box').innerHTML = 'Ước tính: <b>~' + kb + ' KB</b> config';
+    const gun = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.1, 0.6), new THREE.MeshLambertMaterial({ color: 0x333333 }));
+    gun.position.set(0.3, -0.3, -0.5);
+    camera.add(gun);
+    scene.add(camera);
+
+    // ==========================================
+    // 2. KẺ ĐỊCH (Có đủ BỤNG, NGỰC, CỔ, ĐẦU)
+    // ==========================================
+    let enemies = [];
+    let kills = 0;
+    const crosshairEl = document.getElementById('crosshair');
+
+    function createEnemy() {
+        const enemyGroup = new THREE.Group();
+
+        // Chân
+        const legs = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.7, 0.25), new THREE.MeshLambertMaterial({ color: 0x1a1a2e }));
+        legs.position.y = 0.35;
+        legs.userData = { part: 'legs', hp: 100, damage: 15 };
+        enemyGroup.add(legs);
+
+        // Bụng (Aim Assist sẽ hút vào đây)
+        const stomach = new THREE.Mesh(new THREE.BoxGeometry(0.55, 0.35, 0.28), new THREE.MeshLambertMaterial({ color: 0x0000ff }));
+        stomach.position.y = 0.87;
+        stomach.userData = { part: 'stomach', hp: 100, damage: 20 };
+        enemyGroup.add(stomach);
+
+        // Ngực (Vùng cao hơn, dễ chuyển lên đầu)
+        const chest = new THREE.Mesh(new THREE.BoxGeometry(0.6, 0.35, 0.3), new THREE.MeshLambertMaterial({ color: 0x0000cc }));
+        chest.position.y = 1.22;
+        chest.userData = { part: 'chest', hp: 100, damage: 25 };
+        enemyGroup.add(chest);
+
+        // Cổ (Vùng đặt tâm lý tưởng của FF)
+        const neck = new THREE.Mesh(new THREE.BoxGeometry(0.15, 0.12, 0.15), new THREE.MeshLambertMaterial({ color: 0xffccaa }));
+        neck.position.y = 1.45;
+        neck.userData = { part: 'neck', hp: 100, damage: 50 };
+        enemyGroup.add(neck);
+
+        // Đầu
+        const head = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.3, 0.3), new THREE.MeshLambertMaterial({ color: 0xffccaa }));
+        head.position.y = 1.66;
+        head.userData = { part: 'head', hp: 100, damage: 100 };
+        enemyGroup.add(head);
+
+        enemyGroup.position.set((Math.random() - 0.5) * 40, 0, (Math.random() - 0.5) * 40 - 10);
+        enemyGroup.speed = 0.015 + Math.random() * 0.02;
+        enemyGroup.direction = Math.random() * Math.PI * 2;
+        
+        scene.add(enemyGroup);
+        enemies.push(enemyGroup);
     }
 
-    // ---- Normalize URL ----
-    function normalizeUrl(raw) {
-        var s = (raw || '').trim();
-        if (!s) return '';
-        if (!/^https?:\/\//i.test(s)) s = 'https://' + s;
-        return s;
+    for (let i = 0; i < 12; i++) createEnemy();
+
+    // ==========================================
+    // 3. ĐIỀU KHIỂN & AIM ASSIST
+    // ==========================================
+    let shootCooldown = false;
+    let ammo = 30;
+    const maxAmmo = 30;
+    const raycaster = new THREE.Raycaster();
+    const mouse = new THREE.Vector2(0, 0);
+
+    // Biến cho Aim Assist
+    let aimAssistTarget = null;      // Mục tiêu đang bị hút
+    let aimOffsetY = 0;              // Độ lệch dọc do người chơi kéo
+    let lastTouchY = 0;
+    let dragVelocity = 0;            // Tốc độ kéo
+    let isDragging = false;
+
+    // Hàm lấy vị trí bụng/ngực của địch (Aim Assist target)
+    function getAimAssistPoint(enemy) {
+        const stomach = enemy.children.find(c => c.userData.part === 'stomach');
+        const chest = enemy.children.find(c => c.userData.part === 'chest');
+        if (!stomach || !chest) return null;
+        
+        const stomachPos = new THREE.Vector3();
+        const chestPos = new THREE.Vector3();
+        stomach.getWorldPosition(stomachPos);
+        chest.getWorldPosition(chestPos);
+        
+        // Aim Assist mặc định hút vào khoảng giữa bụng và ngực
+        return stomachPos.clone().lerp(chestPos, 0.4);
     }
 
-    // ---- Toggle noremove warning ----
-    $('opt-noremove').addEventListener('change', function() {
-        $('noremove-warning').style.display = this.checked ? 'block' : 'none';
-    });
+    // Cập nhật Aim Assist mỗi frame
+    function updateAimAssist() {
+        if (enemies.length === 0) { aimAssistTarget = null; crosshairEl.classList.remove('locked'); return; }
 
-    // ---- Build payload template (WebClip trỏ THẲNG URL) ----
-    function buildWebClipPayload(name, url, iconUrl, profileId, idx) {
-        var uuid = generateUUID();
-        var iconXml = '';
-        if (iconUrl && /^https?:\/\//i.test(iconUrl)) {
-            iconXml =
-                '            <key>Icon</key>\n' +
-                '            <string>' + escapeXml(iconUrl) + '</string>\n';
-        }
-        return [
-            '        <dict>',
-            '            <key>FullScreen</key>',
-            '            <true/>',
-            '            <key>IgnoreManifestScope</key>',
-            '            <false/>',
-            '            <key>IsRemovable</key>',
-            '            <true/>',
-            '            <key>Label</key>',
-            '            <string>' + escapeXml(name) + '</string>',
-            '            <key>Precomposed</key>',
-            '            <true/>',
-            '            <key>PayloadDescription</key>',
-            '            <string>' + escapeXml(name) + '</string>',
-            '            <key>PayloadDisplayName</key>',
-            '            <string>' + escapeXml(name) + '</string>',
-            '            <key>PayloadIdentifier</key>',
-            '            <string>' + escapeXml(profileId) + '.webclip.' + idx + '</string>',
-            '            <key>PayloadOrganization</key>',
-            '            <string>MDUY</string>',
-            '            <key>PayloadType</key>',
-            '            <string>com.apple.webClip.managed</string>',
-            '            <key>PayloadUUID</key>',
-            '            <string>' + uuid + '</string>',
-            '            <key>PayloadVersion</key>',
-            '            <integer>1</integer>',
-            '            <key>URL</key>',
-            '            <string>' + escapeXml(url) + '</string>',
-            iconXml + '        </dict>'
-        ].join('\n');
-    }
+        const center = new THREE.Vector2(0, 0);
+        let closestEnemy = null;
+        let minDist = 0.25; // Bán kính hút
 
-    // ---- Create ----
-    $('create-btn').onclick = function() {
-        var btn = $('create-btn');
-        btn.disabled = true;
-        setStatus('Đang xử lý...', 'loading');
+        enemies.forEach(enemy => {
+            const aimPoint = getAimAssistPoint(enemy);
+            if (!aimPoint) return;
 
-        setTimeout(function() {
-            try {
-                // --- Validate URL ---
-                var rawUrl = $('target-url').value.trim();
-                if (!rawUrl) {
-                    setStatus('Vui lòng nhập link web đích!', 'error');
-                    btn.disabled = false;
-                    return;
-                }
-                var targetUrl = normalizeUrl(rawUrl);
+            const screenPos = aimPoint.clone().project(camera);
+            const dist = center.distanceTo(new THREE.Vector2(screenPos.x, screenPos.y));
 
-                var appName = $('app-name').value.trim() || 'WebClip';
-                var iconUrl = $('app-icon-url').value.trim();
-                var profileName = $('profile-name').value.trim() || 'WebClip của tôi';
-                var profileDesc = $('profile-desc').value.trim() || 'WebClip';
-                var profileId = $('profile-id').value.trim() || 'com.mduy.webclip';
-                var noRemove = $('opt-noremove').checked;
-                var userScript = $('userscript-code').value.trim();
-
-                if (iconUrl && !/^https?:\/\//i.test(iconUrl)) {
-                    setStatus('URL icon phải bắt đầu bằng http:// hoặc https://', 'error');
-                    btn.disabled = false;
-                    return;
-                }
-
-                // --- Build WebClip payloads ---
-                var payloadParts = [];
-                for (var i = 0; i < currentCount; i++) {
-                    var displayName = currentCount > 1 ? (appName + ' ' + (i + 1)) : appName;
-                    payloadParts.push(
-                        buildWebClipPayload(displayName, targetUrl, iconUrl, profileId, i)
-                    );
-                }
-                var allPayloads = payloadParts.join('\n');
-                var noRemoveStr = noRemove ? 'true' : 'false';
-
-                var config =
-'<?xml version="1.0" encoding="UTF-8"?>\n' +
-'<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">\n' +
-'<plist version="1.0">\n<dict>\n' +
-'    <key>PayloadContent</key>\n    <array>\n' +
-allPayloads + '\n    </array>\n' +
-'    <key>PayloadDescription</key>\n    <string>' + escapeXml(profileDesc) + '</string>\n' +
-'    <key>PayloadDisplayName</key>\n    <string>' + escapeXml(profileName) + '</string>\n' +
-'    <key>PayloadIdentifier</key>\n    <string>' + escapeXml(profileId) + '</string>\n' +
-'    <key>PayloadOrganization</key>\n    <string>MDUY</string>\n' +
-'    <key>PayloadRemovalDisallowed</key>\n    <' + noRemoveStr + '/>\n' +
-'    <key>PayloadType</key>\n    <string>Configuration</string>\n' +
-'    <key>PayloadUUID</key>\n    <string>' + generateUUID() + '</string>\n' +
-'    <key>PayloadVersion</key>\n    <integer>1</integer>\n' +
-'</dict>\n</plist>';
-
-                if (configBlobUrl) URL.revokeObjectURL(configBlobUrl);
-                var blob = new Blob([config], { type: 'application/x-apple-aspen-config' });
-                configBlobUrl = URL.createObjectURL(blob);
-
-                var safeName = appName.replace(/[^a-z0-9\-_]/gi, '-').toLowerCase();
-                configFile = {
-                    name: safeName + '-' + currentCount + 'clips.mobileconfig',
-                    blobUrl: configBlobUrl
-                };
-
-                // --- Build UserScript file ---
-                if (userScriptBlobUrl) URL.revokeObjectURL(userScriptBlobUrl);
-                if (userScript) {
-                    var usBlob = new Blob([userScript], { type: 'text/javascript' });
-                    userScriptBlobUrl = URL.createObjectURL(usBlob);
-                }
-
-                // --- Show UI ---
-                $('download-row').style.display = 'grid';
-                $('guide-card').style.display = 'block';
-                $('userscript-btn').style.display = userScript ? 'flex' : 'none';
-
-                setStatus('Xong! WebClip mở ' + targetUrl + (userScript ? ' + UserScript sẵn sàng tải.' : ''), 'success');
-                btn.disabled = false;
-            } catch (err) {
-                console.error(err);
-                setStatus('Lỗi: ' + err.message, 'error');
-                btn.disabled = false;
+            if (dist < minDist) {
+                minDist = dist;
+                closestEnemy = enemy;
             }
-        }, 80);
-    };
-
-    // ---- Install / Save config ----
-    $('install-btn').onclick = function() {
-        if (!configFile) return;
-        try {
-            if (isMobileSafari()) {
-                window.location.href = configFile.blobUrl;
-                setStatus('Đang mở cài đặt...', 'info');
-            } else {
-                downloadBlob(configFile.blobUrl, configFile.name);
-                setStatus('Đã tải file. Mở file để cài.', 'info');
-            }
-        } catch (err) {
-            setStatus('Lỗi: ' + err.message, 'error');
-        }
-    };
-
-    $('save-btn').onclick = function() {
-        if (!configFile) return;
-        downloadBlob(configFile.blobUrl, configFile.name);
-        setStatus('Đã lưu ' + configFile.name, 'info');
-    };
-
-    $('userscript-btn').onclick = function() {
-        if (!userScriptBlobUrl) return;
-        var name = 'MDUY-TROLLMODZ-SORA.user.js';
-        downloadBlob(userScriptBlobUrl, name);
-        setStatus('Đã tải ' + name + ' — import vào Tampermonkey/Stay', 'info');
-    };
-
-    function downloadBlob(url, filename) {
-        var a = document.createElement('a');
-        a.href = url;
-        a.download = filename;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-    }
-
-    function isMobileSafari() {
-        var ua = navigator.userAgent;
-        return /iPhone|iPad|iPod/i.test(ua) && /Safari/i.test(ua) && !/CriOS|FxiOS|EdgiOS/i.test(ua);
-    }
-
-    function setStatus(text, type) {
-        var el = $('status');
-        el.textContent = text;
-        el.className = 'status' + (type ? ' ' + type : '');
-    }
-
-    function generateUUID() {
-        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-            var r = Math.random() * 16 | 0;
-            var v = c === 'x' ? r : (r & 0x3 | 0x8);
-            return v.toString(16).toUpperCase();
         });
+
+        if (closestEnemy) {
+            const targetPoint = getAimAssistPoint(closestEnemy);
+            if (targetPoint) {
+                // Lấy vị trí đầu và bụng
+                const head = closestEnemy.children.find(c => c.userData.part === 'head');
+                const headPos = new THREE.Vector3();
+                head.getWorldPosition(headPos);
+                
+                // Tính toán vị trí cuối cùng: hút vào bụng + offset từ việc kéo
+                const basePoint = targetPoint.clone();
+                const headDir = headPos.clone().sub(basePoint).normalize();
+                
+                // Áp dụng độ kéo của người chơi (aimOffsetY)
+                // Nếu kéo đủ mạnh (aimOffsetY > 0.8), tâm sẽ lên đầu
+                const finalPoint = basePoint.clone().add(headDir.multiplyScalar(aimOffsetY * 0.6));
+                
+                camera.lookAt(finalPoint);
+                crosshairEl.classList.add('locked');
+                aimAssistTarget = closestEnemy;
+            }
+        } else {
+            aimAssistTarget = null;
+            crosshairEl.classList.remove('locked');
+        }
     }
 
-    function escapeXml(str) {
-        return String(str)
-            .replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;')
-            .replace(/"/g, '&quot;')
-            .replace(/'/g, '&apos;');
+    // Xử lý kéo chuột (PC)
+    let prevMouseY = 0;
+    document.addEventListener('mousedown', (e) => {
+        if (e.button === 0) { isDragging = true; prevMouseY = e.clientY; dragVelocity = 0; }
+    });
+
+    document.addEventListener('mousemove', (e) => {
+        if (!isDragging) return;
+        const deltaY = prevMouseY - e.clientY; // Kéo lên thì delta dương
+        prevMouseY = e.clientY;
+        
+        // Nếu không có mục tiêu, xoay bình thường
+        if (!aimAssistTarget) {
+            camera.rotation.x += deltaY * 0.003;
+            camera.rotation.x = Math.max(-Math.PI/2, Math.min(Math.PI/2, camera.rotation.x));
+        } else {
+            // Có mục tiêu: kéo làm tăng aimOffsetY (kéo lên đầu)
+            dragVelocity = deltaY * 0.01;
+            aimOffsetY += dragVelocity;
+            aimOffsetY = Math.max(0, Math.min(1.2, aimOffsetY)); // Giới hạn 0 -> 1.2
+        }
+    });
+
+    document.addEventListener('mouseup', (e) => {
+        if (e.button === 0) {
+            if (Math.abs(dragVelocity) < 0.05) shoot(); // Click nhẹ = bắn
+            isDragging = false;
+            // Từ từ reset offset về 0 (hút lại xuống bụng)
+            resetAimOffset();
+        }
+    });
+
+    // Xử lý vuốt (Mobile)
+    let touchStartY = 0;
+    document.addEventListener('touchstart', (e) => {
+        touchStartY = e.touches[0].clientY;
+        isDragging = true;
+        dragVelocity = 0;
+    });
+
+    document.addEventListener('touchmove', (e) => {
+        if (!isDragging) return;
+        const touchY = e.touches[0].clientY;
+        const deltaY = touchStartY - touchY;
+        touchStartY = touchY;
+
+        if (!aimAssistTarget) {
+            camera.rotation.x += deltaY * 0.005;
+            camera.rotation.x = Math.max(-Math.PI/2, Math.min(Math.PI/2, camera.rotation.x));
+        } else {
+            dragVelocity = deltaY * 0.015;
+            aimOffsetY += dragVelocity;
+            aimOffsetY = Math.max(0, Math.min(1.2, aimOffsetY));
+        }
+    });
+
+    document.addEventListener('touchend', (e) => {
+        if (e.changedTouches.length > 0) {
+            const touch = e.changedTouches[0];
+            const dist = Math.hypot(touch.clientX - touchStartY, touch.clientY - touchStartY);
+            if (Math.abs(dragVelocity) < 0.1) shoot();
+        }
+        isDragging = false;
+        resetAimOffset();
+    });
+
+    // Từ từ reset aimOffset về 0 (mô phỏng magnet kéo về bụng)
+    function resetAimOffset() {
+        const interval = setInterval(() => {
+            aimOffsetY *= 0.85;
+            if (aimOffsetY < 0.01) { aimOffsetY = 0; clearInterval(interval); }
+        }, 50);
     }
 
-    updateEstimate();
-    console.log('WebClip + UserScript Builder ready');
-})();
+    // ==========================================
+    // 4. BẮN VÀ DAMAGE
+    // ==========================================
+    function shoot() {
+        if (shootCooldown || ammo <= 0) return;
+        
+        gun.position.z = -0.4;
+        setTimeout(() => gun.position.z = -0.5, 50);
+
+        ammo--;
+        document.getElementById('ammo-count').innerText = ammo;
+        shootCooldown = true;
+        setTimeout(() => shootCooldown = false, 150);
+
+        raycaster.setFromCamera(mouse, camera);
+        const intersects = raycaster.intersectObjects(scene.children, true);
+
+        for (let i = 0; i < intersects.length; i++) {
+            const hit = intersects[i];
+            const partData = hit.object.userData;
+
+            if (partData.part) {
+                const isHeadshot = partData.part === 'head';
+                createBloodParticle(hit.point, isHeadshot ? 0xff0000 : 0xaa0000);
+                
+                if (isHeadshot) {
+                    kills++;
+                    document.getElementById('kills').innerText = kills;
+                    showHitmarker("💥 HEADSHOT!");
+                    removeEnemy(hit.object.parent);
+                } else {
+                    showHitmarker(`🎯 ${partData.part.toUpperCase()} (-${partData.damage})`);
+                    partData.hp -= partData.damage;
+                    if (partData.hp <= 0) {
+                        kills++;
+                        document.getElementById('kills').innerText = kills;
+                        removeEnemy(hit.object.parent);
+                    }
+                }
+                break;
+            }
+        }
+    }
+
+    function showHitmarker(text) {
+        const hm = document.getElementById('hitmarker');
+        hm.innerText = text;
+        hm.style.opacity = 1;
+        setTimeout(() => hm.style.opacity = 0, 200);
+    }
+
+    function removeEnemy(enemyGroup) {
+        scene.remove(enemyGroup);
+        enemies = enemies.filter(e => e !== enemyGroup);
+        if (aimAssistTarget === enemyGroup) aimAssistTarget = null;
+        setTimeout(createEnemy, 2000);
+    }
+
+    function createBloodParticle(pos, color) {
+        const particle = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.1, 0.1), new THREE.MeshBasicMaterial({ color: color }));
+        particle.position.copy(pos);
+        const velocity = new THREE.Vector3((Math.random() - 0.5) * 0.5, (Math.random() - 0.5) * 0.5, (Math.random() - 0.5) * 0.5);
+        scene.add(particle);
+        let life = 1.0;
+        function animateParticle() {
+            if (life <= 0) { scene.remove(particle); return; }
+            life -= 0.05;
+            particle.position.add(velocity);
+            particle.scale.set(life, life, life);
+            requestAnimationFrame(animateParticle);
+        }
+        animateParticle();
+    }
+
+    // ==========================================
+    // 5. GAME LOOP
+    // ==========================================
+    function animate() {
+        requestAnimationFrame(animate);
+
+        enemies.forEach(enemy => {
+            enemy.position.x += Math.cos(enemy.direction) * enemy.speed;
+            enemy.position.z += Math.sin(enemy.direction) * enemy.speed;
+            if (Math.abs(enemy.position.x) > 40 || Math.abs(enemy.position.z) > 40) {
+                enemy.direction += Math.PI / 2;
+            }
+            enemy.rotation.y = -enemy.direction;
+        });
+
+        updateAimAssist();
+
+        if (ammo === 0) {
+            setTimeout(() => { ammo = maxAmmo; document.getElementById('ammo-count').innerText = ammo; }, 1500);
+            ammo = -1;
+        }
+
+        renderer.render(scene, camera);
+    }
+
+    animate();
+
+    window.addEventListener('resize', () => {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+    });
 </script>
-
 </body>
 </html>
